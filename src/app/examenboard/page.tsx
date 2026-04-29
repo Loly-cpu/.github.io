@@ -203,17 +203,16 @@ const STUDIEPLAN: StudieDag[] = [
     ],
   },
 
-  // ── Na examen: schoolopdracht ─────────────────────────────────────────────────
+  // ── Na examen: schoolverplichtingen ──────────────────────────────────────────
   {
-    datum: '2026-05-07', dag: 'Donderdag 7 mei', beschikbaar: '~6 uur',
+    datum: '2026-05-07', dag: 'Donderdag 7 mei — SCHOOL EXAMEN', beschikbaar: '~4 uur (na examen)', isExamendag: true,
     taken: [
-      { id: 'so07-1', vak: 'School', tijd: '2u', priority: 'hoog',
+      { id: 'so07-ex', vak: 'School', tijd: '08:20–09:10',
+        taak: '⚠️ SCHOOL EXAMEN: Schrijfopdracht opiniestuk "AI" (Nederlandsles BA Stassart). Dit is de dag ná je CEV-examen — lees dit bericht goed! Schrijf een overtuigend opiniestuk over AI. Je hebt net geoefend met stijlfiguren — gebruik die nu.' },
+      { id: 'so07-1', vak: 'School', tijd: 'Na examen — 2u', priority: 'hoog',
         canvas: 'Smartschool → Aardrijkskunde → Planner → Geopunt opdracht',
         canvasUrl: 'https://bastassart.smartschool.be/planner/main/user/43_16564_0/2026-05-08/planned-assignments/43/299b308b-1793-448f-be6d-4145772234d8',
-        taak: '⚠️ Schoolopdracht deadline vrijdag 8 mei 14:50! "Werken met Geopunt: dromen van een weekendje weg" voor Aardrijkskunde (Smartschool). Maak dit vandaag af zodat je morgen vrij bent. Gebruik geopunt.be — dat heb je net geoefend voor het examen.' },
-      { id: 'n07-1', vak: 'Nederlands', tijd: '3u', priority: 'hoog',
-        canvas: 'INZICHT → leerpad literatuur → cursus + test stijl & stijlfiguren', canvasUrl: CANVAS_NED,
-        taak: 'INZICHT PLUS Nederlands → leerpad literatuur: "cursus stijl en stijlfiguren" + "test stijl en stijlfiguren". Daarna extra oefeningen: "Stijl en stijlfiguren" (17p). Aandacht voor: metafoor, personificatie, hyperbool, anafoor, antithese, paradox, retorische vraag.' },
+        taak: 'Na het school-examen: begin aan de Geopunt-opdracht (deadline 8 mei 12:50). "Dromen van een weekendje weg" — gebruik geopunt.be om een route/bestemming te zoeken. Je hebt dit net geoefend voor CEV.' },
     ],
   },
 
