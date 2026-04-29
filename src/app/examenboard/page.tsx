@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import PomodoroTimer from '@/components/PomodoroTimer'
 
@@ -667,6 +668,8 @@ function CanvasProgress({ canvas, loading, error }: {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function ExamenBoard() {
+  const router = useRouter()
+  const [authed, setAuthed]     = useState<boolean | null>(null)  // null = loading
   const [voltooid, setVoltooid] = useState<Set<string>>(new Set())
   const [userId, setUserId]     = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'plan' | 'examens' | 'vakinfo' | 'links'>('plan')
@@ -675,25 +678,19 @@ export default function ExamenBoard() {
   const [canvasLoading, setCanvasLoading] = useState(true)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Load completed tasks
+  // Auth guard + load tasks
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
-      if (data.session?.user) {
-        const uid = data.session.user.id
-        setUserId(uid)
-        const { data: rows } = await supabase
-          .from('study_tasks')
-          .select('task_id')
-          .eq('user_id', uid)
-          .eq('completed', true)
-        if (rows) setVoltooid(new Set(rows.map((r: { task_id: string }) => r.task_id)))
-      } else {
-        try {
-          const saved = localStorage.getItem('examen-voltooid')
-          if (saved) setVoltooid(new Set(JSON.parse(saved)))
-        } catch { /* ignore */ }
-      }
+      if (!data.session?.user) { router.replace('/auth/login'); return }
+      const uid = data.session.user.id
+      setUserId(uid)
+      setAuthed(true)
+      const { data: rows } = await supabase
+        .from('study_tasks').select('task_id')
+        .eq('user_id', uid).eq('completed', true)
+      if (rows) setVoltooid(new Set(rows.map((r: { task_id: string }) => r.task_id)))
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Fetch Canvas
@@ -736,6 +733,15 @@ export default function ExamenBoard() {
     { id: 'vakinfo', label: 'Vakinfo', emoji: '📖' },
     { id: 'links', label: 'Links', emoji: '🔗' },
   ] as const
+
+  // Show spinner while checking auth (prevents flash of private data)
+  if (authed === null) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-cream">

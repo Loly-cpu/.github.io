@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
@@ -42,7 +42,7 @@ function getWeekDays(base: Date): Date[] {
   })
 }
 
-export default function AgendaPage() {
+function AgendaInner() {
   const searchParams = useSearchParams()
   const [events, setEvents]       = useState<Event[]>([])
   const [userId, setUserId]       = useState<string | null>(null)
@@ -484,5 +484,17 @@ export default function AgendaPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function AgendaPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-20">
+        <div className="w-8 h-8 border-4 border-primary-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <AgendaInner />
+    </Suspense>
   )
 }
