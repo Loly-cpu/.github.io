@@ -761,8 +761,8 @@ export default function ExamenBoard() {
               </div>
             </div>
           </div>
-          <Link href="/dashboard" className="text-sm text-primary-600 hover:underline font-medium hidden sm:block">
-            Taalplatform →
+          <Link href="/platform" className="text-sm text-primary-600 hover:underline font-medium hidden sm:block">
+            ← Home
           </Link>
         </div>
         <div className="max-w-4xl mx-auto px-4 flex gap-0 overflow-x-auto">

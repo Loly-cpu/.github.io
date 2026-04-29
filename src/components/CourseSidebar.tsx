@@ -34,7 +34,7 @@ export default function CourseSidebar({ language, currentLevel, currentTopicId, 
   const sidebar = (
     <nav className="flex flex-col h-full overflow-y-auto">
       <div className="px-4 py-4 border-b border-warm-gray">
-        <Link href="/dashboard" className="flex items-center gap-2 text-sm text-gray-500 hover:text-primary-600 transition-colors mb-3">
+        <Link href="/platform" className="flex items-center gap-2 text-sm text-gray-500 hover:text-primary-600 transition-colors mb-3">
           ← Dashboard
         </Link>
         <h2 className="font-bold text-gray-900 text-base">

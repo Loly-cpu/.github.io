@@ -21,7 +21,12 @@
       "mcp__plugin_vercel_vercel__list_projects",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('scripts:', d.get\\('scripts'\\)\\); print\\('next version:', d.get\\('dependencies',{}\\).get\\('next'\\)\\)\")",
       "mcp__plugin_vercel_vercel__deploy_to_vercel",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(curl -s \"http://localhost:3000/api/ical?url=https%3A%2F%2Fbastassart.smartschool.be%2Fplanner%2Fsync%2Fics%2Ff7a4f94f-2d85-4e3c-9f6c-cfd2735a6ec5%2F7cfe8768-a132-5154-810d-d9562ed796d1\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'Events: {d.get\\(\\\\\"count\\\\\",\\\\\"error\\\\\"\\)}'\\); [print\\(f'  {e[\\\\\"start\\\\\"][:10]} | {e[\\\\\"summary\\\\\"][:60]}'\\) for e in \\(d.get\\('events'\\) or []\\)[:30]]\")",
+      "mcp__plugin_vercel_vercel__get_project",
+      "mcp__plugin_vercel_vercel__list_deployments",
+      "mcp__claude_ai_Supabase__list_projects"
     ]
   }
 }

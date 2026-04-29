@@ -34,7 +34,7 @@ export default function Navigation({ backHref, backLabel, title }: NavigationPro
           <Link href="/examenboard" className="btn-ghost text-sm">
             🎓 Examenboard
           </Link>
-          <Link href="/dashboard" className="btn-ghost text-sm">
+          <Link href="/platform" className="btn-ghost text-sm">
             Taalplatform
           </Link>
           <button onClick={handleLogout} className="btn-ghost text-sm text-gray-400">
