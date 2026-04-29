@@ -7,7 +7,21 @@
       "Bash(git config *)",
       "Bash(git push *)",
       "mcp__claude_ai_Supabase__apply_migration",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://localhost:3000/api/canvas)",
+      "Bash(curl -s \"https://canvas.instructure.com/api/v1/courses/12731557/modules?include[]=items&per_page=10\" -H \"Authorization: Bearer 7~mzu8wKRM6t2UZtJhyQ8P3rVE9BGWr9XXPmTV44RaLLHMEkPVzrQkWMLUBem2kQzc\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(m['name'], '|', m['state'], '| items:', len\\(m.get\\('items',[]\\)\\), '\\\\n  ', [\\(i['title'][:40], i['type'], i.get\\('completion_requirement'\\)\\) for i in m.get\\('items',[]\\)[:3]]\\) for m in data[:4]]\")",
+      "Bash(curl -s \"https://canvas.instructure.com/api/v1/courses/12731557/modules?include[]=items&per_page=100\" -H \"Authorization: Bearer 7~mzu8wKRM6t2UZtJhyQ8P3rVE9BGWr9XXPmTV44RaLLHMEkPVzrQkWMLUBem2kQzc\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s \"https://canvas.instructure.com/api/v1/courses/12361937/modules?include[]=items&per_page=100\" -H \"Authorization: Bearer 7~mzu8wKRM6t2UZtJhyQ8P3rVE9BGWr9XXPmTV44RaLLHMEkPVzrQkWMLUBem2kQzc\")",
+      "Bash(curl -s \"https://canvas.instructure.com/api/v1/courses/12731557/quizzes?per_page=20\" -H \"Authorization: Bearer 7~mzu8wKRM6t2UZtJhyQ8P3rVE9BGWr9XXPmTV44RaLLHMEkPVzrQkWMLUBem2kQzc\")",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "mcp__plugin_vercel_vercel__list_teams",
+      "mcp__plugin_vercel_vercel__list_projects",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('scripts:', d.get\\('scripts'\\)\\); print\\('next version:', d.get\\('dependencies',{}\\).get\\('next'\\)\\)\")",
+      "mcp__plugin_vercel_vercel__deploy_to_vercel",
+      "Bash(npm install *)"
     ]
   }
 }

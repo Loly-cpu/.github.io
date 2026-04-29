@@ -6,19 +6,26 @@ import { supabase } from '@/lib/supabase'
 
 interface Group {
   id: string; name: string; description: string; subject: string
-  icon: string; created_by: string; created_at: string
-  member_count?: number; is_member?: boolean
+  icon: string; grade: string | null; finaliteit: string | null
+  is_system: boolean; member_count: number; is_member: boolean
+}
+
+const GRADE_ORDER = ['1e graad', '2e graad', '3e graad', null]
+const FINALITEIT_ORDER = ['A-stroom', 'B-stroom', 'Doorstroomfinaliteit', 'Dubbele finaliteit', 'Arbeidsmarktfinaliteit', null]
+
+const FINALITEIT_LABELS: Record<string, string> = {
+  'A-stroom': 'A-stroom',
+  'B-stroom': 'B-stroom',
+  'Doorstroomfinaliteit': 'Doorstroomfinaliteit → Universiteit/Hogeschool',
+  'Dubbele finaliteit': 'Dubbele finaliteit → Studeren + Praktijk',
+  'Arbeidsmarktfinaliteit': 'Arbeidsmarktfinaliteit → Werkveld',
 }
 
 export default function GroepenPage() {
   const [groups, setGroups] = useState<Group[]>([])
   const [userId, setUserId] = useState<string | null>(null)
-  const [showCreate, setShowCreate] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [form, setForm] = useState({ name: '', description: '', subject: '', icon: '💬' })
-  const [saving, setSaving] = useState(false)
-
-  const ICONS = ['💬', '📚', '🌍', '📝', '🔬', '📐', '💼', '🇫🇷', '🇬🇧', '🏛️', '❓', '💡']
+  const [filter, setFilter] = useState<string>('Alle')
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -30,14 +37,19 @@ export default function GroepenPage() {
 
   async function loadGroups(uid: string | null) {
     setLoading(true)
-    const { data: grps } = await supabase.from('groups').select('*').order('created_at', { ascending: false })
+    const { data: grps } = await supabase
+      .from('groups')
+      .select('*')
+      .order('grade', { ascending: true, nullsFirst: false })
     if (!grps) { setLoading(false); return }
 
     const enriched: Group[] = await Promise.all(grps.map(async (g) => {
-      const { count } = await supabase.from('group_members').select('*', { count: 'exact', head: true }).eq('group_id', g.id)
+      const { count } = await supabase
+        .from('group_members').select('*', { count: 'exact', head: true }).eq('group_id', g.id)
       let is_member = false
       if (uid) {
-        const { data: mem } = await supabase.from('group_members').select('user_id').eq('group_id', g.id).eq('user_id', uid).single()
+        const { data: mem } = await supabase
+          .from('group_members').select('user_id').eq('group_id', g.id).eq('user_id', uid).single()
         is_member = !!mem
       }
       return { ...g, member_count: count ?? 0, is_member }
@@ -53,116 +65,141 @@ export default function GroepenPage() {
     } else {
       await supabase.from('group_members').insert({ group_id: groupId, user_id: userId })
     }
-    await loadGroups(userId)
+    setGroups(prev => prev.map(g => g.id === groupId
+      ? { ...g, is_member: !isMember, member_count: g.member_count + (isMember ? -1 : 1) }
+      : g
+    ))
   }
 
-  async function createGroup() {
-    if (!userId || !form.name) return
-    setSaving(true)
-    const { data } = await supabase.from('groups').insert({
-      name: form.name, description: form.description,
-      subject: form.subject, icon: form.icon, created_by: userId,
-    }).select().single()
-    if (data) {
-      await supabase.from('group_members').insert({ group_id: data.id, user_id: userId, role: 'admin' })
-    }
-    setForm({ name: '', description: '', subject: '', icon: '💬' })
-    setShowCreate(false)
-    setSaving(false)
-    await loadGroups(userId)
+  const grades = ['1e graad', '2e graad', '3e graad', 'Algemeen']
+
+  // Group by grade
+  function groupsByGrade(grade: string) {
+    if (grade === 'Algemeen') return groups.filter(g => !g.grade)
+    return groups.filter(g => g.grade === grade)
   }
+
+  function groupsByFinaliteit(gradeGroups: Group[]) {
+    const result: Record<string, Group[]> = {}
+    for (const g of gradeGroups) {
+      const key = g.finaliteit ?? 'Algemeen'
+      if (!result[key]) result[key] = []
+      result[key].push(g)
+    }
+    return result
+  }
+
+  const myGroups = groups.filter(g => g.is_member)
+  const filteredGrades = filter === 'Mijn groepen' ? [] : filter === 'Alle' ? grades : [filter]
+
+  if (loading) return (
+    <div className="flex justify-center py-20">
+      <div className="w-8 h-8 border-4 border-primary-400 border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">💬 Berichten & Groepen</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Sluit je aan bij een groep om vragen te stellen en samen te leren.</p>
-        </div>
-        {userId && (
-          <button onClick={() => setShowCreate(true)} className="btn-primary text-sm px-4 py-2">+ Groep</button>
-        )}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">💬 Berichten & Groepen</h1>
+        <p className="text-gray-500 text-sm mt-0.5">
+          Sluit je aan bij de groep van jouw graad en richting om samen te leren en vragen te stellen.
+        </p>
       </div>
 
-      {loading && <div className="flex justify-center py-12"><div className="w-8 h-8 border-4 border-primary-400 border-t-transparent rounded-full animate-spin" /></div>}
-
-      {!loading && groups.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          <p className="text-4xl mb-3">💬</p>
-          <p className="font-semibold">Nog geen groepen</p>
-          <p className="text-sm">Maak de eerste groep aan!</p>
-        </div>
-      )}
-
-      <div className="grid sm:grid-cols-2 gap-4">
-        {groups.map((g) => (
-          <div key={g.id} className="bg-white border-2 border-warm-gray rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
-            <Link href={`/platform/groepen/${g.id}`} className="block px-5 py-4">
-              <div className="flex items-start gap-3">
-                <span className="text-3xl flex-shrink-0">{g.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 truncate">{g.name}</h3>
-                  {g.subject && <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-medium">{g.subject}</span>}
-                  {g.description && <p className="text-sm text-gray-500 mt-1 line-clamp-2">{g.description}</p>}
-                  <p className="text-xs text-gray-400 mt-2">{g.member_count} leden</p>
-                </div>
-              </div>
-            </Link>
-            {userId && (
-              <div className="border-t border-warm-gray px-5 py-2.5">
-                <button
-                  onClick={() => toggleMember(g.id, g.is_member ?? false)}
-                  className={`text-sm font-semibold transition-colors ${
-                    g.is_member
-                      ? 'text-red-500 hover:text-red-700'
-                      : 'text-primary-600 hover:text-primary-800'
-                  }`}
-                >
-                  {g.is_member ? 'Verlaten' : '+ Aansluiten'}
-                </button>
-              </div>
-            )}
-          </div>
+      {/* Filter tabs */}
+      <div className="flex gap-2 flex-wrap mb-6">
+        {['Alle', 'Mijn groepen', ...grades].map((f) => (
+          <button key={f} onClick={() => setFilter(f)}
+            className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+              filter === f ? 'bg-primary-500 text-white' : 'bg-white border border-warm-gray text-gray-600 hover:bg-gray-50'
+            }`}>
+            {f}{f === 'Mijn groepen' && myGroups.length > 0 ? ` (${myGroups.length})` : ''}
+          </button>
         ))}
       </div>
 
-      {showCreate && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">Nieuwe groep</h2>
-              <button onClick={() => setShowCreate(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
-            </div>
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs font-semibold text-gray-600 mb-1 block">Icoon</label>
-                <div className="flex flex-wrap gap-2">
-                  {ICONS.map((ic) => (
-                    <button key={ic} onClick={() => setForm({ ...form, icon: ic })}
-                      className={`w-9 h-9 rounded-lg text-lg flex items-center justify-center transition-colors ${form.icon === ic ? 'bg-primary-100 ring-2 ring-primary-400' : 'bg-gray-100 hover:bg-gray-200'}`}>
-                      {ic}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="Groepsnaam*" value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="Vak / onderwerp (bijv. Aardrijkskunde)" value={form.subject}
-                onChange={(e) => setForm({ ...form, subject: e.target.value })} />
-              <textarea className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm resize-none h-20"
-                placeholder="Beschrijving (optioneel)" value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            </div>
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowCreate(false)} className="btn-ghost text-sm px-4 py-2">Annuleren</button>
-              <button onClick={createGroup} disabled={saving || !form.name}
-                className="btn-primary text-sm px-4 py-2 disabled:opacity-50">
-                {saving ? 'Aanmaken...' : 'Aanmaken'}
+      {/* My groups shortcut */}
+      {filter === 'Mijn groepen' && (
+        <div>
+          {myGroups.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <p className="text-3xl mb-2">👋</p>
+              <p className="font-semibold">Nog geen groepen</p>
+              <p className="text-sm">Sluit je aan bij de groep van jouw richting.</p>
+              <button onClick={() => setFilter('Alle')} className="mt-3 btn-primary text-sm px-4 py-2">
+                Groepen bekijken →
               </button>
             </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-3">
+              {myGroups.map(g => <GroupCard key={g.id} group={g} userId={userId} onToggle={toggleMember} />)}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Grade hierarchy */}
+      {filter !== 'Mijn groepen' && filteredGrades.map(grade => {
+        const gradeGroups = groupsByGrade(grade)
+        if (gradeGroups.length === 0) return null
+        const byFinaliteit = grade === 'Algemeen' ? { 'Algemeen': gradeGroups } : groupsByFinaliteit(gradeGroups)
+
+        return (
+          <div key={grade} className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-lg font-bold text-gray-900">{grade}</h2>
+              <div className="flex-1 h-px bg-warm-gray" />
+            </div>
+
+            {Object.entries(byFinaliteit).map(([fin, finGroups]) => (
+              <div key={fin} className="mb-5">
+                {fin !== 'Algemeen' && grade !== 'Algemeen' && (
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 ml-1">
+                    {FINALITEIT_LABELS[fin] ?? fin}
+                  </p>
+                )}
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {finGroups.map(g => <GroupCard key={g.id} group={g} userId={userId} onToggle={toggleMember} />)}
+                </div>
+              </div>
+            ))}
           </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function GroupCard({ group: g, userId, onToggle }: {
+  group: Group; userId: string | null; onToggle: (id: string, isMember: boolean) => void
+}) {
+  return (
+    <div className={`bg-white border-2 rounded-2xl overflow-hidden hover:shadow-md transition-shadow ${
+      g.is_member ? 'border-primary-300' : 'border-warm-gray'
+    }`}>
+      <Link href={`/platform/groepen/${g.id}`} className="block px-4 py-3">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl flex-shrink-0">{g.icon}</span>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-gray-900 text-sm leading-tight">
+              {g.name.includes('—') ? g.name.split('—')[1].trim() : g.name}
+            </h3>
+            <p className="text-xs text-gray-400 mt-0.5">{g.member_count} leden</p>
+          </div>
+          {g.is_member && <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">Lid</span>}
+        </div>
+      </Link>
+      {userId && (
+        <div className="border-t border-warm-gray px-4 py-2">
+          <button
+            onClick={() => onToggle(g.id, g.is_member)}
+            className={`text-xs font-semibold transition-colors ${
+              g.is_member ? 'text-red-500 hover:text-red-700' : 'text-primary-600 hover:text-primary-800'
+            }`}
+          >
+            {g.is_member ? 'Verlaten' : '+ Aansluiten'}
+          </button>
         </div>
       )}
     </div>
