@@ -9,7 +9,7 @@ export type TheoryBlock =
   | { type: 'note'; content: string }
   | { type: 'example'; pairs: { left: string; right: string; note?: string }[] }
 
-export type ExerciseType = 'multiple_choice' | 'fill_blank' | 'translation' | 'matching'
+export type ExerciseType = 'multiple_choice' | 'fill_blank' | 'translation' | 'matching' | 'speaking' | 'dictation'
 
 export interface MultipleChoiceExercise {
   id: string
@@ -45,11 +45,31 @@ export interface MatchingExercise {
   pairs: { left: string; right: string }[]
 }
 
+export interface SpeakingExercise {
+  id: string
+  type: 'speaking'
+  instruction: string
+  target: string
+  hint?: string
+  explanation: string
+}
+
+export interface DictationExercise {
+  id: string
+  type: 'dictation'
+  audio_text: string
+  accepted: string[]
+  hint?: string
+  explanation: string
+}
+
 export type Exercise =
   | MultipleChoiceExercise
   | FillBlankExercise
   | TranslationExercise
   | MatchingExercise
+  | SpeakingExercise
+  | DictationExercise
 
 export interface Topic {
   id: string

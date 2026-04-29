@@ -6,6 +6,8 @@ import MultipleChoice from './exercises/MultipleChoice'
 import FillInBlank from './exercises/FillInBlank'
 import Translation from './exercises/Translation'
 import Matching from './exercises/Matching'
+import Speaking from './exercises/Speaking'
+import Dictation from './exercises/Dictation'
 
 const LANG_CODE: Record<Language, 'fr-FR' | 'en-GB'> = { fr: 'fr-FR', en: 'en-GB' }
 
@@ -31,8 +33,7 @@ export default function ExerciseContainer({ exercises, language, onComplete }: P
 
   function handleNext() {
     if (isLast) {
-      const finalScores = [...scores]
-      const correct = finalScores.filter(Boolean).length
+      const correct = [...scores].filter(Boolean).length
       onComplete(correct, exercises.length)
     } else {
       setCurrent((c) => c + 1)
@@ -42,6 +43,8 @@ export default function ExerciseContainer({ exercises, language, onComplete }: P
 
   if (!ex) return null
 
+  const isSelfScoring = ex.type === 'speaking' || ex.type === 'matching'
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between text-sm text-gray-500">
@@ -50,7 +53,7 @@ export default function ExerciseContainer({ exercises, language, onComplete }: P
           {exercises.map((_, i) => (
             <div
               key={i}
-              className={`w-2.5 h-2.5 rounded-full ${
+              className={`w-2.5 h-2.5 rounded-full transition-colors ${
                 i < scores.length
                   ? scores[i] ? 'bg-green-500' : 'bg-red-400'
                   : i === current ? 'bg-primary-400' : 'bg-warm-gray'
@@ -73,9 +76,15 @@ export default function ExerciseContainer({ exercises, language, onComplete }: P
         {ex.type === 'matching' && (
           <Matching exercise={ex} lang={lang} onScore={handleScore} />
         )}
+        {ex.type === 'speaking' && (
+          <Speaking exercise={ex} lang={lang} onScore={handleScore} />
+        )}
+        {ex.type === 'dictation' && (
+          <Dictation exercise={ex} lang={lang} onScore={handleScore} />
+        )}
       </div>
 
-      {answered && (
+      {(answered || isSelfScoring && scores.length > current) && (
         <button onClick={handleNext} className="btn-primary w-full">
           {isLast ? 'Resultaten bekijken' : 'Volgende oefening →'}
         </button>

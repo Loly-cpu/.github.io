@@ -42,6 +42,6 @@ export const LANGUAGE_FLAGS: Record<Language, string> = {
 }
 
 export const AVAILABLE_LEVELS: Record<Language, Level[]> = {
-  fr: ['a0', 'a1'],
-  en: ['a1'],
+  fr: ['a0', 'a1', 'a2'],
+  en: ['a1', 'a2'],
 }

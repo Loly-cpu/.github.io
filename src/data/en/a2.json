@@ -1,0 +1,535 @@
+{
+  "language": "en",
+  "level": "a2",
+  "title": "Engels A2 — Elementair",
+  "description": "Verleden tijden, vergelijkingen, modale werkwoorden en dagelijkse situaties — klaar voor B1.",
+  "topics": [
+    {
+      "id": "en-a2-past-simple",
+      "title": "Past simple",
+      "description": "Afgeronde acties in het verleden: regelmatige en onregelmatige werkwoorden.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De past simple gebruik je voor afgeronde handelingen in het verleden, vaak met een tijdsaanduiding (yesterday, last week, in 2020...). Regelmatige werkwoorden krijgen -ed, onregelmatige moeten geleerd worden."
+        },
+        {
+          "type": "table",
+          "headers": ["Regelmatig", "Past simple", "Onregelmatig", "Past simple"],
+          "rows": [
+            ["work", "worked", "go", "went"],
+            ["play", "played", "come", "came"],
+            ["watch", "watched", "see", "saw"],
+            ["study", "studied", "have", "had"],
+            ["stop", "stopped", "be", "was/were"],
+            ["live", "lived", "eat", "ate"],
+            ["travel", "travelled", "take", "took"],
+            ["arrive", "arrived", "make", "made"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Vorm", "Voorbeeld"],
+          "rows": [
+            ["Bevestigend", "She worked yesterday."],
+            ["Ontkennend", "She didn't work yesterday."],
+            ["Vraag", "Did she work yesterday?"],
+            ["Kort antwoord", "Yes, she did. / No, she didn't."]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Voor ontkenning en vragen gebruik je 'did' + infinitief (zonder to). Na 'did/didn't' blijft het werkwoord onveranderd: She didn't GO (niet: she didn't went)."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I watched a film last night.", "right": "Ik heb gisteravond een film gekeken." },
+            { "left": "They didn't come to the party.", "right": "Ze kwamen niet naar het feest." },
+            { "left": "Did you see her yesterday?", "right": "Heb jij haar gisteren gezien?" },
+            { "left": "We went to Paris last summer.", "right": "We gingen vorige zomer naar Parijs." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a2-ps-mc1",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct?",
+          "options": ["She didn't went to school.", "She didn't go to school.", "She not went to school.", "She doesn't went to school."],
+          "correct": 1,
+          "explanation": "Na didn't gebruik je de infinitief (go), niet de past simple (went). She didn't go."
+        },
+        {
+          "id": "en-a2-ps-mc2",
+          "type": "multiple_choice",
+          "question": "What is the past simple of 'take'?",
+          "options": ["taked", "tooked", "took", "taken"],
+          "correct": 2,
+          "explanation": "Take is een onregelmatig werkwoord: take → took → taken."
+        },
+        {
+          "id": "en-a2-ps-fill1",
+          "type": "fill_blank",
+          "question": "Yesterday I ___ (go) to the gym and ___ (see) my friend.",
+          "blanks": ["went", "saw"],
+          "hint": "go → went / see → saw (onregelmatig)",
+          "explanation": "Go → went. See → saw. Beide onregelmatige past simple vormen."
+        },
+        {
+          "id": "en-a2-ps-fill2",
+          "type": "fill_blank",
+          "question": "___ you ___ (visit) Brussels last year? — No, we ___ (not/have) time.",
+          "blanks": ["Did", "visit", "didn't have"],
+          "hint": "Did + infinitief / didn't + infinitief",
+          "explanation": "Vraag: Did + subject + infinitief. Ontkennend: didn't + infinitief. Have → didn't have."
+        },
+        {
+          "id": "en-a2-ps-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Zij zag hem gisteren niet op school.",
+          "accepted": ["She didn't see him at school yesterday.", "She didn't see him yesterday at school."],
+          "explanation": "See → saw, maar na didn't: see (infinitief). She didn't see him at school yesterday."
+        },
+        {
+          "id": "en-a2-ps-speak1",
+          "type": "speaking",
+          "instruction": "Spreek deze zin na:",
+          "target": "Last weekend I went to the cinema and watched a great film.",
+          "hint": "Vorig weekend — ik ging — bioscoop — ik keek — een geweldige film",
+          "explanation": "Went = past simple van go. Watched = regelmatig past simple. Last weekend = tijdsaanduiding."
+        }
+      ]
+    },
+    {
+      "id": "en-a2-past-continuous",
+      "title": "Past continuous",
+      "description": "Voortdurende acties in het verleden met was/were + -ing.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De past continuous gebruik je voor acties die bezig waren op een bepaald moment in het verleden, of als achtergrond bij een plotselinge actie (past simple)."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Vorm"],
+          "rows": [
+            ["I / he / she / it", "was + werkwoord + -ing"],
+            ["you / we / they", "were + werkwoord + -ing"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Past simple", "Past continuous", "Combinatie"],
+          "rows": [
+            ["She arrived.", "I was reading.", "I was reading when she arrived."],
+            ["The phone rang.", "We were eating.", "We were eating when the phone rang."],
+            ["He fell.", "It was raining.", "It was raining when he fell."]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "When = past continuous + past simple (past continuous = achtergrond, past simple = plotselinge actie). While = two past continuous actions happening at the same time: While I was cooking, she was studying."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I was watching TV at 8 pm.", "right": "Ik was om 20u tv aan het kijken." },
+            { "left": "They were playing football when it started to rain.", "right": "Ze waren aan het voetballen toen het begon te regenen." },
+            { "left": "While she was sleeping, he was working.", "right": "Terwijl zij sliep, was hij aan het werken." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a2-pc-mc1",
+          "type": "multiple_choice",
+          "question": "Vul in: 'She ___ (study) when I called her.'",
+          "options": ["studied", "was studying", "is studying", "were studying"],
+          "correct": 1,
+          "explanation": "Achtergrondactie + plotselinge actie: was studying (past continuous) + called (past simple). She was studying."
+        },
+        {
+          "id": "en-a2-pc-mc2",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct?",
+          "options": [
+            "While I was cooking, she was study.",
+            "While I was cooking, she studied.",
+            "While I was cooking, she was studying.",
+            "While I cooked, she was studying."
+          ],
+          "correct": 2,
+          "explanation": "While + twee gelijktijdige acties → beide past continuous. While I was cooking, she was studying."
+        },
+        {
+          "id": "en-a2-pc-fill1",
+          "type": "fill_blank",
+          "question": "I ___ (walk) to school when I ___ (see) the accident.",
+          "blanks": ["was walking", "saw"],
+          "hint": "achtergrond (past continuous) + plotselinge actie (past simple)",
+          "explanation": "Was walking = past continuous (achtergrond). Saw = past simple (plotselinge actie)."
+        },
+        {
+          "id": "en-a2-pc-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wat deed jij gisteravond om 9 uur?",
+          "accepted": ["What were you doing last night at 9 o'clock?", "What were you doing at 9 o'clock last night?"],
+          "explanation": "Past continuous voor vraag over voortdurende activiteit: What were you doing...?"
+        },
+        {
+          "id": "en-a2-pc-dictation1",
+          "type": "dictation",
+          "audio_text": "They were having dinner when the electricity went off.",
+          "accepted": ["They were having dinner when the electricity went off.", "they were having dinner when the electricity went off"],
+          "hint": "zij waren — aan het eten — toen — de stroom — uitviel",
+          "explanation": "Were having = past continuous. Went off = past simple (plotselinge actie). Electricity went off = de stroom viel uit."
+        }
+      ]
+    },
+    {
+      "id": "en-a2-present-perfect",
+      "title": "Present perfect",
+      "description": "Ervaringen en recent voltooide acties met have/has + past participle.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De present perfect gebruik je voor: 1) ervaringen (ooit meegemaakt?), 2) recent voltooide acties (effect in het heden), 3) acties die begonnen zijn en nog doorgaan. Sleutelwoorden: ever, never, already, yet, just, since, for."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Vorm"],
+          "rows": [
+            ["I / you / we / they", "have + past participle"],
+            ["he / she / it", "has + past participle"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Sleutelwoord", "Gebruik", "Voorbeeld"],
+          "rows": [
+            ["ever", "ooit (vraag)", "Have you ever been to France?"],
+            ["never", "nooit", "I've never eaten sushi."],
+            ["already", "al (bevestigend)", "She has already finished."],
+            ["yet", "al / nog niet (vraag/ontkennend)", "Have you eaten yet? / I haven't eaten yet."],
+            ["just", "net", "He has just arrived."],
+            ["for", "al ... lang (duur)", "I've lived here for 5 years."],
+            ["since", "sinds", "She's worked here since 2020."]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I have visited London three times.", "right": "Ik heb Londen drie keer bezocht." },
+            { "left": "She hasn't finished her homework yet.", "right": "Ze heeft haar huiswerk nog niet afgemaakt." },
+            { "left": "Have you ever tried Belgian chocolate?", "right": "Heb je ooit Belgische chocolade geprobeerd?" },
+            { "left": "He has just called.", "right": "Hij heeft net gebeld." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a2-pp-mc1",
+          "type": "multiple_choice",
+          "question": "Welke zin gebruikt de present perfect correct?",
+          "options": [
+            "I have seen him yesterday.",
+            "I saw him already.",
+            "I have already seen that film.",
+            "I have saw that film."
+          ],
+          "correct": 2,
+          "explanation": "Present perfect + already: I have already seen. 'Yesterday' gaat altijd met past simple. 'Saw' is past simple, niet past participle."
+        },
+        {
+          "id": "en-a2-pp-mc2",
+          "type": "multiple_choice",
+          "question": "Vul in: 'She ___ (never/eat) sushi in her life.'",
+          "options": ["has never ate", "never has eaten", "has never eaten", "never eaten"],
+          "correct": 2,
+          "explanation": "Present perfect + never: has never eaten. Never staat tussen has/have en past participle."
+        },
+        {
+          "id": "en-a2-pp-fill1",
+          "type": "fill_blank",
+          "question": "___ you ever ___ (be) to Japan? — No, I ___ never ___ (travel) to Asia.",
+          "blanks": ["Have", "been", "have", "travelled"],
+          "hint": "Have + subject + ever + past participle",
+          "explanation": "Ever-vraag: Have you ever been? Be → been. Never-ontkennend: I have never travelled."
+        },
+        {
+          "id": "en-a2-pp-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Ze heeft haar sleutels al gevonden.",
+          "accepted": ["She has already found her keys.", "She's already found her keys."],
+          "explanation": "Already + present perfect: has already found. Find → found (onregelmatig past participle)."
+        },
+        {
+          "id": "en-a2-pp-speak1",
+          "type": "speaking",
+          "instruction": "Spreek deze zin na:",
+          "target": "I have never been to Australia but I have always wanted to go.",
+          "hint": "ik heb nooit — geweest — maar — ik heb altijd — gewild",
+          "explanation": "Been = past participle van be. Wanted = regelmatig past participle. Never/always met present perfect."
+        }
+      ]
+    },
+    {
+      "id": "en-a2-comparatives",
+      "title": "Comparatives & superlatives",
+      "description": "Dingen vergelijken: groter dan, de grootste, even groot als.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Om dingen te vergelijken gebruik je comparatieven (groter dan) en superlatieven (de grootste). De vorm hangt af van het aantal lettergrepen."
+        },
+        {
+          "type": "table",
+          "headers": ["Type", "Comparatief", "Superlatief", "Voorbeeld"],
+          "rows": [
+            ["1 lettergreep", "adj + -er", "the + adj + -est", "tall → taller → the tallest"],
+            ["1 lettergreep op consonant", "dubbel + -er/-est", "—", "big → bigger → the biggest"],
+            ["2+ lettergrepen", "more + adj", "the most + adj", "beautiful → more beautiful → the most beautiful"],
+            ["uitzondering -y", "adj -y + -ier/-iest", "—", "happy → happier → the happiest"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Onregelmatig", "Comparatief", "Superlatief"],
+          "rows": [
+            ["good", "better", "the best"],
+            ["bad", "worse", "the worst"],
+            ["far", "further/farther", "the furthest/farthest"],
+            ["little", "less", "the least"],
+            ["many/much", "more", "the most"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Structuur", "Voorbeeld"],
+          "rows": [
+            ["A is adj-er than B", "Belgium is smaller than France."],
+            ["A is the adj-est (of all)", "The Sahara is the hottest desert."],
+            ["A is as adj as B", "My brother is as tall as me."],
+            ["A is not as adj as B", "This film is not as good as the book."]
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a2-comp-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'groter dan' voor 'big'?",
+          "options": ["more big than", "bigger than", "biggest than", "biger than"],
+          "correct": 1,
+          "explanation": "Big = 1 lettergreep op consonant → dubbele medeklinker + -er: bigger. Big → bigger than."
+        },
+        {
+          "id": "en-a2-comp-mc2",
+          "type": "multiple_choice",
+          "question": "Vul in: 'That was ___ film I have ever seen!' (good)",
+          "options": ["the better", "the most good", "the best", "the goodest"],
+          "correct": 2,
+          "explanation": "Good heeft een onregelmatige superlatief: the best. Niet: the most good / the goodest."
+        },
+        {
+          "id": "en-a2-comp-fill1",
+          "type": "fill_blank",
+          "question": "French is ___ (difficult) than English for me, but maths is ___ (easy) subject.",
+          "blanks": ["more difficult", "the easiest"],
+          "hint": "more + 2+ lettergrepen / -y → -iest",
+          "explanation": "Difficult = 3 lettergrepen → more difficult. Easy → easiest → the easiest."
+        },
+        {
+          "id": "en-a2-comp-match1",
+          "type": "matching",
+          "instruction": "Koppel het bijvoeglijk naamwoord aan de superlatief.",
+          "pairs": [
+            { "left": "good", "right": "the best" },
+            { "left": "bad", "right": "the worst" },
+            { "left": "happy", "right": "the happiest" },
+            { "left": "beautiful", "right": "the most beautiful" },
+            { "left": "far", "right": "the furthest" }
+          ]
+        },
+        {
+          "id": "en-a2-comp-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Brussel is kleiner dan Parijs maar het is even interessant.",
+          "accepted": ["Brussels is smaller than Paris but it is as interesting.", "Brussels is smaller than Paris but it's as interesting.", "Brussels is smaller than Paris but it is as interesting as Paris."],
+          "explanation": "Smaller = comparatief van small. As interesting (as) = even interessant. Brussels is smaller than Paris."
+        }
+      ]
+    },
+    {
+      "id": "en-a2-modals",
+      "title": "Modal verbs",
+      "description": "Can, could, must, should, have to, may — voor verplichting, mogelijkheid en advies.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Modale werkwoorden geven een extra betekenis aan het hoofdwerkwoord: mogelijkheid, verplichting, advies of toestemming. Ze worden ALTIJD gevolgd door een infinitief zonder 'to' (behalve 'have to')."
+        },
+        {
+          "type": "table",
+          "headers": ["Modal", "Gebruik", "Voorbeeld"],
+          "rows": [
+            ["can", "kunnen / toestemming", "I can swim. Can I go?"],
+            ["can't", "niet kunnen / verbod", "You can't park here."],
+            ["could", "kon / beleefd verzoek", "Could you help me?"],
+            ["must", "verplichting (intern)", "I must study harder."],
+            ["mustn't", "verbod", "You mustn't smoke here."],
+            ["have to", "verplichting (extern)", "I have to wear a uniform."],
+            ["don't have to", "niet verplicht", "You don't have to come."],
+            ["should", "advies / zou moeten", "You should eat more vegetables."],
+            ["shouldn't", "zou niet moeten", "You shouldn't eat so much sugar."],
+            ["may / might", "misschien", "It may rain tomorrow."]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Must vs. have to: 'must' gebruik je voor persoonlijke verplichting (je vindt het zelf belangrijk), 'have to' voor externe verplichting (de regels/omstandigheden vereisen het). Don't have to ≠ mustn't! Don't have to = niet verplicht. Mustn't = verboden."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "You should study more.", "right": "Je zou meer moeten studeren." },
+            { "left": "She has to wear a uniform at school.", "right": "Ze moet een uniform dragen op school." },
+            { "left": "You mustn't use your phone during the exam.", "right": "Je mag je telefoon niet gebruiken tijdens het examen." },
+            { "left": "Could you speak more slowly, please?", "right": "Kunt u wat langzamer spreken, alstublieft?" }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a2-mod-mc1",
+          "type": "multiple_choice",
+          "question": "Wat is het verschil tussen 'mustn't' en 'don't have to'?",
+          "options": [
+            "Geen verschil, ze betekenen hetzelfde.",
+            "Mustn't = verboden. Don't have to = niet verplicht.",
+            "Mustn't = niet verplicht. Don't have to = verboden.",
+            "Beide betekenen 'zou niet moeten'."
+          ],
+          "correct": 1,
+          "explanation": "Mustn't = je mag het echt niet doen (verbod). Don't have to = het hoeft niet, maar je mag het wel."
+        },
+        {
+          "id": "en-a2-mod-mc2",
+          "type": "multiple_choice",
+          "question": "Kies het juiste modal: 'You ___ eat so much junk food — it's bad for you.'",
+          "options": ["must", "can", "shouldn't", "might"],
+          "correct": 2,
+          "explanation": "Shouldn't = zou niet moeten (advies). Je adviseert iemand om iets te vermijden."
+        },
+        {
+          "id": "en-a2-mod-fill1",
+          "type": "fill_blank",
+          "question": "Students ___ wear a uniform but they ___ use their phone in class.",
+          "blanks": ["have to", "can't"],
+          "hint": "externe verplichting / verbod",
+          "explanation": "Have to = externe verplichting (schoolregels). Can't = verbod (niet toegestaan)."
+        },
+        {
+          "id": "en-a2-mod-match1",
+          "type": "matching",
+          "instruction": "Koppel het modal aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "should", "right": "zou moeten (advies)" },
+            { "left": "must", "right": "moet (verplichting)" },
+            { "left": "might", "right": "misschien" },
+            { "left": "don't have to", "right": "hoeft niet" },
+            { "left": "mustn't", "right": "mag niet" }
+          ]
+        },
+        {
+          "id": "en-a2-mod-speak1",
+          "type": "speaking",
+          "instruction": "Spreek dit advies na:",
+          "target": "You should get more sleep and you shouldn't drink too much coffee.",
+          "hint": "je zou moeten — meer slaap — en — je zou niet moeten — te veel koffie drinken",
+          "explanation": "Should = positief advies. Shouldn't = negatief advies. Get sleep = slapen. Drink coffee = koffie drinken."
+        }
+      ]
+    },
+    {
+      "id": "en-a2-future",
+      "title": "Future forms",
+      "description": "Will, going to en present continuous voor de toekomst — wanneer gebruik je welke?",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Engels zijn er drie hoofdmanieren om over de toekomst te praten. Elke vorm heeft een specifiek gebruik."
+        },
+        {
+          "type": "table",
+          "headers": ["Vorm", "Gebruik", "Voorbeeld"],
+          "rows": [
+            ["will + infinitief", "spontane beslissing / belofte / voorspelling", "I'll help you. It will rain."],
+            ["am/is/are going to + inf.", "plan al gemaakt / bewijs zichtbaar", "I'm going to study medicine. Look — it's going to rain!"],
+            ["present continuous", "vaste afspraak in de toekomst", "I'm meeting her tomorrow at 3."]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Kies will voor spontane beslissingen (op het moment zelf). Kies going to voor plannen die al gemaakt zijn. Beide zijn vaak uitwisselbaar in de spreektaal, maar op examens is het onderscheid belangrijk."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I'll call you tonight! (spontaan)", "right": "Ik bel je vanavond! (beslissing nu)" },
+            { "left": "I'm going to study in Paris next year. (plan)", "right": "Ik ga volgend jaar in Parijs studeren. (plan gemaakt)" },
+            { "left": "She's flying to London tomorrow. (afspraak)", "right": "Ze vliegt morgen naar Londen. (ticket al geboekt)" },
+            { "left": "Look at those clouds — it's going to rain! (bewijs)", "right": "Kijk naar die wolken — het gaat regenen! (bewijs zichtbaar)" }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a2-fut-mc1",
+          "type": "multiple_choice",
+          "question": "Je vriend vraagt: 'Can someone help me?' Je besluit op dat moment: wat zeg je?",
+          "options": ["I'm going to help you.", "I help you.", "I'll help you.", "I'm helping you."],
+          "correct": 2,
+          "explanation": "Will = spontane beslissing op het moment zelf. I'll help you = ik zal je helpen (nu beslist)."
+        },
+        {
+          "id": "en-a2-fut-mc2",
+          "type": "multiple_choice",
+          "question": "Je hebt al een ticket geboekt naar Rome. Wat zeg je?",
+          "options": ["I will fly to Rome next week.", "I fly to Rome next week.", "I'm flying to Rome next week.", "Both a and c are correct."],
+          "correct": 3,
+          "explanation": "Zowel will als present continuous kunnen voor vaste toekomstplannen. In de praktijk zijn ze vaak uitwisselbaar voor geplande reizen."
+        },
+        {
+          "id": "en-a2-fut-fill1",
+          "type": "fill_blank",
+          "question": "Look at that car — it ___ (crash)! And nobody ___ (help) — I ___ (call) the police!",
+          "blanks": ["is going to crash", "is helping", "will call"],
+          "hint": "zichtbaar bewijs / going to / spontane beslissing / will",
+          "explanation": "Zichtbaar bewijs → going to crash. Nobody is helping = aanwezig. Spontane beslissing → will call."
+        },
+        {
+          "id": "en-a2-fut-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Ik ga volgend jaar rechten studeren. Ik heb mij al ingeschreven.",
+          "accepted": ["I'm going to study law next year. I have already enrolled.", "I am going to study law next year. I have already enrolled."],
+          "explanation": "Plan al gemaakt → going to. I'm going to study law. Already enrolled = present perfect."
+        },
+        {
+          "id": "en-a2-fut-dictation1",
+          "type": "dictation",
+          "audio_text": "I'm going to travel around Europe next summer with my friends.",
+          "accepted": ["I'm going to travel around Europe next summer with my friends.", "I am going to travel around Europe next summer with my friends."],
+          "hint": "ik ga — reizen — door Europa — volgende zomer — met mijn vrienden",
+          "explanation": "Going to voor een plan. Travel around Europe = door Europa reizen. Next summer = volgende zomer."
+        }
+      ]
+    }
+  ]
+}

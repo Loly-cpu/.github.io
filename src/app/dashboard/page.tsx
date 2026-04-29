@@ -13,7 +13,9 @@ import Navigation from '@/components/Navigation'
 const TOPIC_COUNTS: Partial<Record<string, number>> = {
   'fr-a0': 6,
   'fr-a1': 8,
+  'fr-a2': 6,
   'en-a1': 4,
+  'en-a2': 6,
 }
 
 export default function DashboardPage() {

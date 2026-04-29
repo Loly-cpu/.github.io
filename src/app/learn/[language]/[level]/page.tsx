@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase, getProgress } from '@/lib/supabase'
-import { getLevelContent, LEVEL_LABELS, LANGUAGE_LABELS, AVAILABLE_LEVELS } from '@/lib/content'
+import { getLevelContent, AVAILABLE_LEVELS, LEVEL_LABELS, LANGUAGE_LABELS } from '@/lib/content'
 import type { LevelContent, TopicProgress, Language, Level } from '@/lib/types'
-import Navigation from '@/components/Navigation'
+import CourseSidebar from '@/components/CourseSidebar'
 
 export default function LevelPage() {
   const params = useParams()
@@ -16,17 +16,22 @@ export default function LevelPage() {
 
   const [content, setContent] = useState<LevelContent | null>(null)
   const [progress, setProgress] = useState<TopicProgress[]>([])
+  const [levelContent, setLevelContent] = useState<Partial<Record<Level, LevelContent>>>({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) { router.replace('/auth/login'); return }
-      const [lvl, prog] = await Promise.all([
-        getLevelContent(language, level),
-        getProgress(data.session.user.id).catch(() => []),
+      const levels = AVAILABLE_LEVELS[language] ?? []
+      const [prog, ...contents] = await Promise.all([
+        getProgress(data.session.user.id).catch(() => [] as TopicProgress[]),
+        ...levels.map((l) => getLevelContent(language, l)),
       ])
-      setContent(lvl)
       setProgress(prog)
+      const contentMap: Partial<Record<Level, LevelContent>> = {}
+      levels.forEach((l, i) => { if (contents[i]) contentMap[l] = contents[i]! })
+      setLevelContent(contentMap)
+      setContent(contentMap[level] ?? null)
       setLoading(false)
     })
   }, [language, level, router])
@@ -39,106 +44,101 @@ export default function LevelPage() {
     )
   }
 
-  if (!content) {
-    return (
-      <>
-        <Navigation backHref="/dashboard" backLabel="Dashboard" />
-        <main className="max-w-4xl mx-auto px-4 py-8">
-          <p className="text-gray-500">Niveau niet gevonden.</p>
-        </main>
-      </>
-    )
-  }
-
   const levelProgress = progress.filter((p) => p.language === language && p.level === level)
   const completedTopics = levelProgress.filter((p) => p.completed)
-  const allDone = content.topics.length > 0 && completedTopics.length >= content.topics.length
+  const allDone = content ? completedTopics.length >= content.topics.length && content.topics.length > 0 : false
   const totalScore = completedTopics.reduce((s, p) => s + (p.score ?? 0), 0)
   const totalMax = completedTopics.reduce((s, p) => s + (p.max_score ?? 0), 0)
   const avgPct = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : 0
   const readyForNext = allDone && avgPct >= 70
-
   const availableLevels = AVAILABLE_LEVELS[language] ?? []
-  const currentIdx = availableLevels.indexOf(level)
-  const nextLevel: Level | null = currentIdx >= 0 && currentIdx < availableLevels.length - 1
-    ? availableLevels[currentIdx + 1]
-    : null
+  const nextLevel: Level | null = (() => {
+    const idx = availableLevels.indexOf(level)
+    return idx >= 0 && idx < availableLevels.length - 1 ? availableLevels[idx + 1] : null
+  })()
 
   return (
-    <>
-      <Navigation
-        backHref="/dashboard"
-        backLabel="Dashboard"
-        title={`${LANGUAGE_LABELS[language]} — ${level.toUpperCase().replace('BPLUS', 'B+')}`}
-      />
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        <div>
-          <span className="tag-level mb-2">
-            {level.toUpperCase().replace('BPLUS', 'B+')}
-          </span>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">{content.title}</h1>
-          <p className="text-gray-500 mt-1">{content.description}</p>
+    <div className="flex min-h-screen bg-cream">
+      <CourseSidebar language={language} currentLevel={level} progress={progress} levelContent={levelContent} />
+
+      <main className="flex-1 min-w-0 md:pt-0 pt-14">
+        <div className="bg-white border-b border-warm-gray px-6 py-3 flex items-center gap-3 text-sm text-gray-500">
+          <Link href="/dashboard" className="hover:text-primary-600 transition-colors">Dashboard</Link>
+          <span>›</span>
+          <span className="font-semibold text-gray-700">{LANGUAGE_LABELS[language]}</span>
+          <span>›</span>
+          <span className="text-gray-900 font-medium">{level.toUpperCase().replace('BPLUS', 'B+')}</span>
         </div>
 
-        <div className="space-y-3">
-          {content.topics.map((topic, i) => {
-            const tp = progress.find(
-              (p) => p.language === language && p.level === level && p.topic_id === topic.id
-            )
-            return (
-              <Link
-                key={topic.id}
-                href={`/learn/${language}/${level}/${topic.id}`}
-                className="card flex items-center gap-4 hover:shadow-md transition-shadow group"
-              >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
-                  tp?.completed ? 'bg-green-100 text-green-700' : 'bg-primary-100 text-primary-700'
-                }`}>
-                  {tp?.completed ? '✓' : i + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">
-                    {topic.title}
+        <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+          {content ? (
+            <>
+              <div>
+                <span className="tag-level mb-2">{level.toUpperCase().replace('BPLUS', 'B+')}</span>
+                <h1 className="text-2xl font-bold text-gray-900 mt-2">{content.title}</h1>
+                <p className="text-gray-500 mt-1">{content.description}</p>
+              </div>
+
+              <div className="space-y-3">
+                {content.topics.map((topic, i) => {
+                  const tp = progress.find(
+                    (p) => p.language === language && p.level === level && p.topic_id === topic.id
+                  )
+                  return (
+                    <Link
+                      key={topic.id}
+                      href={`/learn/${language}/${level}/${topic.id}`}
+                      className="card flex items-center gap-4 hover:shadow-md transition-shadow group"
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
+                        tp?.completed ? 'bg-green-100 text-green-700' : 'bg-primary-100 text-primary-700'
+                      }`}>
+                        {tp?.completed ? '✓' : i + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors">
+                          {topic.title}
+                        </h3>
+                        <p className="text-gray-500 text-sm truncate">{topic.description}</p>
+                      </div>
+                      {tp?.completed && tp.score !== undefined && (
+                        <span className="text-sm font-medium text-green-600 flex-shrink-0">
+                          {tp.score}/{tp.max_score}
+                        </span>
+                      )}
+                      <span className="text-gray-300 group-hover:text-primary-400 transition-colors flex-shrink-0">→</span>
+                    </Link>
+                  )
+                })}
+              </div>
+
+              {readyForNext && nextLevel && (
+                <div className="card bg-green-50 border-2 border-green-300 text-center space-y-3 py-6">
+                  <div className="text-3xl">🏆</div>
+                  <h3 className="font-bold text-green-800 text-lg">
+                    Uitstekend! Gemiddeld {avgPct}% op {level.toUpperCase().replace('BPLUS', 'B+')}.
                   </h3>
-                  <p className="text-gray-500 text-sm truncate">{topic.description}</p>
+                  <p className="text-green-700 text-sm">
+                    Je bent klaar voor {LEVEL_LABELS[nextLevel]}.
+                  </p>
+                  <Link href={`/learn/${language}/${nextLevel}`} className="btn-primary inline-block px-6">
+                    Ga naar {nextLevel.toUpperCase().replace('BPLUS', 'B+')} →
+                  </Link>
                 </div>
-                {tp?.completed && tp.score !== undefined && (
-                  <span className="text-sm font-medium text-green-600 flex-shrink-0">
-                    {tp.score}/{tp.max_score}
-                  </span>
-                )}
-                <span className="text-gray-300 group-hover:text-primary-400 transition-colors flex-shrink-0">→</span>
-              </Link>
-            )
-          })}
+              )}
+
+              {allDone && !readyForNext && (
+                <div className="card bg-amber-50 border border-amber-200 text-center space-y-2 py-5">
+                  <p className="text-amber-800 font-semibold">Alle topics afgerond (gemiddeld {avgPct}%).</p>
+                  <p className="text-amber-700 text-sm">Oefen nog eens om je score te verbeteren.</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-500">Niveau niet gevonden.</p>
+          )}
         </div>
-
-        {readyForNext && nextLevel && (
-          <div className="card bg-green-50 border-2 border-green-300 text-center space-y-3 py-6">
-            <div className="text-3xl">🏆</div>
-            <h3 className="font-bold text-green-800 text-lg">
-              Uitstekend! Je scoort gemiddeld {avgPct}% op {level.toUpperCase().replace('BPLUS', 'B+')}.
-            </h3>
-            <p className="text-green-700 text-sm">
-              Je bent klaar om een stapje hoger te gaan. Probeer nu {LEVEL_LABELS[nextLevel]}.
-            </p>
-            <Link href={`/learn/${language}/${nextLevel}`} className="btn-primary inline-block px-6">
-              Ga naar {nextLevel.toUpperCase().replace('BPLUS', 'B+')} →
-            </Link>
-          </div>
-        )}
-
-        {allDone && !readyForNext && (
-          <div className="card bg-amber-50 border border-amber-200 text-center space-y-2 py-5">
-            <p className="text-amber-800 font-semibold">
-              Je hebt alle topics afgerond (gemiddeld {avgPct}%).
-            </p>
-            <p className="text-amber-700 text-sm">
-              Oefen de topics nog eens om je score te verbeteren voor je naar het volgende niveau gaat.
-            </p>
-          </div>
-        )}
       </main>
-    </>
+    </div>
   )
 }

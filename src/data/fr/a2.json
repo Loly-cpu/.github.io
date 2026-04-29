@@ -1,0 +1,608 @@
+{
+  "language": "fr",
+  "level": "a2",
+  "title": "Frans A2 — Elementair",
+  "description": "Verleden tijden, je weg vinden, bestellen en mensen beschrijven — de basis voor echte communicatie.",
+  "topics": [
+    {
+      "id": "fr-a2-passe-compose-avoir",
+      "title": "Passé composé met avoir",
+      "description": "Hoe je verleden gebeurtenissen beschrijft met avoir + participé passé.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De passé composé is de meest gebruikte verleden tijd in het Frans voor afgeronde handelingen. Je vormt hem met het hulpwerkwoord avoir (of être) + het participé passé (voltooid deelwoord)."
+        },
+        {
+          "type": "table",
+          "headers": ["Stap", "Regel", "Voorbeeld"],
+          "rows": [
+            ["1. Neem avoir", "vervoeg avoir in de tegenwoordige tijd", "j'ai / tu as / il a..."],
+            ["2. Participé passé", "-er → -é / -ir → -i / -re → -u", "mangé / fini / vendu"],
+            ["3. Combineer", "avoir + participé passé", "j'ai mangé, tu as fini"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Infinitief", "Participé passé", "Voorbeeld"],
+          "rows": [
+            ["parler", "parlé", "J'ai parlé avec elle."],
+            ["manger", "mangé", "Il a mangé une pizza."],
+            ["finir", "fini", "Nous avons fini les devoirs."],
+            ["vendre", "vendu", "Tu as vendu ta voiture?"],
+            ["prendre", "pris", "Elle a pris le bus."],
+            ["faire", "fait", "Ils ont fait du sport."],
+            ["voir", "vu", "J'ai vu un film."],
+            ["avoir", "eu", "On a eu de la chance."],
+            ["être", "été", "C'a été difficile."],
+            ["venir", "venu", "Il a venu? (fout!) → il est venu"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Tijdsaanduidingen voor de passé composé: hier (gisteren), la semaine dernière (vorige week), l'année dernière (vorig jaar), il y a (geleden): il y a deux jours = twee dagen geleden."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "J'ai regardé la télé hier soir.", "right": "Ik heb gisteravond tv gekeken." },
+            { "left": "Elle a pris un café ce matin.", "right": "Ze heeft vanochtend een koffie genomen." },
+            { "left": "Nous avons fait les courses samedi.", "right": "Wij zijn zaterdag boodschappen gedaan." },
+            { "left": "Ils ont fini le projet il y a trois jours.", "right": "Ze hebben het project drie dagen geleden afgerond." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a2-pc-av-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Ik heb gegeten' in het Frans?",
+          "options": ["Je mangeais.", "J'ai mangé.", "Je mange.", "J'avais mangé."],
+          "correct": 1,
+          "explanation": "J'ai mangé = passé composé: avoir (j'ai) + participé passé van manger (mangé)."
+        },
+        {
+          "id": "fr-a2-pc-av-mc2",
+          "type": "multiple_choice",
+          "question": "Wat is het participé passé van 'finir'?",
+          "options": ["finré", "finu", "fini", "finait"],
+          "correct": 2,
+          "explanation": "-ir werkwoorden: participé passé = stam + i. Finir → fini."
+        },
+        {
+          "id": "fr-a2-pc-av-mc3",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct?",
+          "options": ["Il a prendu le train.", "Il a pris le train.", "Il a prendre le train.", "Il est pris le train."],
+          "correct": 1,
+          "explanation": "Prendre heeft een onregelmatig participé passé: pris. Il a pris le train."
+        },
+        {
+          "id": "fr-a2-pc-av-fill1",
+          "type": "fill_blank",
+          "question": "Hier, j'___ (regarder) un film et nous ___ (manger) une pizza.",
+          "blanks": ["ai regardé", "avons mangé"],
+          "hint": "avoir vervoegd + participé passé",
+          "explanation": "Regarder → regardé. Manger → mangé. Nous avons = wij hebben."
+        },
+        {
+          "id": "fr-a2-pc-av-fill2",
+          "type": "fill_blank",
+          "question": "Vous ___ (faire) du sport ce matin? — Oui, et tu ___ (voir) les résultats?",
+          "blanks": ["avez fait", "as vu"],
+          "hint": "faire → fait / voir → vu",
+          "explanation": "Faire → fait (onregelmatig). Voir → vu (onregelmatig). Vous avez fait / tu as vu."
+        },
+        {
+          "id": "fr-a2-pc-av-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wij hebben vorige week een film gezien.",
+          "accepted": ["Nous avons vu un film la semaine dernière.", "On a vu un film la semaine dernière."],
+          "explanation": "Voir → vu. La semaine dernière = vorige week. Nous avons vu = wij hebben gezien."
+        },
+        {
+          "id": "fr-a2-pc-av-speak1",
+          "type": "speaking",
+          "instruction": "Spreek deze zin na in het Frans:",
+          "target": "Hier soir, j'ai regardé un film et j'ai mangé une pizza.",
+          "hint": "gisteravond — ik heb — gekeken — gegeten",
+          "explanation": "Hier soir = gisteravond. J'ai regardé = ik heb gekeken. J'ai mangé = ik heb gegeten."
+        }
+      ]
+    },
+    {
+      "id": "fr-a2-passe-compose-etre",
+      "title": "Passé composé met être",
+      "description": "Bewegings- en reflexieve werkwoorden die être als hulpwerkwoord gebruiken.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Een groep werkwoorden vormt de passé composé met être in plaats van avoir. Dit zijn voornamelijk bewegingswerkwoorden en reflexieve werkwoorden. Het participé passé past zich dan aan het onderwerp aan (geslacht en getal)."
+        },
+        {
+          "type": "table",
+          "headers": ["Werkwoord", "Participé passé", "Betekenis"],
+          "rows": [
+            ["aller", "allé(e)", "gaan"],
+            ["venir", "venu(e)", "komen"],
+            ["arriver", "arrivé(e)", "aankomen"],
+            ["partir", "parti(e)", "vertrekken"],
+            ["entrer", "entré(e)", "binnenkomen"],
+            ["sortir", "sorti(e)", "uitgaan"],
+            ["monter", "monté(e)", "opgaan"],
+            ["descendre", "descendu(e)", "afgaan"],
+            ["naître", "né(e)", "geboren worden"],
+            ["mourir", "mort(e)", "sterven"],
+            ["rester", "resté(e)", "blijven"],
+            ["tomber", "tombé(e)", "vallen"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Ezelsbruggetje: VANDERTRAMP (of DR MRS VANDERTRAMP) voor de être-werkwoorden. Het participé passé krijgt een extra -e voor vrouwelijk en -s voor meervoud: il est allé / elle est allée / ils sont allés / elles sont allées."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Il est allé à Paris.", "right": "Hij is naar Parijs gegaan." },
+            { "left": "Elle est venue hier.", "right": "Ze is gisteren gekomen." },
+            { "left": "Ils sont partis tôt.", "right": "Ze zijn vroeg vertrokken." },
+            { "left": "Nous sommes arrivés à l'heure.", "right": "Wij zijn op tijd aangekomen." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a2-pc-et-mc1",
+          "type": "multiple_choice",
+          "question": "Welk hulpwerkwoord gebruik je bij 'aller' in de passé composé?",
+          "options": ["avoir", "être", "faire", "aller"],
+          "correct": 1,
+          "explanation": "Aller hoort bij de être-groep. Elle est allée (niet: elle a allé)."
+        },
+        {
+          "id": "fr-a2-pc-et-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Ze (v) is vertrokken'?",
+          "options": ["Elle a parti.", "Elle est partie.", "Elle est parti.", "Elle a partie."],
+          "correct": 1,
+          "explanation": "Partir + être. Vrouwelijk onderwerp → participé passé krijgt extra -e: partie."
+        },
+        {
+          "id": "fr-a2-pc-et-mc3",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct?",
+          "options": ["Ils ont venus à pied.", "Ils sont venus à pied.", "Ils est venus à pied.", "Ils sont venu à pied."],
+          "correct": 1,
+          "explanation": "Venir + être. Meervoud mannelijk → venu + s = venus. Ils sont venus."
+        },
+        {
+          "id": "fr-a2-pc-et-fill1",
+          "type": "fill_blank",
+          "question": "Marie ___ (naître) en 2005 et ___ (grandir) à Liège.",
+          "blanks": ["est née", "a grandi"],
+          "hint": "naître = être-werkwoord / grandir = avoir-werkwoord",
+          "explanation": "Naître + être → elle est née. Grandir + avoir → elle a grandi."
+        },
+        {
+          "id": "fr-a2-pc-et-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Mijn ouders zijn gisteren aangekomen.",
+          "accepted": ["Mes parents sont arrivés hier.", "Mes parents sont arrivées hier."],
+          "explanation": "Arriver + être. Parents is mannelijk meervoud → arrivés (met s). Mes parents sont arrivés hier."
+        },
+        {
+          "id": "fr-a2-pc-et-match1",
+          "type": "matching",
+          "instruction": "Koppel het werkwoord aan het juiste participé passé (être-groep).",
+          "pairs": [
+            { "left": "aller", "right": "allé(e)" },
+            { "left": "venir", "right": "venu(e)" },
+            { "left": "partir", "right": "parti(e)" },
+            { "left": "rester", "right": "resté(e)" },
+            { "left": "tomber", "right": "tombé(e)" }
+          ]
+        },
+        {
+          "id": "fr-a2-pc-et-dictation1",
+          "type": "dictation",
+          "audio_text": "Elle est arrivée en retard et elle est restée jusqu'à la fin.",
+          "accepted": ["Elle est arrivée en retard et elle est restée jusqu'à la fin.", "elle est arrivée en retard et elle est restée jusqu'à la fin"],
+          "hint": "zijn + participé passé (met -e voor vrouwelijk)",
+          "explanation": "Arriver + être → arrivée. Rester + être → restée. Beide met -e omdat het onderwerp vrouwelijk is."
+        }
+      ]
+    },
+    {
+      "id": "fr-a2-imparfait",
+      "title": "L'imparfait",
+      "description": "De onvoltooid verleden tijd voor gewoonten, beschrijvingen en voortdurende situaties in het verleden.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De imparfait gebruik je voor: 1) gewoonten in het verleden (wat je vroeger altijd deed), 2) beschrijvingen in het verleden (hoe iets was), 3) voortdurende acties (wat er bezig was toen iets anders gebeurde)."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Uitgang", "parler (ik sprak)", "finir (ik eindigde)"],
+          "rows": [
+            ["je", "-ais", "je parlais", "je finissais"],
+            ["tu", "-ais", "tu parlais", "tu finissais"],
+            ["il/elle", "-ait", "il parlait", "il finissait"],
+            ["nous", "-ions", "nous parlions", "nous finissions"],
+            ["vous", "-iez", "vous parliez", "vous finissiez"],
+            ["ils/elles", "-aient", "ils parlaient", "ils finissaient"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Vorming: neem de nous-vorm van de présent, verwijder -ons, voeg de imparfait-uitgang toe. Voorbeeld: nous parlons → parl + ais = je parlais. Uitzondering: être → j'étais (stam: ét-)."
+        },
+        {
+          "type": "table",
+          "headers": ["Passé composé", "Imparfait", "Verschil"],
+          "rows": [
+            ["J'ai mangé une pomme.", "Je mangeais souvent des pommes.", "eenmalig vs. gewoonte"],
+            ["Il a plu hier.", "Il pleuvait tout le temps.", "specifiek vs. beschrijving"],
+            ["Elle est entrée.", "Je lisais quand elle est entrée.", "actie vs. achtergrond"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Quand j'étais petit, j'habitais à Bruxelles.", "right": "Toen ik klein was, woonde ik in Brussel." },
+            { "left": "Il faisait beau et les enfants jouaient.", "right": "Het was mooi weer en de kinderen speelden." },
+            { "left": "Je lisais quand le téléphone a sonné.", "right": "Ik was aan het lezen toen de telefoon ging." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a2-imp-mc1",
+          "type": "multiple_choice",
+          "question": "Wanneer gebruik je de imparfait?",
+          "options": [
+            "Voor een afgeronde actie in het verleden.",
+            "Voor een gewoonte of beschrijving in het verleden.",
+            "Voor de toekomst.",
+            "Voor een opdracht."
+          ],
+          "correct": 1,
+          "explanation": "Imparfait = gewoonten, beschrijvingen, voortdurende situaties. Afgeronde acties = passé composé."
+        },
+        {
+          "id": "fr-a2-imp-mc2",
+          "type": "multiple_choice",
+          "question": "Vul in: 'Quand j'___ (être) enfant, je ___ (jouer) au foot.'",
+          "options": ["étais / jouais", "ai été / ai joué", "suis / joue", "étais / ai joué"],
+          "correct": 0,
+          "explanation": "Beide acties zijn gewoonten in het verleden → beide imparfait. Être → étais, jouer → jouais."
+        },
+        {
+          "id": "fr-a2-imp-fill1",
+          "type": "fill_blank",
+          "question": "Il ___ (faire) froid et les enfants ___ (porter) des manteaux.",
+          "blanks": ["faisait", "portaient"],
+          "hint": "beschrijving van weersomstandigheden → imparfait",
+          "explanation": "Faire froid = het was koud (beschrijving). Porter = dragen. Beide imparfait: faisait, portaient."
+        },
+        {
+          "id": "fr-a2-imp-fill2",
+          "type": "fill_blank",
+          "question": "Je ___ (lire) quand Marie ___ (arriver).",
+          "blanks": ["lisais", "est arrivée"],
+          "hint": "voortdurende actie (imparfait) + afgeronde actie (passé composé)",
+          "explanation": "Lire = voortdurend bezig → imparfait: lisais. Arriver = plotselinge actie → passé composé: est arrivée."
+        },
+        {
+          "id": "fr-a2-imp-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Vroeger woonde ik in Gent en ging ik elke dag naar school.",
+          "accepted": ["Avant, j'habitais à Gand et j'allais à l'école tous les jours.", "Autrefois, j'habitais à Gand et j'allais à l'école tous les jours."],
+          "explanation": "Avant/autrefois = vroeger. Habiter → habitais. Aller → allais. Beide imparfait (gewoonten)."
+        },
+        {
+          "id": "fr-a2-imp-speak1",
+          "type": "speaking",
+          "instruction": "Spreek deze zin na:",
+          "target": "Quand j'étais petit, j'habitais à Bruges et je jouais souvent au foot.",
+          "hint": "Toen ik klein was — ik woonde — ik speelde",
+          "explanation": "Drie imparfait-vormen: étais (être), habitais (habiter), jouais (jouer). Allemaal gewoonten."
+        }
+      ]
+    },
+    {
+      "id": "fr-a2-ville-directions",
+      "title": "La ville — se repérer",
+      "description": "De weg vragen en beschrijven in de stad: preposities, gebouwen en openbaar vervoer.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Als je in een Franstalige stad bent, moet je de weg kunnen vragen en begrijpen. Leer de gebouwen, de preposities van plaats en de richtingsinstructies."
+        },
+        {
+          "type": "table",
+          "headers": ["Gebouw / Plaats", "Frans"],
+          "rows": [
+            ["het station", "la gare"],
+            ["het ziekenhuis", "l'hôpital"],
+            ["de apotheek", "la pharmacie"],
+            ["de supermarkt", "le supermarché"],
+            ["de bibliotheek", "la bibliothèque"],
+            ["het stadhuis", "la mairie"],
+            ["de kerk", "l'église"],
+            ["het park", "le parc"],
+            ["het postkantoor", "la poste"],
+            ["het hotel", "l'hôtel"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Richting", "Frans"],
+          "rows": [
+            ["rechtdoor gaan", "aller tout droit"],
+            ["links afslaan", "tourner à gauche"],
+            ["rechts afslaan", "tourner à droite"],
+            ["aan het einde van", "au bout de"],
+            ["tegenover", "en face de"],
+            ["naast", "à côté de"],
+            ["vlakbij", "près de"],
+            ["ver van", "loin de"],
+            ["op de hoek van", "au coin de"],
+            ["de eerste straat links", "la première rue à gauche"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Excusez-moi, où est la gare?", "right": "Excuseer mij, waar is het station?" },
+            { "left": "Tournez à gauche au feu rouge.", "right": "Sla links af bij het rode licht." },
+            { "left": "La pharmacie est en face de la mairie.", "right": "De apotheek is tegenover het stadhuis." },
+            { "left": "C'est tout droit, puis la première rue à droite.", "right": "Rechtdoor, dan de eerste straat rechts." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a2-ville-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'links afslaan' in het Frans?",
+          "options": ["aller tout droit", "tourner à droite", "tourner à gauche", "au coin de"],
+          "correct": 2,
+          "explanation": "Tourner à gauche = links afslaan. Tout droit = rechtdoor. À droite = rechts."
+        },
+        {
+          "id": "fr-a2-ville-mc2",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'en face de'?",
+          "options": ["naast", "vlakbij", "tegenover", "aan het einde van"],
+          "correct": 2,
+          "explanation": "En face de = tegenover. À côté de = naast. Près de = vlakbij. Au bout de = aan het einde van."
+        },
+        {
+          "id": "fr-a2-ville-match1",
+          "type": "matching",
+          "instruction": "Koppel het gebouw aan de Franse vertaling.",
+          "pairs": [
+            { "left": "het station", "right": "la gare" },
+            { "left": "de apotheek", "right": "la pharmacie" },
+            { "left": "de bibliotheek", "right": "la bibliothèque" },
+            { "left": "het stadhuis", "right": "la mairie" },
+            { "left": "het ziekenhuis", "right": "l'hôpital" }
+          ]
+        },
+        {
+          "id": "fr-a2-ville-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Excuseer mij, waar is de supermarkt? — Rechtdoor en daarna links.",
+          "accepted": ["Excusez-moi, où est le supermarché? — Tout droit et ensuite à gauche.", "Excuse-moi, où est le supermarché? — Tout droit et après à gauche."],
+          "explanation": "Excusez-moi (formeel) of excuse-moi (informeel). Tout droit = rechtdoor. Ensuite/après = daarna. À gauche = links."
+        },
+        {
+          "id": "fr-a2-ville-speak1",
+          "type": "speaking",
+          "instruction": "Geef de weg aan — spreek na:",
+          "target": "Allez tout droit, puis tournez à droite au coin de la rue.",
+          "hint": "Ga rechtdoor — sla rechts af — op de hoek van de straat",
+          "explanation": "Allez tout droit = ga rechtdoor. Tournez à droite = sla rechts af. Au coin de la rue = op de straathoek."
+        }
+      ]
+    },
+    {
+      "id": "fr-a2-restaurant-courses",
+      "title": "Au restaurant & faire les courses",
+      "description": "Bestellen in een restaurant, boodschappen doen en over prijzen praten.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In een restaurant of winkel in Frankrijk gebruik je een mix van beleefde formules en praktische zinnen. Hier zijn de belangrijkste."
+        },
+        {
+          "type": "table",
+          "headers": ["Situatie", "Frans", "Nederlands"],
+          "rows": [
+            ["Een tafel reserveren", "Je voudrais réserver une table.", "Ik zou graag een tafel reserveren."],
+            ["Bestellen", "Je voudrais commander...", "Ik zou graag bestellen..."],
+            ["De kaart vragen", "La carte, s'il vous plaît.", "De menukaart, alstublieft."],
+            ["Naar de rekening vragen", "L'addition, s'il vous plaît.", "De rekening, alstublieft."],
+            ["Betalen", "Je paie par carte.", "Ik betaal met kaart."],
+            ["Klacht", "Ce n'est pas ce que j'ai commandé.", "Dit is niet wat ik besteld heb."],
+            ["Compliment", "C'est délicieux!", "Het is heerlijk!"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Bij de winkel", "Frans"],
+          "rows": [
+            ["Hoeveel kost dit?", "Combien ça coûte? / C'est combien?"],
+            ["Heeft u...?", "Vous avez...?"],
+            ["Ik neem dit.", "Je prends ça."],
+            ["Te duur", "C'est trop cher."],
+            ["In de solden", "En soldes / En promotion"],
+            ["een halve kilo", "une demi-kilo / 500 grammes"],
+            ["een pak", "un paquet"],
+            ["een fles", "une bouteille"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "'Je voudrais' (ik zou willen) is de beleefdste manier om iets te vragen in een restaurant of winkel. Het is beleefder dan 'je veux' (ik wil) of 'donnez-moi' (geef mij)."
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a2-rest-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe vraag je beleefd om de rekening?",
+          "options": ["Donnez-moi l'addition!", "L'addition, s'il vous plaît.", "Je veux payer.", "C'est combien?"],
+          "correct": 1,
+          "explanation": "L'addition, s'il vous plaît = de rekening, alstublieft. Dit is de meest gebruikelijke en beleefde formule."
+        },
+        {
+          "id": "fr-a2-rest-mc2",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'Je voudrais commander le plat du jour'?",
+          "options": [
+            "Ik heb het dagmenu besteld.",
+            "Ik zou graag het dagmenu bestellen.",
+            "Heeft u een dagmenu?",
+            "Het dagmenu is te duur."
+          ],
+          "correct": 1,
+          "explanation": "Je voudrais = ik zou graag (conditionnel van vouloir). Commander = bestellen. Le plat du jour = het dagmenu."
+        },
+        {
+          "id": "fr-a2-rest-fill1",
+          "type": "fill_blank",
+          "question": "— Bonjour, ___ une table pour deux personnes. — Bien sûr. Voici ___.",
+          "blanks": ["je voudrais", "la carte"],
+          "hint": "ik zou graag / de menukaart",
+          "explanation": "Je voudrais = ik zou graag (beleefd verzoek). La carte = de menukaart."
+        },
+        {
+          "id": "fr-a2-rest-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Hoeveel kost een fles water?",
+          "accepted": ["Combien coûte une bouteille d'eau?", "C'est combien une bouteille d'eau?", "Une bouteille d'eau, c'est combien?"],
+          "explanation": "Combien coûte...? = Hoeveel kost...? Une bouteille = een fles. D'eau = water (partitief)."
+        },
+        {
+          "id": "fr-a2-rest-speak1",
+          "type": "speaking",
+          "instruction": "Bestel in een restaurant — spreek na:",
+          "target": "Je voudrais le plat du jour et un verre d'eau, s'il vous plaît.",
+          "hint": "ik zou graag — het dagmenu — een glas water — alstublieft",
+          "explanation": "Je voudrais = ik zou graag. Le plat du jour = het dagmenu. Un verre d'eau = een glas water."
+        }
+      ]
+    },
+    {
+      "id": "fr-a2-description-personne",
+      "title": "Décrire une personne",
+      "description": "Iemand beschrijven: uiterlijk, karakter en beroep — voor lezen én spreken.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Een persoon beschrijven doe je aan de hand van uiterlijk (l'apparence), karakter (le caractère) en beroep (la profession). In de CEV-examens moet je mensen kunnen beschrijven op basis van een foto of tekst."
+        },
+        {
+          "type": "table",
+          "headers": ["Uiterlijk", "Frans"],
+          "rows": [
+            ["groot / klein", "grand(e) / petit(e)"],
+            ["slank / dik", "mince / gros(se)"],
+            ["kort / lang haar", "les cheveux courts / longs"],
+            ["bruin / blond / rood haar", "les cheveux bruns / blonds / roux"],
+            ["blauw / groene / bruine ogen", "les yeux bleus / verts / marron"],
+            ["bril dragen", "porter des lunettes"],
+            ["jonge / oude persoon", "une personne jeune / âgée"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Karakter", "Frans"],
+          "rows": [
+            ["vriendelijk", "sympa / aimable"],
+            ["serieus", "sérieux/sérieuse"],
+            ["grappig", "drôle / amusant(e)"],
+            ["verlegen", "timide"],
+            ["zelfverzekerd", "confiant(e)"],
+            ["hardwerkend", "travailleur/travailleuse"],
+            ["lui", "paresseux/paresseuse"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Bijvoeglijke naamwoorden staan ACHTER het zelfstandig naamwoord in het Frans (behalve: grand, petit, beau, bon, jeune, vieux, nouveau). Ik zeg: 'une fille sympa' maar 'une grande fille'."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Il est grand avec les cheveux blonds.", "right": "Hij is groot met blond haar." },
+            { "left": "Elle est sérieuse mais très sympa.", "right": "Ze is serieus maar heel vriendelijk." },
+            { "left": "Mon ami porte des lunettes et a les yeux verts.", "right": "Mijn vriend draagt een bril en heeft groene ogen." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a2-desc-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'lange bruine haren' in het Frans?",
+          "options": ["les bruns cheveux longs", "les cheveux longs bruns", "les cheveux bruns longs", "les longs cheveux bruns"],
+          "correct": 2,
+          "explanation": "Les cheveux bruns longs. Bijvoeglijke naamwoorden van kleur staan achter het zelfstandig naamwoord."
+        },
+        {
+          "id": "fr-a2-desc-mc2",
+          "type": "multiple_choice",
+          "question": "Wat is het vrouwelijke bijvoeglijk naamwoord van 'travailleur'?",
+          "options": ["travailleuse", "travailleuse", "travailleuse", "travailleusse"],
+          "correct": 0,
+          "explanation": "Travailleur (m) → travailleuse (v). Net als sérieux → sérieuse, paresseux → paresseuse."
+        },
+        {
+          "id": "fr-a2-desc-match1",
+          "type": "matching",
+          "instruction": "Koppel het karakter aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "sympa", "right": "vriendelijk" },
+            { "left": "timide", "right": "verlegen" },
+            { "left": "drôle", "right": "grappig" },
+            { "left": "confiant(e)", "right": "zelfverzekerd" },
+            { "left": "paresseux", "right": "lui" }
+          ]
+        },
+        {
+          "id": "fr-a2-desc-fill1",
+          "type": "fill_blank",
+          "question": "Ma sœur est ___ (groot) et ___ (slank) avec ___ (blond) cheveux.",
+          "blanks": ["grande", "mince", "les", "blonds"],
+          "hint": "grande / mince / les cheveux blonds",
+          "explanation": "Grande = groot (vrouwelijk). Mince = slank. Les cheveux blonds = blond haar."
+        },
+        {
+          "id": "fr-a2-desc-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Hij is een serieuze maar grappige persoon met bruine ogen.",
+          "accepted": ["Il est une personne sérieuse mais drôle avec les yeux marron.", "C'est une personne sérieuse mais drôle avec les yeux marron."],
+          "explanation": "Sérieux/sérieuse = serieus. Drôle = grappig. Les yeux marron = bruine ogen (marron verandert niet van vorm)."
+        },
+        {
+          "id": "fr-a2-desc-speak1",
+          "type": "speaking",
+          "instruction": "Beschrijf deze persoon — spreek na:",
+          "target": "C'est une femme grande et mince avec les cheveux longs et les yeux bleus. Elle est très sympa.",
+          "hint": "het is een vrouw — groot — slank — lang haar — blauwe ogen — vriendelijk",
+          "explanation": "Grande (groot, v), mince (slank), cheveux longs (lang haar), yeux bleus (blauwe ogen), sympa (vriendelijk)."
+        }
+      ]
+    }
+  ]
+}
