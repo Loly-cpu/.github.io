@@ -1,0 +1,369 @@
+{
+  "language": "fr",
+  "level": "a0",
+  "title": "Frans A0 — Absolute beginner",
+  "description": "De alleerste basis: begroetingen, cijfers, kleuren en jezelf voorstellen.",
+  "topics": [
+    {
+      "id": "fr-a0-begroetingen",
+      "title": "Begroetingen & afscheid",
+      "description": "Hoe zeg je hallo, tot ziens en goeiedag in het Frans.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans is er een verschil tussen formeel (met vreemden of volwassenen) en informeel (met vrienden). Dit is belangrijk om te onthouden."
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Uitspraak", "Betekenis", "Gebruik"],
+          "rows": [
+            ["Bonjour", "bon-zjur", "Goeiedag / Goedemorgen", "Formeel, overdag"],
+            ["Bonsoir", "bon-swar", "Goeienavond", "Formeel, 's avonds"],
+            ["Salut", "sa-lü", "Hallo / Dag", "Informeel"],
+            ["Bonne nuit", "bon nwi", "Welterusten", "Altijd"],
+            ["Au revoir", "o-ruh-vwar", "Tot ziens", "Formeel"],
+            ["À bientôt", "a bjen-toh", "Tot gauw", "Informeel/formeel"],
+            ["À demain", "a duh-meh", "Tot morgen", "Altijd"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "\"Salut\" betekent zowel hallo als dag — je kan het gebruiken bij aankomst én vertrek."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Bonjour, madame!", "right": "Goeiedag, mevrouw!" },
+            { "left": "Salut, ça va?", "right": "Hé, gaat het?" },
+            { "left": "Au revoir et à bientôt!", "right": "Tot ziens en tot gauw!" },
+            { "left": "Bonne nuit, dors bien.", "right": "Welterusten, slaap goed." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a0-begroetingen-mc1",
+          "type": "multiple_choice",
+          "question": "Je ontmoet je lerares 's ochtends. Wat zeg je?",
+          "options": ["Bonne nuit", "Bonjour", "Salut", "Au revoir"],
+          "correct": 1,
+          "explanation": "Bonjour gebruik je overdag als formele begroeting. Bonne nuit is voor het slapengaan, Salut is informeel, Au revoir is afscheid."
+        },
+        {
+          "id": "fr-a0-begroetingen-mc2",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'À bientôt'?",
+          "options": ["Tot morgen", "Welterusten", "Tot gauw", "Goeienavond"],
+          "correct": 2,
+          "explanation": "À bientôt betekent 'tot gauw' of 'tot ziens'. À demain is 'tot morgen', Bonne nuit is 'welterusten', Bonsoir is 'goeienavond'."
+        },
+        {
+          "id": "fr-a0-begroetingen-mc3",
+          "type": "multiple_choice",
+          "question": "Je vriend stuurt je een bericht 's avonds. Hoe begin je?",
+          "options": ["Bonjour", "Bonsoir", "Bonne nuit", "À demain"],
+          "correct": 1,
+          "explanation": "Bonsoir gebruik je 's avonds als begroeting. Bonjour is overdag, Bonne nuit is als je gaat slapen."
+        },
+        {
+          "id": "fr-a0-begroetingen-match1",
+          "type": "matching",
+          "instruction": "Koppel het Franse woord aan de juiste Nederlandse betekenis.",
+          "pairs": [
+            { "left": "Bonjour", "right": "Goeiedag" },
+            { "left": "Au revoir", "right": "Tot ziens" },
+            { "left": "Bonne nuit", "right": "Welterusten" },
+            { "left": "Salut", "right": "Hallo (informeel)" },
+            { "left": "À demain", "right": "Tot morgen" }
+          ]
+        },
+        {
+          "id": "fr-a0-begroetingen-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Tot ziens!",
+          "accepted": ["Au revoir!", "Au revoir"],
+          "explanation": "Au revoir is de standaard formele manier om afscheid te nemen."
+        },
+        {
+          "id": "fr-a0-begroetingen-tr2",
+          "type": "translation",
+          "direction": "target_to_nl",
+          "source": "Bonsoir, comment allez-vous?",
+          "accepted": ["Goeienavond, hoe gaat het met u?", "Goeienavond, hoe gaat het?"],
+          "explanation": "Bonsoir = goeienavond. Comment allez-vous? is de formele manier om 'hoe gaat het?' te vragen."
+        }
+      ]
+    },
+    {
+      "id": "fr-a0-cijfers",
+      "title": "Cijfers 0–20",
+      "description": "De Franse cijfers van nul tot twintig.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De cijfers 0 tot en met 20 zijn de basis. Je gebruikt ze voor leeftijd, tijd, prijzen en adressen. Leer ze goed van buiten."
+        },
+        {
+          "type": "table",
+          "headers": ["Cijfer", "Frans", "Uitspraak"],
+          "rows": [
+            ["0", "zéro", "zay-roh"],
+            ["1", "un / une", "uh / ün"],
+            ["2", "deux", "duh"],
+            ["3", "trois", "trwa"],
+            ["4", "quatre", "katr"],
+            ["5", "cinq", "sank"],
+            ["6", "six", "sees"],
+            ["7", "sept", "set"],
+            ["8", "huit", "weet"],
+            ["9", "neuf", "nuhf"],
+            ["10", "dix", "dees"],
+            ["11", "onze", "onz"],
+            ["12", "douze", "dooz"],
+            ["13", "treize", "trez"],
+            ["14", "quatorze", "ka-torz"],
+            ["15", "quinze", "kanz"],
+            ["16", "seize", "sez"],
+            ["17", "dix-sept", "dee-set"],
+            ["18", "dix-huit", "dee-zweet"],
+            ["19", "dix-neuf", "deez-nuhf"],
+            ["20", "vingt", "vah"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Un (1) gebruik je voor mannelijke woorden, une voor vrouwelijke woorden. Voorbeeld: un garçon (een jongen), une fille (een meisje)."
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a0-cijfers-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je '7' in het Frans?",
+          "options": ["six", "huit", "sept", "neuf"],
+          "correct": 2,
+          "explanation": "Sept = 7. Six = 6, huit = 8, neuf = 9."
+        },
+        {
+          "id": "fr-a0-cijfers-mc2",
+          "type": "multiple_choice",
+          "question": "Wat is 'quinze' in cijfers?",
+          "options": ["13", "14", "15", "16"],
+          "correct": 2,
+          "explanation": "Quinze = 15. Treize = 13, quatorze = 14, seize = 16."
+        },
+        {
+          "id": "fr-a0-cijfers-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je '18' in het Frans?",
+          "options": ["dix-sept", "dix-huit", "dix-neuf", "vingt"],
+          "correct": 1,
+          "explanation": "Dix-huit = 18. Dix-sept = 17, dix-neuf = 19, vingt = 20."
+        },
+        {
+          "id": "fr-a0-cijfers-fill1",
+          "type": "fill_blank",
+          "question": "dix + ___ = douze",
+          "blanks": ["deux"],
+          "hint": "10 + ? = 12",
+          "explanation": "Dix (10) + deux (2) = douze (12)."
+        },
+        {
+          "id": "fr-a0-cijfers-fill2",
+          "type": "fill_blank",
+          "question": "J'ai ___ ans. (Ik ben 16 jaar oud.)",
+          "blanks": ["seize"],
+          "hint": "16 in het Frans",
+          "explanation": "Seize = 16. J'ai seize ans = ik ben 16 jaar oud."
+        },
+        {
+          "id": "fr-a0-cijfers-match1",
+          "type": "matching",
+          "instruction": "Koppel het Frans aan het cijfer.",
+          "pairs": [
+            { "left": "trois", "right": "3" },
+            { "left": "onze", "right": "11" },
+            { "left": "vingt", "right": "20" },
+            { "left": "neuf", "right": "9" },
+            { "left": "quatorze", "right": "14" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fr-a0-kleuren",
+      "title": "Kleuren",
+      "description": "De belangrijkste kleuren in het Frans, inclusief de mannelijke en vrouwelijke vormen.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans passen bijvoeglijke naamwoorden zich aan het zelfstandig naamwoord aan. Kleuren ook. Een vrouwelijk woord krijgt vaak een extra -e achteraan."
+        },
+        {
+          "type": "table",
+          "headers": ["Kleur (m)", "Kleur (v)", "Nederlands"],
+          "rows": [
+            ["rouge", "rouge", "rood"],
+            ["bleu", "bleue", "blauw"],
+            ["vert", "verte", "groen"],
+            ["jaune", "jaune", "geel"],
+            ["noir", "noire", "zwart"],
+            ["blanc", "blanche", "wit"],
+            ["orange", "orange", "oranje"],
+            ["rose", "rose", "roze"],
+            ["violet", "violette", "paars"],
+            ["gris", "grise", "grijs"],
+            ["marron", "marron", "bruin"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Marron (bruin) en orange veranderen nooit van vorm — ze zijn altijd hetzelfde voor mannelijk, vrouwelijk en meervoud."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "un chat noir", "right": "een zwarte kat (mannelijk)" },
+            { "left": "une robe noire", "right": "een zwarte jurk (vrouwelijk)" },
+            { "left": "un mur blanc", "right": "een witte muur (mannelijk)" },
+            { "left": "une fleur blanche", "right": "een witte bloem (vrouwelijk)" }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a0-kleuren-mc1",
+          "type": "multiple_choice",
+          "question": "Wat is de vrouwelijke vorm van 'blanc'?",
+          "options": ["blanche", "blanque", "blancee", "blanc"],
+          "correct": 0,
+          "explanation": "Blanc (m) → blanche (v). De -c verandert naar -che bij vrouwelijke woorden."
+        },
+        {
+          "id": "fr-a0-kleuren-mc2",
+          "type": "multiple_choice",
+          "question": "Welke kleur verandert NIET van vorm?",
+          "options": ["vert", "noir", "marron", "blanc"],
+          "correct": 2,
+          "explanation": "Marron blijft altijd marron, of het nu mannelijk, vrouwelijk of meervoud is."
+        },
+        {
+          "id": "fr-a0-kleuren-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'een groene appel' (appel = pomme, vrouwelijk)?",
+          "options": ["une pomme vert", "une pomme verte", "une pomme verts", "une pomme verde"],
+          "correct": 1,
+          "explanation": "Pomme is vrouwelijk, dus vert krijgt een -e: verte."
+        },
+        {
+          "id": "fr-a0-kleuren-match1",
+          "type": "matching",
+          "instruction": "Koppel de Franse kleur aan het Nederlands.",
+          "pairs": [
+            { "left": "rouge", "right": "rood" },
+            { "left": "jaune", "right": "geel" },
+            { "left": "gris", "right": "grijs" },
+            { "left": "rose", "right": "roze" },
+            { "left": "violet", "right": "paars" }
+          ]
+        },
+        {
+          "id": "fr-a0-kleuren-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "een blauwe auto (auto = voiture, vrouwelijk)",
+          "accepted": ["une voiture bleue"],
+          "explanation": "Voiture is vrouwelijk, dus bleu krijgt een -e: bleue."
+        }
+      ]
+    },
+    {
+      "id": "fr-a0-zelfvoorstelling",
+      "title": "Jezelf voorstellen",
+      "description": "Hoe stel je jezelf voor in het Frans: naam, leeftijd, woonplaats en nationaliteit.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Als je jezelf voorstelt in het Frans gebruik je een paar vaste zinnen. Die zijn niet moeilijk, maar je moet ze wel goed kennen."
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Nederlands"],
+          "rows": [
+            ["Je m'appelle...", "Ik heet..."],
+            ["J'ai ... ans.", "Ik ben ... jaar oud."],
+            ["J'habite à...", "Ik woon in..."],
+            ["Je suis belge.", "Ik ben Belg."],
+            ["Je suis flamand(e).", "Ik ben Vlaming."],
+            ["Je parle néerlandais.", "Ik spreek Nederlands."]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Vraag", "Antwoord"],
+          "rows": [
+            ["Comment tu t'appelles?", "Je m'appelle Lisa."],
+            ["Quel âge as-tu?", "J'ai seize ans."],
+            ["Où habites-tu?", "J'habite à Gand."],
+            ["Tu es belge?", "Oui, je suis belge."]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Let op: in het Frans zeg je 'J'ai seize ans' (ik heb 16 jaar) — NIET 'je suis seize ans'. Leeftijd gebruik je altijd met avoir (hebben)."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Je m'appelle Thomas.", "right": "Ik heet Thomas." },
+            { "left": "J'ai dix-sept ans.", "right": "Ik ben 17 jaar oud." },
+            { "left": "J'habite à Bruxelles.", "right": "Ik woon in Brussel." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a0-zelf-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Ik heet Marie' in het Frans?",
+          "options": ["Je suis Marie.", "Je m'appelle Marie.", "J'ai Marie.", "Je appelle Marie."],
+          "correct": 1,
+          "explanation": "Je m'appelle... = Ik heet... Dit is de standaard manier om je naam te zeggen."
+        },
+        {
+          "id": "fr-a0-zelf-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Ik ben 15 jaar oud'?",
+          "options": ["Je suis quinze ans.", "J'ai quinze ans.", "Je m'appelle quinze ans.", "J'habite quinze ans."],
+          "correct": 1,
+          "explanation": "Voor leeftijd gebruik je ALTIJD avoir (hebben): J'ai quinze ans. Nooit 'je suis ... ans'!"
+        },
+        {
+          "id": "fr-a0-zelf-mc3",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'Où habites-tu?'",
+          "options": ["Hoe oud ben je?", "Hoe heet je?", "Waar woon je?", "Ben je Belg?"],
+          "correct": 2,
+          "explanation": "Où = waar, habiter = wonen. Où habites-tu? = Waar woon je?"
+        },
+        {
+          "id": "fr-a0-zelf-fill1",
+          "type": "fill_blank",
+          "question": "Je ___ appelle Lucas. J'___ dix-huit ans.",
+          "blanks": ["m'", "ai"],
+          "hint": "Je m'appelle... / J'ai ... ans",
+          "explanation": "Je m'appelle = ik heet (reflexief werkwoord). J'ai = ik heb (avoir voor leeftijd)."
+        },
+        {
+          "id": "fr-a0-zelf-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Ik woon in Antwerpen.",
+          "accepted": ["J'habite à Anvers.", "J'habite à Antwerpen."],
+          "explanation": "J'habite à... = Ik woon in... Anvers is de Franse naam voor Antwerpen."
+        }
+      ]
+    }
+  ]
+}
