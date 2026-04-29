@@ -6,6 +6,15 @@ import { supabase } from '@/lib/supabase'
 
 interface Stats { events: number; groups: number; docs: number; unread: number }
 
+const TILES = [
+  { href: '/platform/agenda',      icon: '📅', label: 'Agenda',       color: '#0070f6' },
+  { href: '/platform/groepen',     icon: '💬', label: 'Berichten',    color: '#0070f6' },
+  { href: '/platform/documenten',  icon: '📁', label: 'Documenten',   color: '#0070f6' },
+  { href: '/platform/formulieren', icon: '📝', label: 'Formulieren',  color: '#0070f6' },
+  { href: '/platform/meldingen',   icon: '🔔', label: 'Meldingen',    color: '#ef4444' },
+  { href: '/platform/links',       icon: '🔗', label: 'Links',        color: '#0070f6' },
+]
+
 export default function PlatformHome() {
   const [stats, setStats] = useState<Stats>({ events: 0, groups: 0, docs: 0, unread: 0 })
   const [name, setName] = useState('')
@@ -14,7 +23,8 @@ export default function PlatformHome() {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) return
       const uid = data.session.user.id
-      setName(data.session.user.email?.split('@')[0] ?? '')
+      const { data: p } = await supabase.from('profiles').select('display_name').eq('id', uid).single()
+      setName(p?.display_name ?? data.session.user.email?.split('@')[0] ?? '')
 
       const [ev, gm, dc, notif] = await Promise.allSettled([
         supabase.from('events').select('id', { count: 'exact' }).eq('user_id', uid),
@@ -31,41 +41,76 @@ export default function PlatformHome() {
     })
   }, [])
 
-  const tiles = [
-    { href: '/platform/agenda',      icon: '📅', label: 'Agenda',      sub: `${stats.events} evenementen`, color: 'bg-indigo-50 border-indigo-200 hover:bg-indigo-100' },
-    { href: '/platform/groepen',     icon: '💬', label: 'Berichten',   sub: `${stats.groups} groepen`, color: 'bg-blue-50 border-blue-200 hover:bg-blue-100' },
-    { href: '/platform/documenten',  icon: '📁', label: 'Documenten',  sub: `${stats.docs} bestanden`, color: 'bg-green-50 border-green-200 hover:bg-green-100' },
-    { href: '/platform/formulieren', icon: '📝', label: 'Formulieren', sub: 'Stel een vraag', color: 'bg-amber-50 border-amber-200 hover:bg-amber-100' },
-    { href: '/platform/meldingen',   icon: '🔔', label: 'Meldingen',   sub: `${stats.unread} berichten`, color: 'bg-red-50 border-red-200 hover:bg-red-100' },
-    { href: '/platform/links',       icon: '🔗', label: 'Links',       sub: 'Handige bronnen', color: 'bg-purple-50 border-purple-200 hover:bg-purple-100' },
-  ]
+  const statMap: Record<string, string> = {
+    '/platform/agenda':      `${stats.events} evenementen`,
+    '/platform/groepen':     `${stats.groups} groepen`,
+    '/platform/documenten':  `${stats.docs} bestanden`,
+    '/platform/formulieren': 'Stel een vraag',
+    '/platform/meldingen':   stats.unread > 0 ? `${stats.unread} berichten` : 'Geen ongelezen',
+    '/platform/links':       'Handige bronnen',
+  }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
+    <div>
+      {/* Welcome header — Smartschool style */}
+      <div className="smsc-card" style={{ marginBottom: 20 }}>
+        <h1 style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 20, fontWeight: 500, color: '#242424', margin: 0 }}>
           Welkom{name ? `, ${name}` : ''}!
         </h1>
-        <p className="text-gray-500 mt-1">Kies een onderdeel om aan de slag te gaan.</p>
+        <p style={{ fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 14, color: '#5b5b5b', margin: '4px 0 0' }}>
+          Kies een onderdeel om te beginnen.
+        </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {tiles.map((t) => (
-          <Link key={t.href} href={t.href}
-            className={`border-2 rounded-2xl p-6 transition-colors flex flex-col gap-2 ${t.color}`}>
-            <span className="text-3xl">{t.icon}</span>
-            <div>
-              <p className="font-bold text-gray-900">{t.label}</p>
-              <p className="text-sm text-gray-500">{t.sub}</p>
+      {/* Module tiles — exactly like Smartschool's module grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
+        {TILES.map((t) => (
+          <Link
+            key={t.href}
+            href={t.href}
+            style={{ textDecoration: 'none' }}
+          >
+            <div
+              className="smsc-card"
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                justifyContent: 'center', textAlign: 'center',
+                padding: '24px 16px', margin: 0, cursor: 'pointer',
+                transition: 'box-shadow 0.15s, transform 0.1s',
+                minHeight: 120,
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.14)'
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)'
+              }}
+            >
+              <div style={{ fontSize: 32, marginBottom: 8 }}>{t.icon}</div>
+              <div style={{ fontFamily: 'Roboto, system-ui', fontWeight: 500, fontSize: 14, color: '#242424' }}>
+                {t.label}
+              </div>
+              <div style={{ fontFamily: 'Roboto, system-ui', fontSize: 12, color: '#5b5b5b', marginTop: 3 }}>
+                {statMap[t.href]}
+              </div>
             </div>
           </Link>
         ))}
       </div>
 
       {/* Quick links to other platforms */}
-      <div className="mt-10 flex gap-3 flex-wrap">
-        <Link href="/examenboard" className="btn-ghost text-sm">🎓 Examenboard</Link>
-        <Link href="/dashboard"   className="btn-ghost text-sm">🌐 Taalplatform</Link>
+      <div className="smsc-card" style={{ marginTop: 20, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+        <p style={{ fontFamily: 'Roboto, system-ui', fontSize: 13, color: '#5b5b5b', width: '100%', margin: '0 0 8px' }}>
+          Andere platforms
+        </p>
+        <Link href="/examenboard"
+          style={{ fontFamily: 'Roboto, system-ui', fontSize: 14, color: '#0070f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+          🎓 Examenboard
+        </Link>
+        <Link href="/dashboard"
+          style={{ fontFamily: 'Roboto, system-ui', fontSize: 14, color: '#0070f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+          🌐 Taalplatform
+        </Link>
       </div>
     </div>
   )

@@ -5,11 +5,11 @@ export const metadata = { title: 'Leerplatform' }
 
 export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-cream">
+    <div className="smsc-layout">
       <PlatformNav />
-      <main className="flex-1 min-w-0 overflow-y-auto">
+      <div className="smsc-content">
         {children}
-      </main>
+      </div>
     </div>
   )
 }
