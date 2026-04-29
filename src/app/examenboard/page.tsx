@@ -203,15 +203,26 @@ const STUDIEPLAN: StudieDag[] = [
     ],
   },
 
-  // ── BLOK 2: Nederlands 1 (29 mei) ───────────────────────────────────────────
+  // ── Na examen: schoolopdracht ─────────────────────────────────────────────────
   {
-    datum: '2026-05-07', dag: 'Donderdag 7 mei — start Nederlands 1', beschikbaar: '~6 uur',
+    datum: '2026-05-07', dag: 'Donderdag 7 mei', beschikbaar: '~6 uur',
     taken: [
+      { id: 'so07-1', vak: 'School', tijd: '2u', priority: 'hoog',
+        canvas: 'Smartschool → Aardrijkskunde → Planner → Geopunt opdracht',
+        canvasUrl: 'https://bastassart.smartschool.be/planner/main/user/43_16564_0/2026-05-08/planned-assignments/43/299b308b-1793-448f-be6d-4145772234d8',
+        taak: '⚠️ Schoolopdracht deadline vrijdag 8 mei 14:50! "Werken met Geopunt: dromen van een weekendje weg" voor Aardrijkskunde (Smartschool). Maak dit vandaag af zodat je morgen vrij bent. Gebruik geopunt.be — dat heb je net geoefend voor het examen.' },
       { id: 'n07-1', vak: 'Nederlands', tijd: '3u', priority: 'hoog',
         canvas: 'INZICHT → leerpad literatuur → cursus + test stijl & stijlfiguren', canvasUrl: CANVAS_NED,
         taak: 'INZICHT PLUS Nederlands → leerpad literatuur: "cursus stijl en stijlfiguren" + "test stijl en stijlfiguren". Daarna extra oefeningen: "Stijl en stijlfiguren" (17p). Aandacht voor: metafoor, personificatie, hyperbool, anafoor, antithese, paradox, retorische vraag.' },
-      { id: 'n07-2', vak: 'Nederlands', tijd: '3u', priority: 'hoog',
-        canvas: 'INZICHT → leerpad taalbeschouwing → taalvariatie + taalgebruik alineaverbanden', canvasUrl: CANVAS_NED,
+    ],
+  },
+
+  // ── BLOK 2: Nederlands 1 (29 mei) ───────────────────────────────────────────
+  {
+    datum: '2026-05-08', dag: 'Vrijdag 8 mei', beschikbaar: '~4 uur',
+    taken: [
+      { id: 'n08-1', vak: 'Nederlands', tijd: '3u', priority: 'hoog',
+        canvas: 'INZICHT → leerpad taalbeschouwing → taalvariatie + alineaverbanden', canvasUrl: CANVAS_NED,
         taak: 'INZICHT PLUS Nederlands → leerpad taalbeschouwing: "cursus taalvariatie" + test. Daarna leerpad taalgebruik: "cursus alineaverbanden" + test. Communicatiemodel vanbuiten kennen.' },
     ],
   },
