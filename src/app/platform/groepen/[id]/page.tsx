@@ -5,14 +5,15 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { use } from 'react'
 
-interface Post {
-  id: string; content: string; created_at: string; user_id: string
-  profiles?: { display_name: string }
-  replies?: Reply[]
-}
+interface Profile { display_name: string; is_admin?: boolean; is_superadmin?: boolean }
 interface Reply {
   id: string; content: string; created_at: string; user_id: string
-  profiles?: { display_name: string }
+  profiles?: Profile
+}
+interface Post {
+  id: string; content: string; created_at: string; user_id: string
+  profiles?: Profile
+  group_post_replies?: Reply[]
 }
 interface Group { id: string; name: string; description: string; icon: string; subject: string }
 
@@ -26,17 +27,29 @@ function timeAgo(iso: string): string {
   return `${Math.floor(h / 24)}d`
 }
 
+function RoleBadge({ profile }: { profile?: Profile }) {
+  if (profile?.is_superadmin) return (
+    <span style={{ fontSize: 10, background: '#f3e8ff', color: '#7e22ce', borderRadius: 6, padding: '1px 5px', fontWeight: 700 }}>Superadmin</span>
+  )
+  if (profile?.is_admin) return (
+    <span style={{ fontSize: 10, background: '#dcfce7', color: '#15803d', borderRadius: 6, padding: '1px 5px', fontWeight: 700 }}>Admin</span>
+  )
+  return null
+}
+
 export default function GroupPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const [group, setGroup] = useState<Group | null>(null)
-  const [posts, setPosts] = useState<Post[]>([])
-  const [userId, setUserId] = useState<string | null>(null)
-  const [displayName, setDisplayName] = useState('')
+  const [group, setGroup]       = useState<Group | null>(null)
+  const [posts, setPosts]       = useState<Post[]>([])
+  const [userId, setUserId]     = useState<string | null>(null)
+  const [isAdmin, setIsAdmin]       = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [displayName, setDisplayName]   = useState('')
   const [isMember, setIsMember] = useState(false)
-  const [newPost, setNewPost] = useState('')
-  const [replyTo, setReplyTo] = useState<string | null>(null)
+  const [newPost, setNewPost]   = useState('')
+  const [replyTo, setReplyTo]   = useState<string | null>(null)
   const [replyText, setReplyText] = useState('')
-  const [posting, setPosting] = useState(false)
+  const [posting, setPosting]   = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -44,8 +57,13 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
       const uid = data.session?.user?.id ?? null
       setUserId(uid)
       if (uid) {
-        const { data: p } = await supabase.from('profiles').select('display_name').eq('id', uid).single()
+        const { data: p } = await supabase
+          .from('profiles')
+          .select('display_name, is_admin, is_superadmin')
+          .eq('id', uid).single()
         setDisplayName(p?.display_name ?? uid.slice(0, 8))
+        setIsSuperAdmin(p?.is_superadmin ?? false)
+        setIsAdmin((p?.is_admin || p?.is_superadmin) ?? false)
         const { data: mem } = await supabase.from('group_members').select('user_id').eq('group_id', id).eq('user_id', uid).single()
         setIsMember(!!mem)
       }
@@ -59,7 +77,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   async function loadPosts() {
     const { data } = await supabase
       .from('group_posts')
-      .select('*, profiles(display_name), group_post_replies(*, profiles(display_name))')
+      .select('*, profiles(display_name, is_admin, is_superadmin), group_post_replies(*, profiles(display_name, is_admin, is_superadmin))')
       .eq('group_id', id)
       .order('created_at', { ascending: true })
     if (data) setPosts(data as Post[])
@@ -83,114 +101,171 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   }
 
   async function deletePost(postId: string) {
-    await supabase.from('group_posts').delete().eq('id', postId)
-    setPosts((prev) => prev.filter((p) => p.id !== postId))
+    const { error } = await supabase.from('group_posts').delete().eq('id', postId)
+    if (!error) setPosts((prev) => prev.filter((p) => p.id !== postId))
   }
 
-  if (!group) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-primary-400 border-t-transparent rounded-full animate-spin" /></div>
+  async function deleteReply(replyId: string, postId: string) {
+    const { error } = await supabase.from('group_post_replies').delete().eq('id', replyId)
+    if (!error) {
+      setPosts((prev) => prev.map((p) =>
+        p.id === postId
+          ? { ...p, group_post_replies: p.group_post_replies?.filter((r) => r.id !== replyId) }
+          : p
+      ))
+    }
+  }
+
+  if (!group) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-[#ff520e] border-t-transparent rounded-full animate-spin" /></div>
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6">
+    <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
       {/* Header */}
       <div className="flex items-start gap-3 mb-6">
-        <Link href="/platform/groepen" className="text-gray-400 hover:text-gray-600 text-sm mt-1">← Terug</Link>
+        <Link href="/platform/groepen" style={{ color: '#5b5b5b', fontSize: 13, marginTop: 2 }}>← Terug</Link>
         <div className="flex items-center gap-3 flex-1">
-          <span className="text-3xl">{group.icon}</span>
+          <span style={{ fontSize: 28 }}>{group.icon}</span>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{group.name}</h1>
-            {group.subject && <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">{group.subject}</span>}
-            {group.description && <p className="text-sm text-gray-500 mt-0.5">{group.description}</p>}
+            <h1 style={{ fontSize: 18, fontWeight: 700, color: '#242424', margin: 0 }}>{group.name}</h1>
+            {group.subject && (
+              <span style={{ fontSize: 11, background: '#fff3ef', color: '#ff520e', padding: '1px 8px', borderRadius: 8, fontWeight: 600 }}>
+                {group.subject}
+              </span>
+            )}
+            {group.description && <p style={{ fontSize: 13, color: '#5b5b5b', margin: '2px 0 0' }}>{group.description}</p>}
           </div>
         </div>
-        {isMember && <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">Lid</span>}
+        {isMember && (
+          <span style={{ fontSize: 11, background: '#dcfce7', color: '#15803d', padding: '2px 10px', borderRadius: 8, fontWeight: 600 }}>Lid</span>
+        )}
       </div>
 
       {/* Posts */}
-      <div className="space-y-4 mb-6">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
         {posts.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <p className="text-3xl mb-2">💬</p>
+          <div style={{ textAlign: 'center', padding: '48px 0', color: '#5b5b5b' }}>
+            <p style={{ fontSize: 32, marginBottom: 8 }}>💬</p>
             <p>Nog geen berichten. Wees de eerste!</p>
           </div>
         )}
-        {posts.map((post) => (
-          <div key={post.id} className="bg-white border border-warm-gray rounded-2xl overflow-hidden">
-            <div className="px-4 py-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-primary-200 flex items-center justify-center text-xs font-bold text-primary-700">
-                    {(post.profiles?.display_name ?? '?')[0].toUpperCase()}
+        {posts.map((post) => {
+          const replies = post.group_post_replies ?? []
+          const canDelete = userId === post.user_id || isAdmin
+          return (
+            <div key={post.id} className="smsc-card" style={{ padding: 0, overflow: 'hidden', marginBottom: 0 }}>
+              <div style={{ padding: '14px 16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{
+                      width: 28, height: 28, borderRadius: '50%',
+                      background: post.profiles?.is_superadmin ? '#9333ea' : post.profiles?.is_admin ? '#16a34a' : '#ff520e',
+                      color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontWeight: 700, fontSize: 12, flexShrink: 0,
+                    }}>
+                      {(post.profiles?.display_name ?? '?')[0].toUpperCase()}
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#242424' }}>
+                      {post.profiles?.display_name ?? 'Anoniem'}
+                    </span>
+                    <RoleBadge profile={post.profiles} />
+                    <span style={{ fontSize: 11, color: '#9ca3af' }}>{timeAgo(post.created_at)}</span>
                   </div>
-                  <span className="text-sm font-semibold text-gray-800">{post.profiles?.display_name ?? 'Anoniem'}</span>
-                  <span className="text-xs text-gray-400">{timeAgo(post.created_at)}</span>
+                  {canDelete && (
+                    <button onClick={() => deletePost(post.id)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d1d5db', fontSize: 16 }}
+                      title="Verwijderen"
+                      onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#d1d5db')}
+                    >🗑</button>
+                  )}
                 </div>
-                {(userId === post.user_id) && (
-                  <button onClick={() => deletePost(post.id)} className="text-gray-300 hover:text-red-400 text-sm">🗑</button>
-                )}
+                <p style={{ fontSize: 14, color: '#242424', whiteSpace: 'pre-wrap', margin: 0 }}>{post.content}</p>
+                <button
+                  onClick={() => setReplyTo(replyTo === post.id ? null : post.id)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#ff520e', marginTop: 8, padding: 0, fontWeight: 500 }}
+                >
+                  {replyTo === post.id ? 'Annuleren' : `💬 Reageren${replies.length > 0 ? ` (${replies.length})` : ''}`}
+                </button>
               </div>
-              <p className="text-sm text-gray-800 whitespace-pre-wrap">{post.content}</p>
-              <button
-                onClick={() => setReplyTo(replyTo === post.id ? null : post.id)}
-                className="text-xs text-primary-500 hover:text-primary-700 mt-2 font-medium"
-              >
-                {replyTo === post.id ? 'Annuleren' : `💬 Reageren${(post.replies?.length ?? 0) > 0 ? ` (${post.replies!.length})` : ''}`}
-              </button>
+
+              {/* Replies */}
+              {replies.length > 0 && (
+                <div style={{ borderTop: '1px solid #f4f4f4', background: '#fafafa' }}>
+                  {replies.map((r) => (
+                    <div key={r.id} style={{ padding: '10px 16px 10px 24px', borderBottom: '1px solid #f4f4f4', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                      <div style={{
+                        width: 22, height: 22, borderRadius: '50%',
+                        background: r.profiles?.is_superadmin ? '#9333ea' : r.profiles?.is_admin ? '#16a34a' : '#e5e7eb',
+                        color: r.profiles?.is_admin || r.profiles?.is_superadmin ? '#fff' : '#374151',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontWeight: 700, fontSize: 10, flexShrink: 0,
+                      }}>
+                        {(r.profiles?.display_name ?? '?')[0].toUpperCase()}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: '#374151' }}>{r.profiles?.display_name ?? 'Anoniem'}</span>
+                          <RoleBadge profile={r.profiles} />
+                          <span style={{ fontSize: 11, color: '#9ca3af' }}>{timeAgo(r.created_at)}</span>
+                          {(userId === r.user_id || isAdmin) && (
+                            <button onClick={() => deleteReply(r.id, post.id)}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d1d5db', fontSize: 13, marginLeft: 'auto' }}
+                              onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                              onMouseLeave={e => (e.currentTarget.style.color = '#d1d5db')}
+                            >🗑</button>
+                          )}
+                        </div>
+                        <p style={{ fontSize: 13, color: '#374151', margin: '2px 0 0' }}>{r.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Reply form */}
+              {replyTo === post.id && userId && (
+                <div style={{ borderTop: '1px solid #f4f4f4', padding: '10px 16px', background: '#fafafa', display: 'flex', gap: 8 }}>
+                  <input
+                    style={{ flex: 1, border: '1px solid #e8e8e8', borderRadius: 8, padding: '6px 12px', fontSize: 13, background: '#fff' }}
+                    placeholder="Schrijf een reactie..."
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitReply() } }}
+                    autoFocus
+                  />
+                  <button onClick={submitReply} disabled={!replyText.trim()}
+                    style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 14px', fontSize: 13, cursor: 'pointer', fontWeight: 500 }}
+                  >→</button>
+                </div>
+              )}
             </div>
-
-            {/* Replies */}
-            {(post.replies?.length ?? 0) > 0 && (
-              <div className="border-t border-warm-gray bg-gray-50 divide-y divide-warm-gray">
-                {post.replies!.map((r) => (
-                  <div key={r.id} className="px-6 py-2.5 flex items-start gap-2">
-                    <div className="w-5 h-5 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0 mt-0.5">
-                      {(r.profiles?.display_name ?? '?')[0].toUpperCase()}
-                    </div>
-                    <div className="flex-1">
-                      <span className="text-xs font-semibold text-gray-700">{r.profiles?.display_name ?? 'Anoniem'} </span>
-                      <span className="text-xs text-gray-400">{timeAgo(r.created_at)}</span>
-                      <p className="text-sm text-gray-700 mt-0.5">{r.content}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Reply form */}
-            {replyTo === post.id && userId && (
-              <div className="border-t border-warm-gray px-4 py-3 bg-gray-50 flex gap-2">
-                <input
-                  className="flex-1 border border-warm-gray rounded-xl px-3 py-2 text-sm bg-white"
-                  placeholder="Schrijf een reactie..."
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitReply() } }}
-                />
-                <button onClick={submitReply} disabled={!replyText.trim()}
-                  className="btn-primary text-sm px-3 py-2 disabled:opacity-50">→</button>
-              </div>
-            )}
-          </div>
-        ))}
+          )
+        })}
         <div ref={bottomRef} />
       </div>
 
       {/* New post */}
       {userId ? (
-        <div className="sticky bottom-4 bg-white border-2 border-warm-gray rounded-2xl p-4 shadow-lg">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary-200 flex items-center justify-center text-sm font-bold text-primary-700 flex-shrink-0">
+        <div style={{ position: 'sticky', bottom: 16, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10, padding: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.10)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#ff520e',
+              color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, fontSize: 13, flexShrink: 0,
+            }}>
               {displayName[0]?.toUpperCase() ?? '?'}
             </div>
-            <div className="flex-1 space-y-2">
+            <div style={{ flex: 1 }}>
               <textarea
-                className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm resize-none h-20"
+                style={{ width: '100%', border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13, resize: 'none', height: 72, fontFamily: 'Roboto, system-ui, sans-serif' }}
                 placeholder="Stel een vraag of deel iets met de groep..."
                 value={newPost}
                 onChange={(e) => setNewPost(e.target.value)}
               />
-              <div className="flex justify-end">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6 }}>
                 <button onClick={submitPost} disabled={posting || !newPost.trim()}
-                  className="btn-primary text-sm px-4 py-2 disabled:opacity-50">
+                  style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 18px', fontSize: 13, cursor: 'pointer', fontWeight: 500, opacity: (posting || !newPost.trim()) ? 0.5 : 1 }}>
                   {posting ? 'Posten...' : 'Posten →'}
                 </button>
               </div>
@@ -198,10 +273,11 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
           </div>
         </div>
       ) : (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 text-center">
-          <Link href="/auth/login" className="underline font-semibold">Inloggen</Link> om te reageren.
+        <div style={{ background: '#fff8f0', border: '1px solid #fed7aa', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#92400e', textAlign: 'center' }}>
+          <Link href="/auth/login" style={{ color: '#ff520e', fontWeight: 600 }}>Inloggen</Link> om te reageren.
         </div>
       )}
     </div>
   )
 }
+

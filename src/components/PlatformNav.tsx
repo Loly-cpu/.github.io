@@ -18,29 +18,39 @@ const NAV: { href: string; label: string }[] = [
 export default function PlatformNav() {
   const path     = usePathname()
   const router   = useRouter()
-  const [name, setName]           = useState('')
-  const [initials, setInitials]   = useState('?')
-  const [unread, setUnread]       = useState(0)
-  const [profileOpen, setProfile] = useState(false)
-  const [mobileOpen, setMobile]   = useState(false)
-  const profileRef                = useRef<HTMLDivElement>(null)
+  const [name, setName]             = useState('')
+  const [initials, setInitials]     = useState('?')
+  const [unread, setUnread]         = useState(0)
+  const [isAdmin, setIsAdmin]       = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [profileOpen, setProfile]   = useState(false)
+  const [mobileOpen, setMobile]     = useState(false)
+  const profileRef                  = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session?.user) return
       const uid   = data.session.user.id
       const email = data.session.user.email ?? ''
-      const { data: p } = await supabase.from('profiles').select('display_name').eq('id', uid).single()
+      const { data: p } = await supabase
+        .from('profiles')
+        .select('display_name, is_admin, is_superadmin')
+        .eq('id', uid).single()
       const n = p?.display_name ?? email.split('@')[0]
       setName(n)
       setInitials(n[0]?.toUpperCase() ?? '?')
-      const { count } = await supabase
-        .from('notifications').select('*', { count: 'exact', head: true })
-      setUnread(count ?? 0)
+      setIsAdmin(p?.is_admin ?? false)
+      setIsSuperAdmin(p?.is_superadmin ?? false)
+
+      // Unread = total notifications minus ones this user has read
+      const [{ count: total }, { count: read }] = await Promise.all([
+        supabase.from('notifications').select('*', { count: 'exact', head: true }),
+        supabase.from('notification_reads').select('*', { count: 'exact', head: true }).eq('user_id', uid),
+      ])
+      setUnread(Math.max(0, (total ?? 0) - (read ?? 0)))
     })
   }, [])
 
-  // Close profile dropdown on outside click
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfile(false)
@@ -57,27 +67,31 @@ export default function PlatformNav() {
   const active = (href: string) =>
     href === '/platform' ? path === '/platform' : path.startsWith(href)
 
+  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#ff520e'
+  const roleBadge = isSuperAdmin
+    ? <span style={{ fontSize: 10, background: '#f3e8ff', color: '#7e22ce', borderRadius: 6, padding: '1px 5px', fontWeight: 700, marginLeft: 4 }}>Superadmin</span>
+    : isAdmin
+      ? <span style={{ fontSize: 10, background: '#dcfce7', color: '#15803d', borderRadius: 6, padding: '1px 5px', fontWeight: 700, marginLeft: 4 }}>Admin</span>
+      : null
+
   return (
     <>
       <header className="smsc-topnav">
         <nav className="smsc-nav">
 
-          {/* ── Profile (left) ───────────────────────────────────── */}
+          {/* ── Profile (left) ─────────────────────────────────── */}
           <div ref={profileRef} style={{ position: 'relative' }}>
-            <button
-              onClick={() => setProfile(!profileOpen)}
-              className="smsc-nav__btn"
-              style={{ gap: 8 }}
-            >
+            <button onClick={() => setProfile(!profileOpen)} className="smsc-nav__btn" style={{ gap: 8 }}>
               <div style={{
                 width: 28, height: 28, borderRadius: '50%',
-                background: '#ff520e', color: '#fff',
+                background: avatarBg, color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontWeight: 700, fontSize: 12, flexShrink: 0,
               }}>
                 {initials}
               </div>
               <span style={{ fontWeight: 500, fontSize: 14 }}>{name}</span>
+              {roleBadge}
               <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ color: '#5b5b5b' }}>
                 <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -100,7 +114,7 @@ export default function PlatformNav() {
 
           <div className="smsc-nav__spacer" />
 
-          {/* ── Main nav items (desktop) ──────────────────────────── */}
+          {/* ── Main nav items (desktop) ─────────────────────── */}
           <div className="hidden md:flex" style={{ alignItems: 'stretch' }}>
             {NAV.map((item) => (
               <Link
@@ -116,10 +130,9 @@ export default function PlatformNav() {
             ))}
           </div>
 
-          {/* ── Divider ───────────────────────────────────────────── */}
           <div className="smsc-nav__divider hidden md:block" />
 
-          {/* ── Notifications icon ────────────────────────────────── */}
+          {/* ── Notifications icon ─────────────────────────────── */}
           <Link href="/platform/meldingen" className="smsc-nav__btn smsc-nav__btn--icon hidden md:flex" title="Meldingen">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
@@ -127,14 +140,14 @@ export default function PlatformNav() {
             {unread > 0 && <span className="smsc-nav__badge">{unread > 9 ? '9+' : unread}</span>}
           </Link>
 
-          {/* ── Logout icon ───────────────────────────────────────── */}
+          {/* ── Logout icon ─────────────────────────────────────── */}
           <button onClick={logout} className="smsc-nav__btn smsc-nav__btn--icon hidden md:flex" title="Afmelden">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
             </svg>
           </button>
 
-          {/* ── Mobile hamburger ──────────────────────────────────── */}
+          {/* ── Mobile hamburger ────────────────────────────────── */}
           <button
             onClick={() => setMobile(!mobileOpen)}
             className="smsc-nav__btn smsc-nav__btn--icon md:hidden"
@@ -147,7 +160,7 @@ export default function PlatformNav() {
         </nav>
       </header>
 
-      {/* ── Mobile menu ───────────────────────────────────────────── */}
+      {/* ── Mobile menu ─────────────────────────────────────────── */}
       {mobileOpen && (
         <div
           style={{ position: 'fixed', top: 48, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 39 }}

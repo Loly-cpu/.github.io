@@ -42,6 +42,20 @@ function getWeekDays(base: Date): Date[] {
   })
 }
 
+function getMonthGrid(base: Date): (Date | null)[] {
+  const year = base.getFullYear()
+  const m    = base.getMonth()
+  const first = new Date(year, m, 1)
+  const last  = new Date(year, m + 1, 0)
+  const pad   = (first.getDay() + 6) % 7 // Monday = 0
+  const cells: (Date | null)[] = []
+  for (let i = 0; i < pad; i++) cells.push(null)
+  for (let d = 1; d <= last.getDate(); d++) cells.push(new Date(year, m, d))
+  // Fill remainder to complete last row
+  while (cells.length % 7 !== 0) cells.push(null)
+  return cells
+}
+
 function AgendaInner() {
   const searchParams = useSearchParams()
   const [events, setEvents]       = useState<Event[]>([])
@@ -52,6 +66,8 @@ function AgendaInner() {
   const [showAi, setShowAi]       = useState(false)
   const [showIcal, setShowIcal]   = useState(false)
   const [showGcal, setShowGcal]   = useState(false)
+  const [view, setView]           = useState<'week' | 'month'>('week')
+  const [month, setMonth]         = useState(new Date())
   const [icalUrl, setIcalUrl]     = useState('')
   const [icalName, setIcalName]   = useState('Smartschool')
   const [icalLoading, setIcalLoading] = useState(false)
@@ -187,7 +203,7 @@ function AgendaInner() {
     }
   }
 
-  const days = getWeekDays(week)
+  const days  = getWeekDays(week)
   const today = isoDate(new Date())
 
   function eventsForDay(d: Date) {
@@ -195,21 +211,35 @@ function AgendaInner() {
     return events.filter((e) => e.start_at.startsWith(ds))
   }
 
+  const monthGrid = getMonthGrid(month)
+  const WEEKDAYS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-gray-900">📅 Agenda</h1>
         <div className="flex gap-2 flex-wrap">
+          {/* View toggle */}
+          <div style={{ display: 'flex', border: '1px solid #e8e8e8', borderRadius: 8, overflow: 'hidden' }}>
+            <button onClick={() => setView('week')}
+              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', background: view === 'week' ? '#ff520e' : '#fff', color: view === 'week' ? '#fff' : '#5b5b5b' }}>
+              Week
+            </button>
+            <button onClick={() => setView('month')}
+              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', borderLeft: '1px solid #e8e8e8', background: view === 'month' ? '#ff520e' : '#fff', color: view === 'month' ? '#fff' : '#5b5b5b' }}>
+              Maand
+            </button>
+          </div>
           <button onClick={() => setShowIcal(true)} className="btn-ghost text-sm flex items-center gap-1.5">
-            📥 iCal importeren
+            📥 iCal
           </button>
           <a href="/api/auth/google-calendar"
             className={`btn-ghost text-sm flex items-center gap-1.5 ${gcalConnected ? 'text-green-600' : ''}`}>
-            {gcalConnected ? '✅ Google Calendar' : '🗓 Google koppelen'}
+            {gcalConnected ? '✅ Google' : '🗓 Google'}
           </a>
           <button onClick={() => setShowAi(true)} className="btn-ghost text-sm flex items-center gap-1.5">
-            ✨ AI Studieplan
+            ✨ AI Plan
           </button>
           <button onClick={() => setShowForm(true)} className="btn-primary text-sm px-4 py-2">
             + Evenement
@@ -217,51 +247,114 @@ function AgendaInner() {
         </div>
       </div>
 
-      {/* Week navigator */}
-      <div className="flex items-center gap-3 mb-4">
-        <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()-7); setWeek(d) }}
-          className="btn-ghost px-3 py-1.5 text-sm">← Vorige</button>
-        <span className="font-semibold text-gray-700 text-sm flex-1 text-center">
-          {formatDate(days[0].toISOString())} – {formatDate(days[6].toISOString())}
-        </span>
-        <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()+7); setWeek(d) }}
-          className="btn-ghost px-3 py-1.5 text-sm">Volgende →</button>
-      </div>
-
-      {/* Week grid */}
-      <div className="grid grid-cols-7 gap-1 mb-8">
-        {days.map((d) => {
-          const ds = isoDate(d)
-          const dayEvents = eventsForDay(d)
-          const isToday = ds === today
-          return (
-            <div key={ds} className={`rounded-xl border-2 min-h-32 p-2 transition-colors ${
-              isToday ? 'border-primary-400 bg-primary-50' : 'border-warm-gray bg-white'
-            }`}>
-              <div className={`text-xs font-bold mb-1.5 ${isToday ? 'text-primary-700' : 'text-gray-500'}`}>
-                <div>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
-                <div className={`text-lg leading-none ${isToday ? 'text-primary-700' : 'text-gray-800'}`}>
-                  {d.getDate()}
-                </div>
-              </div>
-              <div className="space-y-0.5">
-                {dayEvents.map((e) => (
-                  <div key={e.id}
-                    className="text-xs px-1.5 py-0.5 rounded font-medium truncate cursor-default group relative"
-                    style={{ backgroundColor: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1', border: `1px solid ${e.color ?? '#6366f1'}44` }}
-                    title={e.title}>
-                    <span className="truncate block">{e.title}</span>
-                    <button
-                      onClick={() => deleteEvent(e.id)}
-                      className="absolute right-0.5 top-0.5 hidden group-hover:block text-red-400 hover:text-red-600 leading-none"
-                    >×</button>
+      {/* ── WEEK VIEW ── */}
+      {view === 'week' && (
+        <>
+          <div className="flex items-center gap-3 mb-4">
+            <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()-7); setWeek(d) }}
+              className="btn-ghost px-3 py-1.5 text-sm">← Vorige</button>
+            <span className="font-semibold text-gray-700 text-sm flex-1 text-center">
+              {formatDate(days[0].toISOString())} – {formatDate(days[6].toISOString())}
+            </span>
+            <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()+7); setWeek(d) }}
+              className="btn-ghost px-3 py-1.5 text-sm">Volgende →</button>
+          </div>
+          <div className="grid grid-cols-7 gap-1 mb-8">
+            {days.map((d) => {
+              const ds = isoDate(d)
+              const dayEvents = eventsForDay(d)
+              const isToday = ds === today
+              return (
+                <div key={ds} className={`rounded-xl border-2 min-h-32 p-2 transition-colors ${
+                  isToday ? 'border-primary-400 bg-primary-50' : 'border-warm-gray bg-white'
+                }`}>
+                  <div className={`text-xs font-bold mb-1.5 ${isToday ? 'text-primary-700' : 'text-gray-500'}`}>
+                    <div>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
+                    <div className={`text-lg leading-none ${isToday ? 'text-primary-700' : 'text-gray-800'}`}>{d.getDate()}</div>
                   </div>
-                ))}
-              </div>
+                  <div className="space-y-0.5">
+                    {dayEvents.map((e) => (
+                      <div key={e.id}
+                        className="text-xs px-1.5 py-0.5 rounded font-medium truncate cursor-default group relative"
+                        style={{ backgroundColor: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1', border: `1px solid ${e.color ?? '#6366f1'}44` }}
+                        title={e.title}>
+                        <span className="truncate block">{e.title}</span>
+                        <button onClick={() => deleteEvent(e.id)}
+                          className="absolute right-0.5 top-0.5 hidden group-hover:block text-red-400 hover:text-red-600 leading-none">×</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </>
+      )}
+
+      {/* ── MONTH VIEW ── */}
+      {view === 'month' && (
+        <>
+          <div className="flex items-center gap-3 mb-4">
+            <button onClick={() => { const d = new Date(month); d.setMonth(d.getMonth()-1); setMonth(d) }}
+              className="btn-ghost px-3 py-1.5 text-sm">← Vorige</button>
+            <span className="font-semibold text-gray-700 text-sm flex-1 text-center">
+              {month.toLocaleDateString('nl-BE', { month: 'long', year: 'numeric' })}
+            </span>
+            <button onClick={() => { const d = new Date(month); d.setMonth(d.getMonth()+1); setMonth(d) }}
+              className="btn-ghost px-3 py-1.5 text-sm">Volgende →</button>
+          </div>
+          <div className="bg-white rounded-xl border border-warm-gray overflow-hidden mb-8">
+            {/* Weekday headers */}
+            <div className="grid grid-cols-7 border-b border-warm-gray">
+              {WEEKDAYS.map((wd) => (
+                <div key={wd} style={{ padding: '8px 0', textAlign: 'center', fontSize: 12, fontWeight: 600, color: '#5b5b5b' }}>{wd}</div>
+              ))}
             </div>
-          )
-        })}
-      </div>
+            {/* Day cells */}
+            <div className="grid grid-cols-7">
+              {monthGrid.map((d, i) => {
+                if (!d) return <div key={i} style={{ minHeight: 80, borderRight: '1px solid #f4f4f4', borderBottom: '1px solid #f4f4f4', background: '#fafafa' }} />
+                const ds = isoDate(d)
+                const dayEvents = eventsForDay(d)
+                const isToday = ds === today
+                const isCurrentMonth = d.getMonth() === month.getMonth()
+                return (
+                  <div key={ds} style={{
+                    minHeight: 80, padding: 6,
+                    borderRight: '1px solid #f4f4f4', borderBottom: '1px solid #f4f4f4',
+                    background: isToday ? '#fff3ef' : '#fff',
+                  }}>
+                    <div style={{
+                      fontSize: 13, fontWeight: isToday ? 700 : 400,
+                      color: isToday ? '#ff520e' : isCurrentMonth ? '#242424' : '#c0c0c0',
+                      marginBottom: 4,
+                    }}>
+                      {isToday ? (
+                        <span style={{ background: '#ff520e', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>
+                          {d.getDate()}
+                        </span>
+                      ) : d.getDate()}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      {dayEvents.slice(0, 3).map((e) => (
+                        <div key={e.id}
+                          style={{ fontSize: 10, padding: '1px 4px', borderRadius: 4, fontWeight: 500, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', background: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1' }}
+                          title={e.title}>
+                          {e.title}
+                        </div>
+                      ))}
+                      {dayEvents.length > 3 && (
+                        <div style={{ fontSize: 10, color: '#5b5b5b' }}>+{dayEvents.length - 3} meer</div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </>
+      )}
+
 
       {/* Upcoming list */}
       <div>
