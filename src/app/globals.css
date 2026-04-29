@@ -145,6 +145,29 @@
   padding: 20px 16px;
 }
 
+/* ── Mobile bottom navigation ─────────────────────────────────────────── */
+.smsc-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background: #fff;
+  border-top: 1px solid #e8e8e8;
+  z-index: 40;
+}
+
+@media (max-width: 767px) {
+  .smsc-bottom-nav {
+    display: flex;
+    align-items: stretch;
+  }
+  .smsc-content {
+    padding-bottom: 74px;
+  }
+}
+
 @layer base {
   body {
     @apply bg-cream text-gray-800 font-sans;

@@ -8,11 +8,19 @@ import { supabase } from '@/lib/supabase'
 const NAV: { href: string; label: string }[] = [
   { href: '/platform',             label: 'Start'        },
   { href: '/platform/agenda',      label: 'Agenda'       },
-  { href: '/platform/groepen',     label: 'Berichten'    },
+  { href: '/platform/berichten',   label: 'Berichten'    },
   { href: '/platform/documenten',  label: 'Documenten'   },
   { href: '/platform/formulieren', label: 'Formulieren'  },
   { href: '/platform/links',       label: 'Links'        },
   { href: '/platform/meldingen',   label: 'Meldingen'    },
+]
+
+const BOTTOM_NAV = [
+  { href: '/platform',            label: 'Home',      icon: '🏠' },
+  { href: '/platform/agenda',     label: 'Agenda',    icon: '📅' },
+  { href: '/platform/berichten',  label: 'Berichten', icon: '💬' },
+  { href: '/platform/documenten', label: 'Docs',      icon: '📁' },
+  { href: '/platform/meldingen',  label: 'Meldingen', icon: '🔔' },
 ]
 
 export default function PlatformNav() {
@@ -101,6 +109,9 @@ export default function PlatformNav() {
               <div className="smsc-dropdown" style={{ minWidth: 200 }}>
                 <Link href="/examenboard" onClick={() => setProfile(false)}>🎓 Examenboard</Link>
                 <Link href="/dashboard"   onClick={() => setProfile(false)}>🌐 Taalplatform</Link>
+                {isSuperAdmin && (
+                  <Link href="/platform/admin/gebruikers" onClick={() => setProfile(false)}>👥 Gebruikersbeheer</Link>
+                )}
                 <hr style={{ margin: '4px 0', border: 'none', borderTop: '1px solid #e8e8e8' }} />
                 <button onClick={logout} style={{ color: '#5b5b5b' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -160,7 +171,33 @@ export default function PlatformNav() {
         </nav>
       </header>
 
-      {/* ── Mobile menu ─────────────────────────────────────────── */}
+      {/* ── Mobile bottom nav ──────────────────────────────────── */}
+      <nav className="smsc-bottom-nav md:hidden">
+        {BOTTOM_NAV.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+              justifyContent: 'center', textDecoration: 'none', gap: 2, padding: '4px 0',
+              color: active(item.href) ? '#ff520e' : '#5b5b5b',
+              borderTop: active(item.href) ? '2px solid #ff520e' : '2px solid transparent',
+            }}
+          >
+            <span style={{ fontSize: 18, position: 'relative' }}>
+              {item.icon}
+              {item.href === '/platform/meldingen' && unread > 0 && (
+                <span className="smsc-nav__badge" style={{ position: 'absolute', top: -4, right: -8, fontSize: 9, minWidth: 14, padding: '0 3px' }}>
+                  {unread > 9 ? '9+' : unread}
+                </span>
+              )}
+            </span>
+            <span style={{ fontSize: 10, fontWeight: active(item.href) ? 600 : 400 }}>{item.label}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* ── Mobile hamburger menu ─────────────────────────────── */}
       {mobileOpen && (
         <div
           style={{ position: 'fixed', top: 48, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 39 }}
