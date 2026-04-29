@@ -1,0 +1,452 @@
+{
+  "language": "en",
+  "level": "a1",
+  "title": "Engels A1 — Beginner",
+  "description": "De eerste stappen in het Engels: lidwoorden, to be, de tegenwoordige tijd, basiszinnen en essentieel woordenschat.",
+  "topics": [
+    {
+      "id": "en-a1-articles",
+      "title": "Lidwoorden: a, an, the",
+      "description": "Het verschil tussen 'a', 'an' en 'the' — de drie lidwoorden van het Engels.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Engels zijn er maar twee soorten lidwoorden: het onbepaald lidwoord (a/an = een) en het bepaald lidwoord (the = de/het). Engels heeft geen geslacht, dus de vorm verandert niet op basis van mannelijk of vrouwelijk."
+        },
+        {
+          "type": "table",
+          "headers": ["Lidwoord", "Gebruik", "Voorbeeld"],
+          "rows": [
+            ["a", "onbepaald, voor medeklinker", "a book, a cat, a table"],
+            ["an", "onbepaald, voor klinkerklank", "an apple, an hour, an egg"],
+            ["the", "bepaald (de/het)", "the book, the cats, the idea"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "'An' gebruik je voor woorden die met een klinkerKLANK beginnen, niet een klinkerLETTER. 'An hour' (uur begint met een 'u' klank), maar 'a university' (begint met een 'j' klank: 'joo-ni-ver-si-ty')."
+        },
+        {
+          "type": "table",
+          "headers": ["Situatie", "Lidwoord", "Voorbeeld"],
+          "rows": [
+            ["Eerste keer iets noemen", "a/an", "I see a dog."],
+            ["Iets al gekend", "the", "The dog is big."],
+            ["Iets unieks", "the", "the sun, the moon"],
+            ["Algemene uitspraken", "geen lidwoord", "Dogs are friendly."],
+            ["Namen, talen, landen (meestal)", "geen lidwoord", "I speak English. I live in Belgium."]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I have a cat.", "right": "Ik heb een kat." },
+            { "left": "The cat is black.", "right": "De kat is zwart." },
+            { "left": "She is an artist.", "right": "Zij is een kunstenaar." },
+            { "left": "The sun is shining.", "right": "De zon schijnt." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a1-art-mc1",
+          "type": "multiple_choice",
+          "question": "Welk lidwoord gebruik je voor 'apple'?",
+          "options": ["a apple", "an apple", "the apple", "— apple"],
+          "correct": 1,
+          "explanation": "Apple begint met een klinkerklank ('a'), dus je gebruikt 'an'. An apple = een appel."
+        },
+        {
+          "id": "en-a1-art-mc2",
+          "type": "multiple_choice",
+          "question": "Je hebt al gesproken over een boek. Nu zeg je: '___ book is very good.'",
+          "options": ["A", "An", "The", "—"],
+          "correct": 2,
+          "explanation": "Als het boek al bekend is (eerder genoemd), gebruik je 'the'. The book = het (eerder genoemde) boek."
+        },
+        {
+          "id": "en-a1-art-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Honden zijn vriendelijk' (algemene uitspraak)?",
+          "options": ["A dogs are friendly.", "The dogs are friendly.", "Dogs are friendly.", "An dogs are friendly."],
+          "correct": 2,
+          "explanation": "Voor algemene uitspraken over een categorie gebruik je geen lidwoord in het Engels. Dogs are friendly."
+        },
+        {
+          "id": "en-a1-art-fill1",
+          "type": "fill_blank",
+          "question": "I have ___ idea! It is ___ best idea ever.",
+          "blanks": ["an", "the"],
+          "hint": "idea begint met klinker / best idea = specifieke beste",
+          "explanation": "An idea (klinkerklank). The best idea = de beste (superlatieven gebruiken altijd 'the')."
+        },
+        {
+          "id": "en-a1-art-match1",
+          "type": "matching",
+          "instruction": "Koppel elk woord aan het juiste lidwoord (a of an).",
+          "pairs": [
+            { "left": "umbrella", "right": "an" },
+            { "left": "car", "right": "a" },
+            { "left": "orange", "right": "an" },
+            { "left": "house", "right": "a" },
+            { "left": "hour", "right": "an" }
+          ]
+        },
+        {
+          "id": "en-a1-art-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Ik zie een hond. De hond is groot.",
+          "accepted": ["I see a dog. The dog is big.", "I see a dog. The dog is large."],
+          "explanation": "Eerste keer = a dog. Tweede keer (al gekend) = the dog."
+        }
+      ]
+    },
+    {
+      "id": "en-a1-to-be",
+      "title": "To be — zijn",
+      "description": "De vervoeging van 'to be' (zijn) in de tegenwoordige tijd, inclusief vraag- en ontkennende vormen.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "To be (zijn) is het meest gebruikte werkwoord in het Engels. Je gebruikt het voor identiteit, beschrijvingen, nationaliteit, beroep en locatie."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Volledig", "Samentrekking", "Ontkennend"],
+          "rows": [
+            ["I", "I am", "I'm", "I'm not"],
+            ["you", "you are", "you're", "you aren't"],
+            ["he/she/it", "he is", "he's", "he isn't"],
+            ["we", "we are", "we're", "we aren't"],
+            ["you (mv)", "you are", "you're", "you aren't"],
+            ["they", "they are", "they're", "they aren't"]
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Voor een ja/nee-vraag zet je 'to be' vóór het onderwerp."
+        },
+        {
+          "type": "table",
+          "headers": ["Bevestigend", "Vraag", "Kort antwoord"],
+          "rows": [
+            ["I am Belgian.", "Am I Belgian?", "Yes, I am. / No, I'm not."],
+            ["She is a student.", "Is she a student?", "Yes, she is. / No, she isn't."],
+            ["They are tired.", "Are they tired?", "Yes, they are. / No, they aren't."]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I'm from Belgium.", "right": "Ik ben uit België." },
+            { "left": "She isn't happy.", "right": "Zij is niet blij." },
+            { "left": "Are you a teacher?", "right": "Ben jij een leraar?" },
+            { "left": "They're in the classroom.", "right": "Zij zijn in het klaslokaal." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a1-be-mc1",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct?",
+          "options": ["She are a doctor.", "She am a doctor.", "She is a doctor.", "She be a doctor."],
+          "correct": 2,
+          "explanation": "He/she/it + is. She is a doctor = Zij is een dokter."
+        },
+        {
+          "id": "en-a1-be-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe maak je 'We are happy' ontkennend?",
+          "options": ["We not are happy.", "We are not happy.", "We aren't happy.", "Beide b en c zijn correct."],
+          "correct": 3,
+          "explanation": "We are not happy en we aren't happy zijn beide correct. 'Not' komt na 'are'. We not are happy is fout."
+        },
+        {
+          "id": "en-a1-be-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe vraag je 'Is hij thuis?' in het Engels?",
+          "options": ["He is at home?", "Is he at home?", "Does he is at home?", "He at home is?"],
+          "correct": 1,
+          "explanation": "Bij to be maak je een vraag door inversie: Is + he. Is he at home?"
+        },
+        {
+          "id": "en-a1-be-fill1",
+          "type": "fill_blank",
+          "question": "I ___ a student. She ___ from France. They ___ very tired.",
+          "blanks": ["am", "is", "are"],
+          "hint": "I am / she is / they are",
+          "explanation": "To be: I am, she is, they are. De drie basisvormen."
+        },
+        {
+          "id": "en-a1-be-fill2",
+          "type": "fill_blank",
+          "question": "___ you Belgian? — Yes, I ___. ___ she here? — No, she ___ not.",
+          "blanks": ["Are", "am", "Is", "is"],
+          "hint": "Are/Am/Is voor vraag + korte antwoorden",
+          "explanation": "Are you...? → Yes, I am. Is she...? → No, she is not (she isn't)."
+        },
+        {
+          "id": "en-a1-be-match1",
+          "type": "matching",
+          "instruction": "Koppel de lange vorm aan de samentrekking.",
+          "pairs": [
+            { "left": "I am", "right": "I'm" },
+            { "left": "she is", "right": "she's" },
+            { "left": "we are", "right": "we're" },
+            { "left": "they are", "right": "they're" },
+            { "left": "he is not", "right": "he isn't" }
+          ]
+        },
+        {
+          "id": "en-a1-be-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wij zijn geen studenten. Wij zijn leraren.",
+          "accepted": ["We aren't students. We are teachers.", "We're not students. We're teachers.", "We are not students. We are teachers."],
+          "explanation": "We aren't = we zijn niet. We are teachers = wij zijn leraren. Geen lidwoord bij beroepen na 'to be' in het Engels."
+        }
+      ]
+    },
+    {
+      "id": "en-a1-present-simple",
+      "title": "Present simple — tegenwoordige tijd",
+      "description": "Hoe je regelmatige werkwoorden gebruikt voor gewoonten, feiten en routines.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De present simple gebruik je voor gewoonten, routines, feiten en algemene waarheden. Het is eenvoudig: het werkwoord verandert alleen bij he/she/it, dat een -s krijgt."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Werkwoord (play)", "Opmerking"],
+          "rows": [
+            ["I", "I play", "—"],
+            ["you", "you play", "—"],
+            ["he/she/it", "he plays", "+s (of +es, +ies)"],
+            ["we", "we play", "—"],
+            ["you (mv)", "you play", "—"],
+            ["they", "they play", "—"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Spelregels voor he/she/it: werkwoorden op -s, -sh, -ch, -x, -o krijgen -es (watches, goes). Werkwoorden op -y na medeklinker: -y → -ies (study → studies). De rest: gewoon +s."
+        },
+        {
+          "type": "table",
+          "headers": ["Bevestigend", "Ontkennend", "Vraag"],
+          "rows": [
+            ["I like coffee.", "I don't like coffee.", "Do you like coffee?"],
+            ["She works here.", "She doesn't work here.", "Does she work here?"],
+            ["They play football.", "They don't play football.", "Do they play football?"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Voor de ontkenning en vragen gebruik je do/does. He/she/it krijgt 'does' — het werkwoord zelf blijft dan onveranderd (zonder -s)! Does she work (niet: does she works)."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "I go to school every day.", "right": "Ik ga elke dag naar school." },
+            { "left": "He doesn't eat meat.", "right": "Hij eet geen vlees." },
+            { "left": "Do you speak French?", "right": "Spreek jij Frans?" },
+            { "left": "She studies a lot.", "right": "Zij studeert veel." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a1-ps-mc1",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct? (to watch)",
+          "options": ["He watch TV every evening.", "He watchs TV every evening.", "He watches TV every evening.", "He is watch TV every evening."],
+          "correct": 2,
+          "explanation": "Watch eindigt op -ch, dus he/she/it krijgt -es: he watches. Watch → watches."
+        },
+        {
+          "id": "en-a1-ps-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe maak je 'She likes music' ontkennend?",
+          "options": ["She doesn't likes music.", "She don't like music.", "She doesn't like music.", "She not likes music."],
+          "correct": 2,
+          "explanation": "She + doesn't + werkwoord zonder -s. She doesn't like music. (niet 'likes', want doesn't neemt de functie al over)"
+        },
+        {
+          "id": "en-a1-ps-mc3",
+          "type": "multiple_choice",
+          "question": "Vraagvorm van 'They study English'?",
+          "options": ["Does they study English?", "Do they studies English?", "Do they study English?", "Are they study English?"],
+          "correct": 2,
+          "explanation": "They → do (niet does). Do they study English? Het werkwoord blijft onveranderd na do/does."
+        },
+        {
+          "id": "en-a1-ps-fill1",
+          "type": "fill_blank",
+          "question": "She ___ (study) every evening. He ___ (go) to school by bus. They ___ (not/eat) fish.",
+          "blanks": ["studies", "goes", "don't eat"],
+          "hint": "study → studies / go → goes / they + don't",
+          "explanation": "Study → studies (y→ies). Go → goes (+es). They don't eat (they gebruikt do not)."
+        },
+        {
+          "id": "en-a1-ps-fill2",
+          "type": "fill_blank",
+          "question": "___ he speak French? — No, he ___. But he ___ speak Dutch.",
+          "blanks": ["Does", "doesn't", "does"],
+          "hint": "Does ... ? / No, doesn't / Yes, does",
+          "explanation": "Vraag met he: Does he...? Ontkennend kort antwoord: he doesn't. Bevestigend: he does."
+        },
+        {
+          "id": "en-a1-ps-match1",
+          "type": "matching",
+          "instruction": "Koppel het werkwoord aan de he/she/it-vorm.",
+          "pairs": [
+            { "left": "watch", "right": "watches" },
+            { "left": "study", "right": "studies" },
+            { "left": "go", "right": "goes" },
+            { "left": "play", "right": "plays" },
+            { "left": "have", "right": "has" }
+          ]
+        },
+        {
+          "id": "en-a1-ps-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Spreek jij Engels? — Ja, maar ik spreek het niet goed.",
+          "accepted": ["Do you speak English? — Yes, but I don't speak it well.", "Do you speak English? — Yes, but I don't speak English well."],
+          "explanation": "Do you speak...? voor een vraag. I don't speak it well = ik spreek het niet goed."
+        }
+      ]
+    },
+    {
+      "id": "en-a1-vocabulary",
+      "title": "Basiswoordenschat",
+      "description": "Essentiële woorden voor familie, school, dagelijks leven en beschrijvingen.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Een goede basiswoordenschat maakt communiceren veel makkelijker. Leer deze woorden in groepen — dat onthoudt beter."
+        },
+        {
+          "type": "table",
+          "headers": ["Engels", "Nederlands"],
+          "rows": [
+            ["mother / mum", "moeder / mama"],
+            ["father / dad", "vader / papa"],
+            ["brother", "broer"],
+            ["sister", "zus"],
+            ["grandparent", "grootouder"],
+            ["friend", "vriend(in)"],
+            ["teacher", "leraar / lerares"],
+            ["classmate", "klasgenoot"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Engels", "Nederlands"],
+          "rows": [
+            ["school", "school"],
+            ["classroom", "klaslokaal"],
+            ["homework", "huiswerk"],
+            ["book", "boek"],
+            ["pen / pencil", "pen / potlood"],
+            ["bag", "rugzak / tas"],
+            ["lesson", "les"],
+            ["exam", "examen"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Engels", "Nederlands"],
+          "rows": [
+            ["big / small", "groot / klein"],
+            ["old / young", "oud / jong"],
+            ["happy / sad", "blij / verdrietig"],
+            ["easy / difficult", "gemakkelijk / moeilijk"],
+            ["interesting / boring", "interessant / saai"],
+            ["fast / slow", "snel / langzaam"],
+            ["good / bad", "goed / slecht"],
+            ["right / wrong", "juist / fout"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "My sister is very young.", "right": "Mijn zus is heel jong." },
+            { "left": "The homework is difficult.", "right": "Het huiswerk is moeilijk." },
+            { "left": "Is the exam easy or hard?", "right": "Is het examen gemakkelijk of moeilijk?" },
+            { "left": "My teacher is interesting.", "right": "Mijn leraar is interessant." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "en-a1-voc-mc1",
+          "type": "multiple_choice",
+          "question": "Wat is het Engels voor 'huiswerk'?",
+          "options": ["housework", "homework", "schoolwork", "classwork"],
+          "correct": 1,
+          "explanation": "Homework = huiswerk. Housework = huishoudelijk werk (kuisen enz.). Let op het verschil!"
+        },
+        {
+          "id": "en-a1-voc-mc2",
+          "type": "multiple_choice",
+          "question": "Het tegengestelde van 'easy' is?",
+          "options": ["boring", "slow", "difficult", "bad"],
+          "correct": 2,
+          "explanation": "Easy (gemakkelijk) ↔ difficult (moeilijk). Boring = saai, slow = langzaam, bad = slecht."
+        },
+        {
+          "id": "en-a1-voc-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Het examen is saai maar gemakkelijk'?",
+          "options": ["The exam is boring but easy.", "The exam is boring and difficult.", "The exam is interesting but easy.", "The exam is bad but small."],
+          "correct": 0,
+          "explanation": "Boring = saai. But = maar. Easy = gemakkelijk. The exam is boring but easy."
+        },
+        {
+          "id": "en-a1-voc-match1",
+          "type": "matching",
+          "instruction": "Koppel het Engelse woord aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "classmate", "right": "klasgenoot" },
+            { "left": "lesson", "right": "les" },
+            { "left": "bag", "right": "rugzak / tas" },
+            { "left": "pencil", "right": "potlood" },
+            { "left": "classroom", "right": "klaslokaal" }
+          ]
+        },
+        {
+          "id": "en-a1-voc-match2",
+          "type": "matching",
+          "instruction": "Koppel het tegengestelde.",
+          "pairs": [
+            { "left": "big", "right": "small" },
+            { "left": "happy", "right": "sad" },
+            { "left": "fast", "right": "slow" },
+            { "left": "good", "right": "bad" },
+            { "left": "right", "right": "wrong" }
+          ]
+        },
+        {
+          "id": "en-a1-voc-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Mijn broer is jong en blij.",
+          "accepted": ["My brother is young and happy.", "My brother is happy and young."],
+          "explanation": "Brother = broer. Young = jong. Happy = blij. And = en."
+        },
+        {
+          "id": "en-a1-voc-tr2",
+          "type": "translation",
+          "direction": "target_to_nl",
+          "source": "The teacher is interesting but the homework is difficult.",
+          "accepted": ["De leraar is interessant maar het huiswerk is moeilijk.", "De lerares is interessant maar het huiswerk is moeilijk."],
+          "explanation": "Teacher = leraar/lerares. Interesting = interessant. But = maar. Difficult = moeilijk."
+        }
+      ]
+    }
+  ]
+}

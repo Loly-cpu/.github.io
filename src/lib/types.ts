@@ -1,5 +1,5 @@
 export type Language = 'fr' | 'en'
-export type Level = 'a0' | 'a1' | 'a2' | 'b1' | 'b2'
+export type Level = 'a0' | 'a1' | 'a2' | 'b1' | 'bplus' | 'b2' | 'c1' | 'c2'
 
 // ─── Content Types ───────────────────────────────────────────────────────────
 

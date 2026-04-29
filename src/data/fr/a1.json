@@ -1,0 +1,878 @@
+{
+  "language": "fr",
+  "level": "a1",
+  "title": "Frans A1 — Beginner",
+  "description": "De eerste echte grammatica: lidwoorden, zijn, hebben, werkwoorden, ontkenning, vragen, bezittelijke voornaamwoorden en getallen tot 100.",
+  "topics": [
+    {
+      "id": "fr-a1-lidwoorden",
+      "title": "Lidwoorden",
+      "description": "Onbepaalde (un/une) en bepaalde (le/la/les) lidwoorden, plus de partitieve vormen (du/de la).",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans heeft elk zelfstandig naamwoord een geslacht: mannelijk (masculin) of vrouwelijk (féminin). Het lidwoord past zich daaraan aan. Dit is een van de belangrijkste regels van het Frans."
+        },
+        {
+          "type": "table",
+          "headers": ["Type", "Mannelijk", "Vrouwelijk", "Meervoud"],
+          "rows": [
+            ["Onbepaald (een)", "un", "une", "des"],
+            ["Bepaald (de/het)", "le", "la", "les"],
+            ["Bepaald + klinker", "l'", "l'", "les"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Voor woorden die beginnen met een klinker (a, e, i, o, u) of stomme h gebruik je l' in plaats van le of la. Voorbeeld: l'ami (de vriend), l'école (de school)."
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Geslacht", "Met lidwoord", "Betekenis"],
+          "rows": [
+            ["livre", "mannelijk", "le livre / un livre", "het boek / een boek"],
+            ["table", "vrouwelijk", "la table / une table", "de tafel / een tafel"],
+            ["ami", "mannelijk", "l'ami / un ami", "de vriend / een vriend"],
+            ["école", "vrouwelijk", "l'école / une école", "de school / een school"],
+            ["livres", "mannelijk mv.", "les livres / des livres", "de boeken / (sommige) boeken"]
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Het partitief lidwoord (du, de la, de l', des) gebruik je voor dingen die je niet kan tellen, zoals eten en drinken."
+        },
+        {
+          "type": "table",
+          "headers": ["Mannelijk", "Vrouwelijk", "Voor klinker", "Meervoud"],
+          "rows": [
+            ["du pain", "de la viande", "de l'eau", "des légumes"],
+            ["(brood)", "(vlees)", "(water)", "(groenten)"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Je mange du pain.", "right": "Ik eet brood." },
+            { "left": "Elle boit de l'eau.", "right": "Ze drinkt water." },
+            { "left": "Il a un chien.", "right": "Hij heeft een hond." },
+            { "left": "La maison est grande.", "right": "Het huis is groot." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-lid-mc1",
+          "type": "multiple_choice",
+          "question": "Welk lidwoord hoort bij 'école' (vrouwelijk, begint met klinker)?",
+          "options": ["le école", "la école", "l'école", "un école"],
+          "correct": 2,
+          "explanation": "Voor vrouwelijke woorden die beginnen met een klinker gebruik je l'. Le en la worden l' voor een klinker."
+        },
+        {
+          "id": "fr-a1-lid-mc2",
+          "type": "multiple_choice",
+          "question": "Je drinkt wat koffie. Hoe zeg je dat in het Frans? (koffie = café, mannelijk)",
+          "options": ["Je bois le café.", "Je bois du café.", "Je bois un café.", "Je bois de café."],
+          "correct": 1,
+          "explanation": "Voor niet-telbare dingen (zoals drinken) gebruik je het partitief: du (mannelijk). Du café = wat koffie."
+        },
+        {
+          "id": "fr-a1-lid-mc3",
+          "type": "multiple_choice",
+          "question": "Wat is het meervoud van 'un livre'?",
+          "options": ["le livre", "des livres", "les livre", "un livres"],
+          "correct": 1,
+          "explanation": "Het meervoud van het onbepaald lidwoord is des. Un livre → des livres."
+        },
+        {
+          "id": "fr-a1-lid-fill1",
+          "type": "fill_blank",
+          "question": "___ garçon mange ___ pomme. (De jongen eet een appel. — pomme is vrouwelijk)",
+          "blanks": ["Le", "une"],
+          "hint": "bepaald lidwoord (mannelijk) + onbepaald lidwoord (vrouwelijk)",
+          "explanation": "Le = bepaald lidwoord mannelijk. Une = onbepaald lidwoord vrouwelijk (pomme is vrouwelijk)."
+        },
+        {
+          "id": "fr-a1-lid-fill2",
+          "type": "fill_blank",
+          "question": "Elle mange ___ viande et boit ___ eau. (Ze eet vlees en drinkt water.)",
+          "blanks": ["de la", "de l'"],
+          "hint": "partitief vrouwelijk + partitief voor klinker",
+          "explanation": "De la viande = partitief vrouwelijk. De l'eau = partitief voor een klinker (eau begint met e)."
+        },
+        {
+          "id": "fr-a1-lid-match1",
+          "type": "matching",
+          "instruction": "Koppel het woord aan het juiste bepaald lidwoord.",
+          "pairs": [
+            { "left": "livre (m)", "right": "le" },
+            { "left": "table (v)", "right": "la" },
+            { "left": "ami (m, klinker)", "right": "l'" },
+            { "left": "livres (mv)", "right": "les" },
+            { "left": "eau (v, klinker)", "right": "l'" }
+          ]
+        },
+        {
+          "id": "fr-a1-lid-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Ik eet een boterham. (boterham = tartine, vrouwelijk)",
+          "accepted": ["Je mange une tartine.", "Je mange une tartine"],
+          "explanation": "Tartine is vrouwelijk, dus 'een' = une. Je mange = ik eet."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-etre",
+      "title": "Être — zijn",
+      "description": "De vervoeging van être (zijn) in de tegenwoordige tijd, het meest gebruikte werkwoord in het Frans.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Être (zijn) is een onregelmatig werkwoord dat je absoluut van buiten moet kennen. Het gebruik je voor identiteit, nationaliteit, beroep, locatie en beschrijvingen."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Frans", "Uitspraak", "Nederlands"],
+          "rows": [
+            ["je", "je suis", "zjuh swi", "ik ben"],
+            ["tu", "tu es", "tü eh", "jij bent"],
+            ["il/elle/on", "il est / elle est", "il eh / el eh", "hij/zij/men is"],
+            ["nous", "nous sommes", "noo som", "wij zijn"],
+            ["vous", "vous êtes", "voo et", "jullie/u zijn/bent"],
+            ["ils/elles", "ils sont / elles sont", "il son / el son", "zij zijn"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "'On' betekent 'men' maar wordt in de spreektaal vaak gebruikt als 'wij'. On est = we zijn (informeel voor nous sommes)."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Je suis étudiant.", "right": "Ik ben student." },
+            { "left": "Elle est belge.", "right": "Zij is Belgisch." },
+            { "left": "Nous sommes fatigués.", "right": "Wij zijn moe." },
+            { "left": "Vous êtes professeur?", "right": "Bent u leraar?" },
+            { "left": "Ils sont contents.", "right": "Zij zijn blij." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-etre-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe vervoeg je être bij 'nous'?",
+          "options": ["nous êtes", "nous sommes", "nous sont", "nous suis"],
+          "correct": 1,
+          "explanation": "Nous sommes = wij zijn. Être is onregelmatig: je/tu/il/nous/vous/ils hebben allemaal unieke vormen."
+        },
+        {
+          "id": "fr-a1-etre-mc2",
+          "type": "multiple_choice",
+          "question": "Vul in: 'Tu ___ très sympa.' (Jij bent heel aardig.)",
+          "options": ["suis", "est", "es", "êtes"],
+          "correct": 2,
+          "explanation": "Tu es = jij bent. Suis is voor je, est voor il/elle, êtes voor vous."
+        },
+        {
+          "id": "fr-a1-etre-mc3",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'Elles sont françaises'?",
+          "options": ["Hij is Frans.", "Zij (m) zijn Frans.", "Zij (v) zijn Frans.", "Wij zijn Frans."],
+          "correct": 2,
+          "explanation": "Elles = zij (vrouwelijk meervoud). Sont = zijn. Françaises = Frans (vrouwelijke meervoudsvorm)."
+        },
+        {
+          "id": "fr-a1-etre-fill1",
+          "type": "fill_blank",
+          "question": "Je ___ belge. Tu ___ étudiant. Il ___ professeur.",
+          "blanks": ["suis", "es", "est"],
+          "hint": "je suis / tu es / il est",
+          "explanation": "Être: je suis, tu es, il/elle est — de drie meest gebruikte vormen."
+        },
+        {
+          "id": "fr-a1-etre-fill2",
+          "type": "fill_blank",
+          "question": "Nous ___ à l'école. Vous ___ en retard. Ils ___ fatigués.",
+          "blanks": ["sommes", "êtes", "sont"],
+          "hint": "nous sommes / vous êtes / ils sont",
+          "explanation": "Être: nous sommes, vous êtes, ils/elles sont."
+        },
+        {
+          "id": "fr-a1-etre-match1",
+          "type": "matching",
+          "instruction": "Koppel het persoonlijk voornaamwoord aan de juiste vorm van être.",
+          "pairs": [
+            { "left": "je", "right": "suis" },
+            { "left": "tu", "right": "es" },
+            { "left": "nous", "right": "sommes" },
+            { "left": "vous", "right": "êtes" },
+            { "left": "ils/elles", "right": "sont" }
+          ]
+        },
+        {
+          "id": "fr-a1-etre-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wij zijn moe maar blij.",
+          "accepted": ["Nous sommes fatigués mais contents.", "Nous sommes fatiguées mais contentes.", "On est fatigués mais contents."],
+          "explanation": "Nous sommes = wij zijn. Fatigué(s) = moe. Mais = maar. Content(s) = blij."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-avoir",
+      "title": "Avoir — hebben",
+      "description": "De vervoeging van avoir (hebben) en de belangrijkste uitdrukkingen ermee.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Avoir (hebben) is het tweede onregelmatige basiswerkwoord. Het gebruik je niet alleen voor bezit, maar ook voor leeftijd, honger, dorst en andere lichaamsgevoelens."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Frans", "Uitspraak", "Nederlands"],
+          "rows": [
+            ["je", "j'ai", "zjeh", "ik heb"],
+            ["tu", "tu as", "tü a", "jij hebt"],
+            ["il/elle/on", "il a / elle a", "il a / el a", "hij/zij heeft"],
+            ["nous", "nous avons", "noo za-von", "wij hebben"],
+            ["vous", "vous avez", "voo za-vay", "jullie/u hebben/hebt"],
+            ["ils/elles", "ils ont / elles ont", "il zon / el zon", "zij hebben"]
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Avoir gebruik je in vaste uitdrukkingen die in het Nederlands met 'zijn' of 'voelen' vertaald worden."
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Letterlijk", "Betekenis"],
+          "rows": [
+            ["avoir faim", "honger hebben", "honger hebben"],
+            ["avoir soif", "dorst hebben", "dorst hebben"],
+            ["avoir chaud", "warmte hebben", "het warm hebben"],
+            ["avoir froid", "koude hebben", "het koud hebben"],
+            ["avoir peur", "angst hebben", "bang zijn"],
+            ["avoir raison", "gelijk hebben", "gelijk hebben"],
+            ["avoir tort", "ongelijk hebben", "ongelijk hebben"],
+            ["avoir ... ans", "... jaar hebben", "... jaar oud zijn"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "J'ai faim.", "right": "Ik heb honger." },
+            { "left": "Tu as soif?", "right": "Heb jij dorst?" },
+            { "left": "Il a dix-sept ans.", "right": "Hij is 17 jaar oud." },
+            { "left": "Nous avons raison.", "right": "Wij hebben gelijk." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-avoir-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'zij (v) hebben' in het Frans?",
+          "options": ["elles ont", "elles avez", "elles a", "elles avons"],
+          "correct": 0,
+          "explanation": "Elles ont = zij (vrouwelijk) hebben. Avoir: j'ai, tu as, il/elle a, nous avons, vous avez, ils/elles ont."
+        },
+        {
+          "id": "fr-a1-avoir-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Ik heb dorst' in het Frans?",
+          "options": ["Je suis soif.", "J'ai soif.", "Je fais soif.", "J'ai chaud."],
+          "correct": 1,
+          "explanation": "J'ai soif = ik heb dorst. In het Frans gebruik je avoir (hebben) voor lichaamsgevoelens, niet être (zijn)."
+        },
+        {
+          "id": "fr-a1-avoir-mc3",
+          "type": "multiple_choice",
+          "question": "Vul in: 'Vous ___ un problème?' (Heeft u een probleem?)",
+          "options": ["avons", "ont", "avez", "as"],
+          "correct": 2,
+          "explanation": "Vous avez = u heeft / jullie hebben. Avons is voor nous, ont voor ils/elles, as voor tu."
+        },
+        {
+          "id": "fr-a1-avoir-fill1",
+          "type": "fill_blank",
+          "question": "J'___ faim. Tu ___ soif? Elle ___ froid.",
+          "blanks": ["ai", "as", "a"],
+          "hint": "avoir: j'ai / tu as / il-elle a",
+          "explanation": "Avoir: j'ai (ik heb), tu as (jij hebt), il/elle a (hij/zij heeft)."
+        },
+        {
+          "id": "fr-a1-avoir-match1",
+          "type": "matching",
+          "instruction": "Koppel de avoir-uitdrukking aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "avoir faim", "right": "honger hebben" },
+            { "left": "avoir peur", "right": "bang zijn" },
+            { "left": "avoir raison", "right": "gelijk hebben" },
+            { "left": "avoir chaud", "right": "het warm hebben" },
+            { "left": "avoir tort", "right": "ongelijk hebben" }
+          ]
+        },
+        {
+          "id": "fr-a1-avoir-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Hij is 14 jaar oud en heeft honger.",
+          "accepted": ["Il a quatorze ans et il a faim.", "Il a 14 ans et il a faim.", "Il a quatorze ans et a faim."],
+          "explanation": "Il a ... ans = hij is ... jaar oud (met avoir!). Il a faim = hij heeft honger."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-er-werkwoorden",
+      "title": "-er werkwoorden",
+      "description": "De regelmatige -er werkwoorden: de grootste groep werkwoorden in het Frans.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De meeste Franse werkwoorden eindigen op -er en volgen hetzelfde patroon. Als je dit patroon kent, kan je honderden werkwoorden vervoegen. Je haalt de uitgang -er af en voegt de nieuwe uitgangen toe."
+        },
+        {
+          "type": "table",
+          "headers": ["Persoon", "Uitgang", "Voorbeeld (parler)", "Nederlands"],
+          "rows": [
+            ["je", "-e", "je parle", "ik spreek"],
+            ["tu", "-es", "tu parles", "jij spreekt"],
+            ["il/elle/on", "-e", "il parle", "hij spreekt"],
+            ["nous", "-ons", "nous parlons", "wij spreken"],
+            ["vous", "-ez", "vous parlez", "jullie/u spreken/spreekt"],
+            ["ils/elles", "-ent", "ils parlent", "zij spreken"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Let op: je, tu, il en ils klinken allemaal hetzelfde bij -er werkwoorden (je parle, tu parles, il parle, ils parlent). De -e, -es en -ent zijn stom!"
+        },
+        {
+          "type": "table",
+          "headers": ["Werkwoord", "Betekenis"],
+          "rows": [
+            ["parler", "spreken"],
+            ["manger", "eten"],
+            ["aimer", "houden van / leuk vinden"],
+            ["habiter", "wonen"],
+            ["travailler", "werken"],
+            ["écouter", "luisteren"],
+            ["regarder", "kijken"],
+            ["chercher", "zoeken"],
+            ["arriver", "aankomen"],
+            ["danser", "dansen"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "J'aime le français.", "right": "Ik hou van Frans." },
+            { "left": "Tu écoutes de la musique?", "right": "Luister jij naar muziek?" },
+            { "left": "Nous habitons à Bruges.", "right": "Wij wonen in Brugge." },
+            { "left": "Ils travaillent beaucoup.", "right": "Zij werken veel." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-er-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe vervoeg je 'parler' bij 'vous'?",
+          "options": ["vous parlons", "vous parlez", "vous parlent", "vous parle"],
+          "correct": 1,
+          "explanation": "Vous + -er werkwoord → vous + stam + ez. Parler → vous parlez."
+        },
+        {
+          "id": "fr-a1-er-mc2",
+          "type": "multiple_choice",
+          "question": "Welke zin is correct? (wonen = habiter)",
+          "options": ["Il habites à Paris.", "Nous habitez à Paris.", "Elle habite à Paris.", "Tu habitons à Paris."],
+          "correct": 2,
+          "explanation": "Elle habite = zij woont. Stam: habit- + uitgang -e voor il/elle/on."
+        },
+        {
+          "id": "fr-a1-er-mc3",
+          "type": "multiple_choice",
+          "question": "Waarom zijn 'je parle', 'tu parles' en 'ils parlent' hetzelfde van klank?",
+          "options": ["Ze hebben dezelfde uitgang.", "De -e, -es en -ent zijn stom (worden niet uitgesproken).", "Het zijn onregelmatige werkwoorden.", "Dat klopt niet."],
+          "correct": 1,
+          "explanation": "Bij -er werkwoorden zijn de uitgangen -e, -es en -ent stom. Alleen -ons, -ez en de stam zijn te horen."
+        },
+        {
+          "id": "fr-a1-er-fill1",
+          "type": "fill_blank",
+          "question": "Je ___ (aimer) le sport. Nous ___ (écouter) la radio. Vous ___ (travailler) ici?",
+          "blanks": ["aime", "écoutons", "travaillez"],
+          "hint": "je + -e / nous + -ons / vous + -ez",
+          "explanation": "Aimer → j'aime. Écouter → nous écoutons. Travailler → vous travaillez."
+        },
+        {
+          "id": "fr-a1-er-fill2",
+          "type": "fill_blank",
+          "question": "Ils ___ (danser) et elle ___ (chanter). Tu ___ (regarder) la télé?",
+          "blanks": ["dansent", "chante", "regardes"],
+          "hint": "ils + -ent / elle + -e / tu + -es",
+          "explanation": "Danser → ils dansent. Chanter → elle chante. Regarder → tu regardes."
+        },
+        {
+          "id": "fr-a1-er-match1",
+          "type": "matching",
+          "instruction": "Koppel het werkwoord aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "écouter", "right": "luisteren" },
+            { "left": "chercher", "right": "zoeken" },
+            { "left": "aimer", "right": "houden van" },
+            { "left": "travailler", "right": "werken" },
+            { "left": "arriver", "right": "aankomen" }
+          ]
+        },
+        {
+          "id": "fr-a1-er-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wij spreken Frans en zij luisteren.",
+          "accepted": ["Nous parlons français et ils écoutent.", "Nous parlons français et elles écoutent.", "On parle français et ils écoutent."],
+          "explanation": "Parler → nous parlons. Écouter → ils/elles écoutent (ils of elles afhankelijk van wie)."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-ontkenning",
+      "title": "Ontkenning met ne…pas",
+      "description": "Hoe je 'niet' zegt in het Frans: de ontkenning ne…pas en varianten.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans staat de ontkenning rond het werkwoord: ne voor het werkwoord, pas erna. Dit is anders dan in het Nederlands waar 'niet' achteraan komt."
+        },
+        {
+          "type": "table",
+          "headers": ["Bevestigend", "Ontkennend", "Betekenis"],
+          "rows": [
+            ["Je parle français.", "Je ne parle pas français.", "Ik spreek geen Frans."],
+            ["Il aime la musique.", "Il n'aime pas la musique.", "Hij houdt niet van muziek."],
+            ["Nous sommes à l'école.", "Nous ne sommes pas à l'école.", "Wij zijn niet op school."],
+            ["Tu as faim.", "Tu n'as pas faim.", "Jij hebt geen honger."]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Voor een klinker wordt 'ne' → 'n''. Ik spreek niet = Je ne parle pas. Ik heb niet = Je n'ai pas (n' + ai)."
+        },
+        {
+          "type": "table",
+          "headers": ["Variant", "Betekenis", "Voorbeeld"],
+          "rows": [
+            ["ne…pas", "niet", "Je ne sais pas."],
+            ["ne…plus", "niet meer", "Il ne travaille plus ici."],
+            ["ne…jamais", "nooit", "Elle ne mange jamais de viande."],
+            ["ne…rien", "niets", "Je ne comprends rien."]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Je ne mange pas de viande.", "right": "Ik eet geen vlees." },
+            { "left": "Il n'habite plus à Bruxelles.", "right": "Hij woont niet meer in Brussel." },
+            { "left": "Nous ne comprenons rien.", "right": "Wij begrijpen niets." },
+            { "left": "Tu ne travailles jamais!", "right": "Jij werkt nooit!" }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-neg-mc1",
+          "type": "multiple_choice",
+          "question": "Maak de zin ontkennend: 'Je parle allemand.'",
+          "options": ["Je ne parle pas allemand.", "Je parle ne pas allemand.", "Je parle pas allemand.", "Ne je parle pas allemand."],
+          "correct": 0,
+          "explanation": "De ontkenning staat rond het werkwoord: Je NE parle PAS allemand."
+        },
+        {
+          "id": "fr-a1-neg-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'Hij houdt niet van kaas' (aimer = houden van)?",
+          "options": ["Il aime pas le fromage.", "Il n'aime pas le fromage.", "Il ne aime pas le fromage.", "Il pas aime le fromage."],
+          "correct": 1,
+          "explanation": "Voor een klinker wordt ne → n'. Il n'aime pas = hij houdt niet van. Let op de apostrof!"
+        },
+        {
+          "id": "fr-a1-neg-mc3",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'Elle ne mange jamais de viande'?",
+          "options": ["Ze eet geen vlees meer.", "Ze eet nooit vlees.", "Ze eet niet veel vlees.", "Ze eet soms vlees."],
+          "correct": 1,
+          "explanation": "Ne…jamais = nooit. Elle ne mange jamais de viande = Ze eet nooit vlees."
+        },
+        {
+          "id": "fr-a1-neg-fill1",
+          "type": "fill_blank",
+          "question": "Je ___ comprends ___. (Ik begrijp het niet.)",
+          "blanks": ["ne", "pas"],
+          "hint": "ne ... pas rond het werkwoord",
+          "explanation": "Je ne comprends pas. Ne staat voor het werkwoord, pas erna."
+        },
+        {
+          "id": "fr-a1-neg-fill2",
+          "type": "fill_blank",
+          "question": "Il ___ habite ___ à Gand. (Hij woont niet meer in Gent.)",
+          "blanks": ["ne", "plus"],
+          "hint": "ne...plus = niet meer",
+          "explanation": "Ne...plus = niet meer. Il ne habite plus / Il n'habite plus à Gand."
+        },
+        {
+          "id": "fr-a1-neg-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wij spreken geen Engels.",
+          "accepted": ["Nous ne parlons pas anglais.", "On ne parle pas anglais."],
+          "explanation": "Nous ne parlons pas anglais. De ontkenning (ne...pas) omringt het werkwoord parlons."
+        },
+        {
+          "id": "fr-a1-neg-tr2",
+          "type": "translation",
+          "direction": "target_to_nl",
+          "source": "Je ne comprends rien.",
+          "accepted": ["Ik begrijp niets.", "Ik verstaan niets."],
+          "explanation": "Ne…rien = niets. Je ne comprends rien = ik begrijp niets."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-vragen",
+      "title": "Vragen stellen",
+      "description": "Drie manieren om vragen te stellen in het Frans: intonatie, est-ce que en inversie.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans zijn er drie manieren om een ja/nee-vraag te stellen. Van eenvoudig naar formeel: intonatie, est-ce que en inversie."
+        },
+        {
+          "type": "table",
+          "headers": ["Methode", "Voorbeeld", "Gebruik"],
+          "rows": [
+            ["Intonatie (stem omhoog)", "Tu parles français?", "Informeel, gesproken taal"],
+            ["Est-ce que + zin", "Est-ce que tu parles français?", "Neutraal, altijd correct"],
+            ["Inversie (werkwoord-subject)", "Parles-tu français?", "Formeel, schrijftaal"]
+          ]
+        },
+        {
+          "type": "text",
+          "content": "Voor vragen met vraagwoorden (wie, wat, waar, wanneer, hoe, waarom) gebruik je dezelfde drie methodes plus het vraagwoord vooraan."
+        },
+        {
+          "type": "table",
+          "headers": ["Vraagwoord", "Frans", "Voorbeeld"],
+          "rows": [
+            ["Wie", "qui", "Qui est-ce?"],
+            ["Wat", "que / qu'est-ce que", "Qu'est-ce que tu fais?"],
+            ["Waar", "où", "Où habites-tu?"],
+            ["Wanneer", "quand", "Quand arrives-tu?"],
+            ["Hoe", "comment", "Comment tu t'appelles?"],
+            ["Waarom", "pourquoi", "Pourquoi tu ris?"],
+            ["Hoeveel", "combien", "Combien ça coûte?"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Est-ce que tu aimes le sport?", "right": "Hou jij van sport?" },
+            { "left": "Où est-ce qu'il habite?", "right": "Waar woont hij?" },
+            { "left": "Pourquoi tu pleures?", "right": "Waarom huil jij?" },
+            { "left": "Combien coûte ce livre?", "right": "Hoeveel kost dit boek?" }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-vr-mc1",
+          "type": "multiple_choice",
+          "question": "Welke vraagzin is correct voor 'Woon jij in Gent?'",
+          "options": ["Tu habites à Gand?", "Est-ce que tu habites à Gand?", "Habites-tu à Gand?", "Alle drie zijn correct."],
+          "correct": 3,
+          "explanation": "Alle drie zijn correct! Intonatie, est-ce que en inversie zijn de drie geldige manieren om een vraag te stellen."
+        },
+        {
+          "id": "fr-a1-vr-mc2",
+          "type": "multiple_choice",
+          "question": "Wat is het vraagwoord voor 'hoeveel'?",
+          "options": ["comment", "combien", "pourquoi", "quand"],
+          "correct": 1,
+          "explanation": "Combien = hoeveel. Comment = hoe, pourquoi = waarom, quand = wanneer."
+        },
+        {
+          "id": "fr-a1-vr-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe vraag je 'Waarom lach jij?' (rire = lachen) informeel?",
+          "options": ["Pourquoi tu ris?", "Pourquoi ris-tu?", "Est-ce que pourquoi tu ris?", "Quand tu ris?"],
+          "correct": 0,
+          "explanation": "Informeel: vraagwoord + zin met stijgende intonatie. Pourquoi tu ris? Inversie (ris-tu) is ook correct maar formeler."
+        },
+        {
+          "id": "fr-a1-vr-fill1",
+          "type": "fill_blank",
+          "question": "___ est-ce que tu habites? — J'habite à Liège. (Waar woon je?)",
+          "blanks": ["Où"],
+          "hint": "waar = ?",
+          "explanation": "Où = waar. Où est-ce que tu habites? = Waar woon je?"
+        },
+        {
+          "id": "fr-a1-vr-fill2",
+          "type": "fill_blank",
+          "question": "___ tu t'appelles? — Je m'appelle Sarah. (Hoe heet je?)",
+          "blanks": ["Comment"],
+          "hint": "hoe = ?",
+          "explanation": "Comment = hoe. Comment tu t'appelles? = Hoe heet je?"
+        },
+        {
+          "id": "fr-a1-vr-match1",
+          "type": "matching",
+          "instruction": "Koppel het vraagwoord aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "qui", "right": "wie" },
+            { "left": "où", "right": "waar" },
+            { "left": "quand", "right": "wanneer" },
+            { "left": "pourquoi", "right": "waarom" },
+            { "left": "combien", "right": "hoeveel" }
+          ]
+        },
+        {
+          "id": "fr-a1-vr-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Wanneer kom je aan? (aankomen = arriver)",
+          "accepted": ["Quand est-ce que tu arrives?", "Quand tu arrives?", "Quand arrives-tu?"],
+          "explanation": "Quand = wanneer. Alle drie varianten zijn correct. Est-ce que is de meest neutrale optie."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-bezittelijk",
+      "title": "Bezittelijke voornaamwoorden",
+      "description": "Mijn, jouw, zijn/haar, ons, jullie, hun — en hoe ze aanpassen aan het geslacht.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans past het bezittelijk voornaamwoord zich aan het geslacht van het bezit aan, niet aan de bezitter. Dit is anders dan in het Nederlands!"
+        },
+        {
+          "type": "table",
+          "headers": ["Bezitter", "Mannelijk", "Vrouwelijk", "Meervoud"],
+          "rows": [
+            ["ik (je)", "mon", "ma", "mes"],
+            ["jij (tu)", "ton", "ta", "tes"],
+            ["hij/zij (il/elle)", "son", "sa", "ses"],
+            ["wij (nous)", "notre", "notre", "nos"],
+            ["jullie/u (vous)", "votre", "votre", "vos"],
+            ["zij (ils/elles)", "leur", "leur", "leurs"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Voor vrouwelijke woorden die beginnen met een klinker gebruik je de mannelijke vorm: mon amie (mijn vriendin, niet 'ma amie'). Dit is om de klank vloeiender te maken."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "mon livre (m)", "right": "mijn boek" },
+            { "left": "ma sœur (v)", "right": "mijn zus" },
+            { "left": "son père / sa mère", "right": "zijn/haar vader / zijn/haar moeder" },
+            { "left": "notre maison", "right": "ons huis" },
+            { "left": "leurs enfants", "right": "hun kinderen" }
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Son/sa/ses kan zowel 'zijn' als 'haar' betekenen — het hangt af van het bezit, niet de bezitter. Son livre kan dus 'zijn boek' OF 'haar boek' zijn."
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-bez-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'mijn moeder' (moeder = mère, vrouwelijk)?",
+          "options": ["mon mère", "ma mère", "mes mère", "son mère"],
+          "correct": 1,
+          "explanation": "Mère is vrouwelijk, en de bezitter is 'ik' → ma. Ma mère = mijn moeder."
+        },
+        {
+          "id": "fr-a1-bez-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'zijn boeken' (boeken = livres, meervoud)?",
+          "options": ["son livres", "sa livres", "ses livres", "leur livres"],
+          "correct": 2,
+          "explanation": "Livres is meervoud, bezitter = hij/zij → ses. Ses livres = zijn/haar boeken."
+        },
+        {
+          "id": "fr-a1-bez-mc3",
+          "type": "multiple_choice",
+          "question": "Mijn vriendin (amie, vrouwelijk, begint met klinker) = ?",
+          "options": ["ma amie", "mon amie", "mes amie", "son amie"],
+          "correct": 1,
+          "explanation": "Amie begint met een klinker. Zelfs al is het vrouwelijk, gebruik je mon (niet ma) om de klanken vloeiend te houden: mon amie."
+        },
+        {
+          "id": "fr-a1-bez-fill1",
+          "type": "fill_blank",
+          "question": "C'est ___ père et ___ mère. Ce sont ___ parents. (mijn vader, mijn moeder, mijn ouders)",
+          "blanks": ["mon", "ma", "mes"],
+          "hint": "père = mannelijk / mère = vrouwelijk / parents = meervoud",
+          "explanation": "Mon père (mannelijk), ma mère (vrouwelijk), mes parents (meervoud). Allemaal 'mijn'."
+        },
+        {
+          "id": "fr-a1-bez-fill2",
+          "type": "fill_blank",
+          "question": "Elle aime ___ chien et ___ chat. (haar hond en haar kat — beide mannelijk)",
+          "blanks": ["son", "son"],
+          "hint": "haar + mannelijk enkelvoud = ?",
+          "explanation": "Chien en chat zijn beide mannelijk enkelvoud. De bezitter is 'zij' → son. Son chien et son chat."
+        },
+        {
+          "id": "fr-a1-bez-match1",
+          "type": "matching",
+          "instruction": "Koppel het bezittelijk voornaamwoord (voor mannelijk enkelvoud) aan de persoon.",
+          "pairs": [
+            { "left": "mon", "right": "ik" },
+            { "left": "ton", "right": "jij" },
+            { "left": "son", "right": "hij/zij" },
+            { "left": "notre", "right": "wij" },
+            { "left": "leur", "right": "zij (meervoud)" }
+          ]
+        },
+        {
+          "id": "fr-a1-bez-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Ons huis is groot. (huis = maison, vrouwelijk)",
+          "accepted": ["Notre maison est grande.", "Notre maison est grand."],
+          "explanation": "Notre = ons/onze (voor nos/notre is er geen geslachtsverschil). Maison is vrouwelijk → grande."
+        }
+      ]
+    },
+    {
+      "id": "fr-a1-cijfers-20-100",
+      "title": "Cijfers 20–100",
+      "description": "De Franse getallen van twintig tot honderd, inclusief de eigenaardige vormen voor 70, 80 en 90.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "De getallen 20 tot 100 volgen grotendeels een patroon, maar 70, 80 en 90 zijn bijzonder in het Frans — ze zijn gebaseerd op een oud telsysteem."
+        },
+        {
+          "type": "table",
+          "headers": ["Cijfer", "Frans", "Opbouw"],
+          "rows": [
+            ["20", "vingt", "—"],
+            ["21", "vingt et un", "vingt + et + un"],
+            ["22", "vingt-deux", "vingt + deux"],
+            ["30", "trente", "—"],
+            ["40", "quarante", "—"],
+            ["50", "cinquante", "—"],
+            ["60", "soixante", "—"],
+            ["70", "soixante-dix", "60 + 10"],
+            ["71", "soixante et onze", "60 + 11"],
+            ["72", "soixante-douze", "60 + 12"],
+            ["80", "quatre-vingts", "4 × 20"],
+            ["81", "quatre-vingt-un", "4 × 20 + 1"],
+            ["90", "quatre-vingt-dix", "4 × 20 + 10"],
+            ["91", "quatre-vingt-onze", "4 × 20 + 11"],
+            ["100", "cent", "—"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "In België en Zwitserland zeggen ze 'septante' (70), 'nonante' (90) en soms 'octante' of 'huitante' (80) — veel logischer! In Frankrijk gebruikt men echter soixante-dix, quatre-vingts en quatre-vingt-dix."
+        },
+        {
+          "type": "table",
+          "headers": ["Tientallen", "Frans"],
+          "rows": [
+            ["20", "vingt"],
+            ["30", "trente"],
+            ["40", "quarante"],
+            ["50", "cinquante"],
+            ["60", "soixante"],
+            ["70", "soixante-dix"],
+            ["80", "quatre-vingts"],
+            ["90", "quatre-vingt-dix"],
+            ["100", "cent"]
+          ]
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "J'ai soixante-quinze ans.", "right": "Ik ben 75 jaar oud." },
+            { "left": "Il coûte quatre-vingt euros.", "right": "Het kost 80 euro." },
+            { "left": "Page quatre-vingt-dix-neuf.", "right": "Pagina 99." },
+            { "left": "Nous sommes cent élèves.", "right": "Wij zijn 100 leerlingen." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a1-cij-mc1",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je '70' in het Frans (standaard Frans)?",
+          "options": ["septante", "soixante-dix", "soixante-dix-zéro", "quatre-vingts"],
+          "correct": 1,
+          "explanation": "In standaard Frans (France) = soixante-dix (60+10). Septante is de Belgische/Zwitserse variant."
+        },
+        {
+          "id": "fr-a1-cij-mc2",
+          "type": "multiple_choice",
+          "question": "Wat is 'quatre-vingts' in cijfers?",
+          "options": ["40", "60", "80", "84"],
+          "correct": 2,
+          "explanation": "Quatre-vingts = 4 × 20 = 80. Let op: met een getal erna (81, 82...) verdwijnt de -s: quatre-vingt-un."
+        },
+        {
+          "id": "fr-a1-cij-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je '95' in het Frans?",
+          "options": ["soixante-quinze", "quatre-vingt-quinze", "nonante-cinq", "quatre-vingt-dix-cinq"],
+          "correct": 3,
+          "explanation": "95 = quatre-vingt-dix-cinq (80+10+5). Quatre-vingt-quinze is 85."
+        },
+        {
+          "id": "fr-a1-cij-fill1",
+          "type": "fill_blank",
+          "question": "Le bus numéro ___ va au centre. (Bus nummer 62 gaat naar het centrum.)",
+          "blanks": ["soixante-deux"],
+          "hint": "60 + 2",
+          "explanation": "62 = soixante-deux (60+2). De tientallen tot 60 zijn gewoon: soixante + twee."
+        },
+        {
+          "id": "fr-a1-cij-fill2",
+          "type": "fill_blank",
+          "question": "Il y a ___ élèves dans la classe. (Er zijn 28 leerlingen in de klas.)",
+          "blanks": ["vingt-huit"],
+          "hint": "20 + 8",
+          "explanation": "28 = vingt-huit. Let op: voor 21 zeg je vingt et un (met 'et'), maar 22-29 krijgen een koppelteken: vingt-deux, vingt-trois..."
+        },
+        {
+          "id": "fr-a1-cij-match1",
+          "type": "matching",
+          "instruction": "Koppel het Frans aan het cijfer.",
+          "pairs": [
+            { "left": "trente-cinq", "right": "35" },
+            { "left": "quarante-huit", "right": "48" },
+            { "left": "soixante-dix", "right": "70" },
+            { "left": "quatre-vingts", "right": "80" },
+            { "left": "quatre-vingt-dix-neuf", "right": "99" }
+          ]
+        },
+        {
+          "id": "fr-a1-cij-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Mijn grootvader is 83 jaar oud.",
+          "accepted": ["Mon grand-père a quatre-vingt-trois ans.", "Mon grand-père a 83 ans."],
+          "explanation": "83 = quatre-vingt-trois (80+3). Grand-père = grootvader. Leeftijd met avoir: a ... ans."
+        }
+      ]
+    }
+  ]
+}

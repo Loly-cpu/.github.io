@@ -2,7 +2,7 @@
   "language": "fr",
   "level": "a0",
   "title": "Frans A0 — Absolute beginner",
-  "description": "De alleerste basis: begroetingen, cijfers, kleuren en jezelf voorstellen.",
+  "description": "De alleerste basis: begroetingen, cijfers, kleuren, jezelf voorstellen, dagen & maanden en beleefdheidsvormen.",
   "topics": [
     {
       "id": "fr-a0-begroetingen",
@@ -362,6 +362,231 @@
           "source": "Ik woon in Antwerpen.",
           "accepted": ["J'habite à Anvers.", "J'habite à Antwerpen."],
           "explanation": "J'habite à... = Ik woon in... Anvers is de Franse naam voor Antwerpen."
+        }
+      ]
+    },
+    {
+      "id": "fr-a0-dagen-maanden",
+      "title": "Dagen & maanden",
+      "description": "De zeven dagen van de week en de twaalf maanden van het jaar in het Frans.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "In het Frans schrijf je de dagen en maanden met een kleine letter — in tegenstelling tot het Engels. Ze zijn ook niet zo moeilijk: veel klinken op het Nederlands of Latijn."
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Uitspraak", "Nederlands"],
+          "rows": [
+            ["lundi", "lun-di", "maandag"],
+            ["mardi", "mar-di", "dinsdag"],
+            ["mercredi", "mer-kruh-di", "woensdag"],
+            ["jeudi", "zjuh-di", "donderdag"],
+            ["vendredi", "van-druh-di", "vrijdag"],
+            ["samedi", "sam-di", "zaterdag"],
+            ["dimanche", "di-mansh", "zondag"]
+          ]
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Uitspraak", "Nederlands"],
+          "rows": [
+            ["janvier", "zjan-vje", "januari"],
+            ["février", "fev-rje", "februari"],
+            ["mars", "mars", "maart"],
+            ["avril", "av-ril", "april"],
+            ["mai", "meh", "mei"],
+            ["juin", "zjweh", "juni"],
+            ["juillet", "zjwi-je", "juli"],
+            ["août", "oot", "augustus"],
+            ["septembre", "sep-tambr", "september"],
+            ["octobre", "ok-tobr", "oktober"],
+            ["novembre", "no-vambr", "november"],
+            ["décembre", "day-sambr", "december"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "Gebruik 'en' voor de maand: 'en janvier' (in januari). Voor de dag: 'le lundi' (op maandag, altijd zo) of 'lundi' zonder lidwoord (aanstaande maandag)."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Nous sommes lundi.", "right": "Het is maandag." },
+            { "left": "Mon anniversaire est en mars.", "right": "Mijn verjaardag is in maart." },
+            { "left": "Le cours est le vendredi.", "right": "De les is op vrijdag." },
+            { "left": "Je suis né(e) en décembre.", "right": "Ik ben geboren in december." }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a0-dagen-mc1",
+          "type": "multiple_choice",
+          "question": "Welke dag komt na 'mardi'?",
+          "options": ["lundi", "mercredi", "jeudi", "vendredi"],
+          "correct": 1,
+          "explanation": "De volgorde is: lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche."
+        },
+        {
+          "id": "fr-a0-dagen-mc2",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'in augustus' in het Frans?",
+          "options": ["en juillet", "en août", "en avril", "en juin"],
+          "correct": 1,
+          "explanation": "Août = augustus. Juillet = juli, avril = april, juin = juni."
+        },
+        {
+          "id": "fr-a0-dagen-mc3",
+          "type": "multiple_choice",
+          "question": "Wat is de eerste dag van de week in Frankrijk?",
+          "options": ["dimanche", "samedi", "lundi", "mardi"],
+          "correct": 2,
+          "explanation": "In Frankrijk (en de meeste Europese landen) begint de week op lundi (maandag)."
+        },
+        {
+          "id": "fr-a0-dagen-match1",
+          "type": "matching",
+          "instruction": "Koppel de Franse dag aan de Nederlandse dag.",
+          "pairs": [
+            { "left": "lundi", "right": "maandag" },
+            { "left": "mercredi", "right": "woensdag" },
+            { "left": "vendredi", "right": "vrijdag" },
+            { "left": "samedi", "right": "zaterdag" },
+            { "left": "dimanche", "right": "zondag" }
+          ]
+        },
+        {
+          "id": "fr-a0-dagen-match2",
+          "type": "matching",
+          "instruction": "Koppel de Franse maand aan de Nederlandse maand.",
+          "pairs": [
+            { "left": "janvier", "right": "januari" },
+            { "left": "mars", "right": "maart" },
+            { "left": "juillet", "right": "juli" },
+            { "left": "octobre", "right": "oktober" },
+            { "left": "décembre", "right": "december" }
+          ]
+        },
+        {
+          "id": "fr-a0-dagen-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Mijn verjaardag is in mei.",
+          "accepted": ["Mon anniversaire est en mai.", "Mon anniversaire est en mai"],
+          "explanation": "Anniversaire = verjaardag. Voor maanden gebruik je 'en': en mai."
+        },
+        {
+          "id": "fr-a0-dagen-fill1",
+          "type": "fill_blank",
+          "question": "Le cours de français est le ___ et le ___. (De Franse les is op dinsdag en donderdag.)",
+          "blanks": ["mardi", "jeudi"],
+          "hint": "dinsdag en donderdag",
+          "explanation": "Mardi = dinsdag, jeudi = donderdag. Met 'le' voor een dag betekent het 'elke ... dag'."
+        }
+      ]
+    },
+    {
+      "id": "fr-a0-beleefdheid",
+      "title": "Beleefdheidsvormen",
+      "description": "Hoe je beleefd vraagt, bedankt, sorry zegt en om hulp vraagt in het Frans.",
+      "theory": [
+        {
+          "type": "text",
+          "content": "Beleefd zijn in het Frans is heel belangrijk, zeker in formele situaties. Een paar sleutelwoorden maken al een groot verschil."
+        },
+        {
+          "type": "table",
+          "headers": ["Frans", "Uitspraak", "Betekenis"],
+          "rows": [
+            ["s'il vous plaît", "sil-voo-pleh", "alstublieft (formeel)"],
+            ["s'il te plaît", "sil-tuh-pleh", "alsjeblieft (informeel)"],
+            ["merci", "mer-si", "dankjewel / dankuwel"],
+            ["merci beaucoup", "mer-si bo-koo", "heel erg bedankt"],
+            ["de rien", "duh-rjeh", "graag gedaan / geen dank"],
+            ["excusez-moi", "ek-skü-zay-mwa", "excuseer mij (formeel)"],
+            ["excuse-moi", "ek-sküz-mwa", "excuseer mij (informeel)"],
+            ["pardon", "par-doh", "sorry / pardon"],
+            ["je suis désolé(e)", "zjuh swi day-zo-lay", "het spijt me"],
+            ["je ne comprends pas", "zjuh nuh kom-prahn pah", "ik begrijp het niet"],
+            ["pouvez-vous répéter?", "poo-vay-voo ray-pay-tay", "kunt u herhalen?"],
+            ["plus lentement", "plü lon-tuh-mohn", "langzamer"]
+          ]
+        },
+        {
+          "type": "note",
+          "content": "'S'il vous plaît' (svp) is formeel, 's'il te plaît' (stp) is informeel. In schrijven gebruik je de afkortingen 'svp' en 'stp'."
+        },
+        {
+          "type": "example",
+          "pairs": [
+            { "left": "Un café, s'il vous plaît.", "right": "Een koffie, alstublieft." },
+            { "left": "Merci beaucoup, madame!", "right": "Heel erg bedankt, mevrouw!" },
+            { "left": "Excusez-moi, où est la gare?", "right": "Excuseer mij, waar is het station?" },
+            { "left": "Je ne comprends pas. Pouvez-vous répéter?", "right": "Ik begrijp het niet. Kunt u herhalen?" }
+          ]
+        }
+      ],
+      "exercises": [
+        {
+          "id": "fr-a0-bel-mc1",
+          "type": "multiple_choice",
+          "question": "Je vraagt iets aan een onbekende volwassene. Hoe zeg je 'alstublieft'?",
+          "options": ["s'il te plaît", "s'il vous plaît", "merci", "pardon"],
+          "correct": 1,
+          "explanation": "S'il vous plaît is de formele versie (voor vreemden en volwassenen). S'il te plaît gebruik je bij vrienden."
+        },
+        {
+          "id": "fr-a0-bel-mc2",
+          "type": "multiple_choice",
+          "question": "Iemand zegt 'merci'. Wat antwoord je?",
+          "options": ["s'il vous plaît", "excusez-moi", "de rien", "pardon"],
+          "correct": 2,
+          "explanation": "De rien = graag gedaan / geen dank. Dit is het standaard antwoord op 'merci'."
+        },
+        {
+          "id": "fr-a0-bel-mc3",
+          "type": "multiple_choice",
+          "question": "Hoe zeg je 'ik begrijp het niet' in het Frans?",
+          "options": ["Je suis désolé.", "Je ne comprends pas.", "Pouvez-vous répéter?", "Excusez-moi."],
+          "correct": 1,
+          "explanation": "Je ne comprends pas = ik begrijp het niet. De ontkenning is ne...pas rond het werkwoord."
+        },
+        {
+          "id": "fr-a0-bel-mc4",
+          "type": "multiple_choice",
+          "question": "Wat betekent 'plus lentement'?",
+          "options": ["harder", "langzamer", "sneller", "luider"],
+          "correct": 1,
+          "explanation": "Plus lentement = langzamer. Heel handig als iemand te snel praat!"
+        },
+        {
+          "id": "fr-a0-bel-match1",
+          "type": "matching",
+          "instruction": "Koppel de Franse beleefdheidsvorm aan de Nederlandse betekenis.",
+          "pairs": [
+            { "left": "merci beaucoup", "right": "heel erg bedankt" },
+            { "left": "de rien", "right": "graag gedaan" },
+            { "left": "pardon", "right": "sorry / pardon" },
+            { "left": "je suis désolé(e)", "right": "het spijt me" },
+            { "left": "excusez-moi", "right": "excuseer mij (formeel)" }
+          ]
+        },
+        {
+          "id": "fr-a0-bel-tr1",
+          "type": "translation",
+          "direction": "nl_to_target",
+          "source": "Kunt u herhalen, alstublieft?",
+          "accepted": ["Pouvez-vous répéter, s'il vous plaît?", "Pouvez-vous répéter s'il vous plaît?"],
+          "explanation": "Pouvez-vous répéter? = Kunt u herhalen? S'il vous plaît is de formele 'alstublieft'."
+        },
+        {
+          "id": "fr-a0-bel-fill1",
+          "type": "fill_blank",
+          "question": "— Un thé, ___ vous ___! — Voilà. — ___!",
+          "blanks": ["s'il", "plaît", "Merci"],
+          "hint": "alstublieft (formeel) + bedankt",
+          "explanation": "S'il vous plaît = alstublieft (formeel). Merci = bedankt."
         }
       ]
     }

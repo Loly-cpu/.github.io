@@ -25,7 +25,10 @@ export const LEVEL_LABELS: Record<Level, string> = {
   a1: 'A1 — Beginner',
   a2: 'A2 — Elementair',
   b1: 'B1 — Drempelgebruiker',
+  bplus: 'B+ — Gevorderd drempel',
   b2: 'B2 — Zelfstandig gebruiker',
+  c1: 'C1 — Gevorderd',
+  c2: 'C2 — Beheerst',
 }
 
 export const LANGUAGE_LABELS: Record<Language, string> = {
