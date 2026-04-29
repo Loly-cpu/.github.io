@@ -8,13 +8,7 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        router.replace('/dashboard')
-      } else {
-        router.replace('/auth/login')
-      }
-    })
+    router.replace('/examenboard')
   }, [router])
 
   return (

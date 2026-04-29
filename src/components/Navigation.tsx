@@ -31,8 +31,11 @@ export default function Navigation({ backHref, backLabel, title }: NavigationPro
         </div>
 
         <div className="flex items-center gap-2">
+          <Link href="/examenboard" className="btn-ghost text-sm">
+            🎓 Examenboard
+          </Link>
           <Link href="/dashboard" className="btn-ghost text-sm">
-            Dashboard
+            Taalplatform
           </Link>
           <button onClick={handleLogout} className="btn-ghost text-sm text-gray-400">
             Uitloggen
