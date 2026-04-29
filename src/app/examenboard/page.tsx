@@ -4,6 +4,25 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
+// ─── Canvas types ──────────────────────────────────────────────────────────────
+
+interface CanvasModule {
+  id: number
+  name: string
+  state: 'locked' | 'unlocked' | 'started' | 'completed'
+  items_count: number
+}
+
+interface CanvasCourse {
+  id: number
+  name: string
+  course_code: string
+  url: string
+  modules: CanvasModule[]
+  completedModules: number
+  totalModules: number
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Gewicht { naam: string; pct: number; kleur: string }
@@ -393,6 +412,9 @@ export default function ExamenBoard() {
   const [userId, setUserId] = useState<string | null>(null)
   const [synced, setSynced] = useState(false)
   const [activeTab, setActiveTab] = useState<'plan' | 'examens' | 'vakinfo' | 'links'>('plan')
+  const [canvas, setCanvas] = useState<CanvasCourse[] | null>(null)
+  const [canvasError, setCanvasError] = useState<string | null>(null)
+  const [canvasLoading, setCanvasLoading] = useState(true)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Load from Supabase if logged in, else localStorage
@@ -418,6 +440,18 @@ export default function ExamenBoard() {
         } catch { /* ignore */ }
       }
     })
+  }, [])
+
+  // Fetch Canvas progress (server-side token, never exposed to client)
+  useEffect(() => {
+    fetch('/api/canvas')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) { setCanvasError(data.error); return }
+        setCanvas(data.courses)
+      })
+      .catch((e) => setCanvasError(String(e)))
+      .finally(() => setCanvasLoading(false))
   }, [])
 
   const saveToSupabase = useCallback(async (uid: string, id: string, done: boolean) => {
@@ -583,22 +617,104 @@ export default function ExamenBoard() {
         {/* Links */}
         {activeTab === 'links' && (
           <div className="space-y-5">
-            {/* Canvas */}
+            {/* Canvas live progress */}
             <div className="card">
-              <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2"><span>🖥️</span> Canvas Instructure — jouw cursussen</h3>
-              <div className="space-y-2">
-                {[
-                  { label: 'INZICHT PLUS — Aardrijkskunde 3DO', desc: 'Cursus + leerpad + oefenreeksen + proefexamens', color: 'green' },
-                  { label: 'INZICHT PLUS — Nederlands 1 3DO', desc: 'Cursus + leerpad + literaire oefeningen + proefexamens A/B/C/D', color: 'blue' },
-                  { label: 'FRA1 — De Studie Factorie', desc: 'Lees- en luisteroefeningen B1/B2 voor het Frans-examen (later)', color: 'purple' },
-                ].map((c) => (
-                  <div key={c.label} className={`border border-${c.color}-200 bg-${c.color}-50 rounded-xl px-4 py-3`}>
-                    <p className={`font-semibold text-${c.color}-800 text-sm`}>{c.label}</p>
-                    <p className={`text-xs text-${c.color}-600 mt-0.5`}>{c.desc}</p>
-                    <p className="text-xs text-gray-500 mt-1 italic">Open via jouw Canvas-login (instructure.com)</p>
-                  </div>
-                ))}
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                  <span>🖥️</span> Canvas — jouw cursusvoortgang
+                </h3>
+                {!canvasLoading && !canvasError && (
+                  <span className="text-xs text-green-600 font-semibold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+                    Live van Canvas
+                  </span>
+                )}
               </div>
+
+              {canvasLoading && (
+                <div className="flex items-center gap-2 text-sm text-gray-500 py-4">
+                  <div className="w-4 h-4 border-2 border-primary-400 border-t-transparent rounded-full animate-spin" />
+                  Canvas laden...
+                </div>
+              )}
+
+              {canvasError && (
+                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+                  <p className="font-semibold mb-1">Canvas kon niet geladen worden</p>
+                  <p className="text-xs font-mono break-all">{canvasError}</p>
+                  <p className="text-xs text-red-500 mt-1">Controleer of CANVAS_API_TOKEN correct is in .env.local</p>
+                </div>
+              )}
+
+              {canvas && canvas.length === 0 && (
+                <p className="text-sm text-gray-500">Geen actieve cursussen gevonden in Canvas.</p>
+              )}
+
+              {canvas && canvas.length > 0 && (
+                <div className="space-y-4">
+                  {canvas.map((course) => {
+                    const pct = course.totalModules > 0
+                      ? Math.round((course.completedModules / course.totalModules) * 100)
+                      : 0
+                    const stateColor = (state: CanvasModule['state']) => {
+                      if (state === 'completed') return 'text-green-600'
+                      if (state === 'started') return 'text-blue-500'
+                      if (state === 'unlocked') return 'text-gray-500'
+                      return 'text-gray-300'
+                    }
+                    const stateIcon = (state: CanvasModule['state']) => {
+                      if (state === 'completed') return '✓'
+                      if (state === 'started') return '►'
+                      if (state === 'unlocked') return '○'
+                      return '🔒'
+                    }
+
+                    return (
+                      <div key={course.id} className="border border-warm-gray rounded-xl overflow-hidden">
+                        <div className="px-4 py-3 bg-gray-50 flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-gray-900 text-sm leading-tight">{course.name}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              {course.completedModules}/{course.totalModules} modules voltooid · {pct}%
+                            </p>
+                          </div>
+                          <a
+                            href={course.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-primary-600 hover:underline font-medium flex-shrink-0 mt-0.5"
+                          >
+                            Open →
+                          </a>
+                        </div>
+                        <div className="h-1.5 bg-gray-200">
+                          <div
+                            className="h-full bg-green-500 transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        {course.modules.length > 0 && (
+                          <div className="px-4 py-2.5 grid grid-cols-1 gap-0.5 max-h-48 overflow-y-auto">
+                            {course.modules.map((mod) => (
+                              <div key={mod.id} className="flex items-center gap-2 py-0.5">
+                                <span className={`text-xs font-bold w-3 text-center flex-shrink-0 ${stateColor(mod.state)}`}>
+                                  {stateIcon(mod.state)}
+                                </span>
+                                <span className={`text-xs ${mod.state === 'completed' ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
+                                  {mod.name}
+                                </span>
+                                {mod.items_count > 0 && (
+                                  <span className="text-xs text-gray-400 ml-auto flex-shrink-0">{mod.items_count}p</span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
 
             {/* CEV */}
