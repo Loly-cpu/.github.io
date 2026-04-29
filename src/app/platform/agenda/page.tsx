@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 interface Event {
@@ -42,11 +43,21 @@ function getWeekDays(base: Date): Date[] {
 }
 
 export default function AgendaPage() {
-  const [events, setEvents] = useState<Event[]>([])
-  const [userId, setUserId] = useState<string | null>(null)
-  const [week, setWeek] = useState(new Date())
-  const [showForm, setShowForm] = useState(false)
-  const [showAi, setShowAi] = useState(false)
+  const searchParams = useSearchParams()
+  const [events, setEvents]       = useState<Event[]>([])
+  const [userId, setUserId]       = useState<string | null>(null)
+  const [gcalConnected, setGcalConnected] = useState(false)
+  const [week, setWeek]           = useState(new Date())
+  const [showForm, setShowForm]   = useState(false)
+  const [showAi, setShowAi]       = useState(false)
+  const [showIcal, setShowIcal]   = useState(false)
+  const [showGcal, setShowGcal]   = useState(false)
+  const [icalUrl, setIcalUrl]     = useState('')
+  const [icalName, setIcalName]   = useState('Smartschool')
+  const [icalLoading, setIcalLoading] = useState(false)
+  const [icalEvents, setIcalEvents]   = useState<{summary:string;start:string;end:string;allDay:boolean}[]>([])
+  const [icalErr, setIcalErr]         = useState('')
+  const [gcalStatus, setGcalStatus]   = useState<'idle'|'success'|'error'>('idle')
   const [aiPlan, setAiPlan] = useState<AiPlan | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
   const [aiError, setAiError] = useState('')
@@ -62,11 +73,20 @@ export default function AgendaPage() {
   const [aiPrefs, setAiPrefs] = useState('Max 3 uur per dag, liefst in de voormiddag')
 
   useEffect(() => {
+    const gcal = searchParams.get('gcal')
+    if (gcal === 'success') setGcalStatus('success')
+    if (gcal === 'error')   setGcalStatus('error')
+
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) return
-      setUserId(data.session.user.id)
-      await loadEvents(data.session.user.id)
+      const uid = data.session.user.id
+      setUserId(uid)
+      await loadEvents(uid)
+      // Check if Google Calendar is connected
+      const { data: tok } = await supabase.from('calendar_tokens').select('user_id').eq('user_id', uid).single()
+      setGcalConnected(!!tok)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function loadEvents(uid: string) {
@@ -94,6 +114,32 @@ export default function AgendaPage() {
   async function deleteEvent(id: string) {
     await supabase.from('events').delete().eq('id', id)
     setEvents((prev) => prev.filter((e) => e.id !== id))
+  }
+
+  async function previewIcal() {
+    if (!icalUrl.trim()) return
+    setIcalLoading(true); setIcalErr(''); setIcalEvents([])
+    try {
+      const res = await fetch(`/api/ical?url=${encodeURIComponent(icalUrl.trim())}`)
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+      setIcalEvents(data.events)
+    } catch (e) { setIcalErr(e instanceof Error ? e.message : String(e)) }
+    finally { setIcalLoading(false) }
+  }
+
+  async function importIcal() {
+    if (!userId || !icalEvents.length) return
+    // Save feed URL
+    await supabase.from('ical_feeds').upsert({ user_id: userId, name: icalName, url: icalUrl.trim(), last_synced: new Date().toISOString() })
+    // Import events
+    const inserts = icalEvents.map(e => ({
+      user_id: userId, title: e.summary, start_at: e.start, end_at: e.end,
+      type: 'school', color: TYPE_COLORS.school, all_day: e.allDay,
+    }))
+    await supabase.from('events').insert(inserts)
+    await loadEvents(userId)
+    setShowIcal(false); setIcalEvents([]); setIcalUrl('')
   }
 
   async function importAiPlan() {
@@ -155,8 +201,14 @@ export default function AgendaPage() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-gray-900">📅 Agenda</h1>
         <div className="flex gap-2 flex-wrap">
-          <button onClick={() => setShowAi(true)}
-            className="btn-ghost text-sm flex items-center gap-1.5">
+          <button onClick={() => setShowIcal(true)} className="btn-ghost text-sm flex items-center gap-1.5">
+            📥 iCal importeren
+          </button>
+          <a href="/api/auth/google-calendar"
+            className={`btn-ghost text-sm flex items-center gap-1.5 ${gcalConnected ? 'text-green-600' : ''}`}>
+            {gcalConnected ? '✅ Google Calendar' : '🗓 Google koppelen'}
+          </a>
+          <button onClick={() => setShowAi(true)} className="btn-ghost text-sm flex items-center gap-1.5">
             ✨ AI Studieplan
           </button>
           <button onClick={() => setShowForm(true)} className="btn-primary text-sm px-4 py-2">
@@ -284,6 +336,66 @@ export default function AgendaPage() {
                 {saving ? 'Opslaan...' : 'Opslaan'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Google Calendar status toast */}
+      {gcalStatus !== 'idle' && (
+        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
+          gcalStatus === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
+        }`}>
+          {gcalStatus === 'success' ? '✅ Google Calendar gekoppeld!' : '❌ Koppeling mislukt — controleer je Client ID/Secret'}
+          <button onClick={() => setGcalStatus('idle')} className="ml-3 opacity-60 hover:opacity-100">×</button>
+        </div>
+      )}
+
+      {/* iCal import modal */}
+      {showIcal && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4 my-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-bold text-gray-900">📥 iCal importeren</h2>
+              <button onClick={() => { setShowIcal(false); setIcalEvents([]); setIcalErr('') }} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+            </div>
+            <p className="text-sm text-gray-500">
+              Plak je iCal-URL van <strong>Smartschool</strong>, <strong>Apple Agenda</strong> of een andere agenda.
+              In Smartschool: Agenda → ⚙️ → iCal-adres kopiëren.
+            </p>
+            <div className="space-y-3">
+              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
+                placeholder="Naam (bijv. Smartschool)" value={icalName}
+                onChange={e => setIcalName(e.target.value)} />
+              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm font-mono text-xs"
+                placeholder="https://smartschool.be/.../ical?..." value={icalUrl}
+                onChange={e => { setIcalUrl(e.target.value); setIcalEvents([]); setIcalErr('') }} />
+              {icalErr && <p className="text-sm text-red-600">{icalErr}</p>}
+              <button onClick={previewIcal} disabled={icalLoading || !icalUrl.trim()}
+                className="btn-ghost w-full py-2 text-sm disabled:opacity-50">
+                {icalLoading ? 'Laden…' : '🔍 Voorbeeld laden'}
+              </button>
+            </div>
+            {icalEvents.length > 0 && (
+              <>
+                <div className="max-h-48 overflow-y-auto border border-warm-gray rounded-xl divide-y divide-warm-gray">
+                  {icalEvents.slice(0, 20).map((e, i) => (
+                    <div key={i} className="px-3 py-2 flex items-center gap-2">
+                      <span className="text-xs text-gray-400 w-24 flex-shrink-0">
+                        {new Date(e.start).toLocaleDateString('nl-BE', { day:'numeric', month:'short' })}
+                      </span>
+                      <span className="text-sm text-gray-800 truncate">{e.summary}</span>
+                    </div>
+                  ))}
+                  {icalEvents.length > 20 && <p className="px-3 py-2 text-xs text-gray-400">+ {icalEvents.length - 20} meer</p>}
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => { setIcalEvents([]); setIcalUrl('') }} className="btn-ghost text-sm px-4 py-2 flex-1">Annuleren</button>
+                  <button onClick={importIcal} className="btn-primary text-sm px-4 py-2 flex-1">
+                    {icalEvents.length} evenementen importeren →
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

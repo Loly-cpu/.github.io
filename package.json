@@ -13,6 +13,7 @@
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.43.4",
     "next": "^16.2.4",
+    "node-ical": "^0.26.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
