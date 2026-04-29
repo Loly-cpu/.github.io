@@ -38,11 +38,13 @@ export default function Speaking({ exercise, lang, onScore }: Props) {
   const [match, setMatch] = useState(0)
   const [fallbackValue, setFallbackValue] = useState('')
   const [submitted, setSubmitted] = useState(false)
-  const recRef = useRef<SpeechRecognition | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recRef = useRef<any>(null)
 
   function startRecording() {
-    const SR = (window as typeof window & { webkitSpeechRecognition?: typeof SpeechRecognition }).SpeechRecognition
-      ?? (window as typeof window & { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any
+    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition
     if (!SR) return
     const rec = new SR()
     recRef.current = rec
@@ -51,7 +53,8 @@ export default function Speaking({ exercise, lang, onScore }: Props) {
     rec.maxAlternatives = 1
     setState('recording')
 
-    rec.onresult = (e) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onresult = (e: any) => {
       const said = e.results[0][0].transcript
       const pct = tokenMatch(said, exercise.target)
       setTranscript(said)
