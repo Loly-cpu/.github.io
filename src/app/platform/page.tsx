@@ -7,12 +7,12 @@ import { supabase } from '@/lib/supabase'
 interface Stats { events: number; groups: number; docs: number; unread: number }
 
 const TILES = [
-  { href: '/platform/agenda',      icon: '📅', label: 'Agenda',       color: '#0070f6' },
-  { href: '/platform/groepen',     icon: '💬', label: 'Berichten',    color: '#0070f6' },
-  { href: '/platform/documenten',  icon: '📁', label: 'Documenten',   color: '#0070f6' },
-  { href: '/platform/formulieren', icon: '📝', label: 'Formulieren',  color: '#0070f6' },
+  { href: '/platform/agenda',      icon: '📅', label: 'Agenda',       color: '#ff520e' },
+  { href: '/platform/groepen',     icon: '💬', label: 'Berichten',    color: '#ff520e' },
+  { href: '/platform/documenten',  icon: '📁', label: 'Documenten',   color: '#ff520e' },
+  { href: '/platform/formulieren', icon: '📝', label: 'Formulieren',  color: '#ff520e' },
   { href: '/platform/meldingen',   icon: '🔔', label: 'Meldingen',    color: '#ef4444' },
-  { href: '/platform/links',       icon: '🔗', label: 'Links',        color: '#0070f6' },
+  { href: '/platform/links',       icon: '🔗', label: 'Links',        color: '#ff520e' },
 ]
 
 export default function PlatformHome() {
@@ -104,11 +104,11 @@ export default function PlatformHome() {
           Andere platforms
         </p>
         <Link href="/examenboard"
-          style={{ fontFamily: 'Roboto, system-ui', fontSize: 14, color: '#0070f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+          style={{ fontFamily: 'Roboto, system-ui', fontSize: 14, color: '#ff520e', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
           🎓 Examenboard
         </Link>
         <Link href="/dashboard"
-          style={{ fontFamily: 'Roboto, system-ui', fontSize: 14, color: '#0070f6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
+          style={{ fontFamily: 'Roboto, system-ui', fontSize: 14, color: '#ff520e', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>
           🌐 Taalplatform
         </Link>
       </div>

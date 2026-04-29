@@ -71,7 +71,7 @@ export default function PlatformNav() {
             >
               <div style={{
                 width: 28, height: 28, borderRadius: '50%',
-                background: '#0070f6', color: '#fff',
+                background: '#ff520e', color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontWeight: 700, fontSize: 12, flexShrink: 0,
               }}>
@@ -162,11 +162,11 @@ export default function PlatformNav() {
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '14px 20px',
-                  color: active(item.href) ? '#0070f6' : '#242424',
+                  color: active(item.href) ? '#ff520e' : '#242424',
                   textDecoration: 'none',
                   fontSize: 14,
                   borderBottom: '1px solid #f4f4f4',
-                  background: active(item.href) ? '#eff6ff' : 'transparent',
+                  background: active(item.href) ? '#fff3ef' : 'transparent',
                   fontWeight: active(item.href) ? 500 : 400,
                 }}
               >
