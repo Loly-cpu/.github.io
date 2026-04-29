@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase, getProgress } from '@/lib/supabase'
-import { getLevelContent, LEVEL_LABELS, LANGUAGE_LABELS } from '@/lib/content'
+import { getLevelContent, LEVEL_LABELS, LANGUAGE_LABELS, AVAILABLE_LEVELS } from '@/lib/content'
 import type { LevelContent, TopicProgress, Language, Level } from '@/lib/types'
 import Navigation from '@/components/Navigation'
 
@@ -50,16 +50,32 @@ export default function LevelPage() {
     )
   }
 
+  const levelProgress = progress.filter((p) => p.language === language && p.level === level)
+  const completedTopics = levelProgress.filter((p) => p.completed)
+  const allDone = content.topics.length > 0 && completedTopics.length >= content.topics.length
+  const totalScore = completedTopics.reduce((s, p) => s + (p.score ?? 0), 0)
+  const totalMax = completedTopics.reduce((s, p) => s + (p.max_score ?? 0), 0)
+  const avgPct = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : 0
+  const readyForNext = allDone && avgPct >= 70
+
+  const availableLevels = AVAILABLE_LEVELS[language] ?? []
+  const currentIdx = availableLevels.indexOf(level)
+  const nextLevel: Level | null = currentIdx >= 0 && currentIdx < availableLevels.length - 1
+    ? availableLevels[currentIdx + 1]
+    : null
+
   return (
     <>
       <Navigation
         backHref="/dashboard"
         backLabel="Dashboard"
-        title={`${LANGUAGE_LABELS[language]} — ${level.toUpperCase()}`}
+        title={`${LANGUAGE_LABELS[language]} — ${level.toUpperCase().replace('BPLUS', 'B+')}`}
       />
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div>
-          <span className="tag-level mb-2">{level.toUpperCase()}</span>
+          <span className="tag-level mb-2">
+            {level.toUpperCase().replace('BPLUS', 'B+')}
+          </span>
           <h1 className="text-2xl font-bold text-gray-900 mt-2">{content.title}</h1>
           <p className="text-gray-500 mt-1">{content.description}</p>
         </div>
@@ -96,6 +112,32 @@ export default function LevelPage() {
             )
           })}
         </div>
+
+        {readyForNext && nextLevel && (
+          <div className="card bg-green-50 border-2 border-green-300 text-center space-y-3 py-6">
+            <div className="text-3xl">🏆</div>
+            <h3 className="font-bold text-green-800 text-lg">
+              Uitstekend! Je scoort gemiddeld {avgPct}% op {level.toUpperCase().replace('BPLUS', 'B+')}.
+            </h3>
+            <p className="text-green-700 text-sm">
+              Je bent klaar om een stapje hoger te gaan. Probeer nu {LEVEL_LABELS[nextLevel]}.
+            </p>
+            <Link href={`/learn/${language}/${nextLevel}`} className="btn-primary inline-block px-6">
+              Ga naar {nextLevel.toUpperCase().replace('BPLUS', 'B+')} →
+            </Link>
+          </div>
+        )}
+
+        {allDone && !readyForNext && (
+          <div className="card bg-amber-50 border border-amber-200 text-center space-y-2 py-5">
+            <p className="text-amber-800 font-semibold">
+              Je hebt alle topics afgerond (gemiddeld {avgPct}%).
+            </p>
+            <p className="text-amber-700 text-sm">
+              Oefen de topics nog eens om je score te verbeteren voor je naar het volgende niveau gaat.
+            </p>
+          </div>
+        )}
       </main>
     </>
   )
