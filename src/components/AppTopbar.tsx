@@ -62,7 +62,8 @@ export default function AppTopbar() {
       const uid   = data.session.user.id
       const email = data.session.user.email ?? ''
       const { data: p } = await supabase.from('profiles')
-        .select('display_name, is_admin, is_superadmin').eq('id', uid).single()
+        .select('display_name, is_admin, is_superadmin, is_blocked').eq('id', uid).single()
+      if (p?.is_blocked) { router.replace('/auth/geblokkeerd'); return }
       const n = p?.display_name ?? email.split('@')[0]
       setName(n)
       setInitials(n[0]?.toUpperCase() ?? '?')

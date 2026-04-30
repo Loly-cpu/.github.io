@@ -64,9 +64,8 @@ body.sidebar-collapsed .app-content  { margin-left: 60px; }
 }
 
 @media (max-width: 767px) {
-  .app-sidebar   { display: none; }
-  .app-content   { margin-left: 0; padding: 16px; padding-bottom: 72px; }
-  .app-bottom-nav{ display: flex; }
+  .app-sidebar { display: none; }
+  .app-content { margin-left: 0; padding: 16px; }
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }

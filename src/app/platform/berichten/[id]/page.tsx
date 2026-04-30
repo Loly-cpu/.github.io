@@ -77,7 +77,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   async function loadPosts() {
     const { data } = await supabase
       .from('group_posts')
-      .select('*, profiles(display_name, is_admin, is_superadmin), group_post_replies(*, profiles(display_name, is_admin, is_superadmin))')
+      .select('*, profiles!group_posts_user_id_profiles_fkey(display_name, is_admin, is_superadmin), group_post_replies(*, profiles!group_post_replies_user_id_profiles_fkey(display_name, is_admin, is_superadmin))')
       .eq('group_id', id)
       .order('created_at', { ascending: true })
     if (data) setPosts(data as Post[])
