@@ -2,8 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+
+interface SearchResult {
+  type: 'bericht' | 'document' | 'event' | 'melding'
+  id: string; title: string; sub?: string; href: string
+}
 
 const NAV: { href: string; label: string }[] = [
   { href: '/platform',             label: 'Start'        },
@@ -33,7 +38,13 @@ export default function PlatformNav() {
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [profileOpen, setProfile]   = useState(false)
   const [mobileOpen, setMobile]     = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQ, setSearchQ]       = useState('')
+  const [searchRes, setSearchRes]   = useState<SearchResult[]>([])
+  const [searching, setSearching]   = useState(false)
   const profileRef                  = useRef<HTMLDivElement>(null)
+  const searchRef                   = useRef<HTMLDivElement>(null)
+  const searchInputRef              = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -62,10 +73,50 @@ export default function PlatformNav() {
   useEffect(() => {
     function handle(e: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfile(false)
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) setSearchOpen(false)
     }
     document.addEventListener('mousedown', handle)
     return () => document.removeEventListener('mousedown', handle)
   }, [])
+
+  useEffect(() => {
+    if (searchOpen) setTimeout(() => searchInputRef.current?.focus(), 50)
+    else { setSearchQ(''); setSearchRes([]) }
+  }, [searchOpen])
+
+  const doSearch = useCallback(async (q: string) => {
+    if (q.length < 2) { setSearchRes([]); return }
+    setSearching(true)
+    const pattern = `%${q}%`
+    const [posts, docs, events] = await Promise.all([
+      supabase.from('group_posts').select('id,content,group_id').ilike('content', pattern).limit(4),
+      supabase.from('documents').select('id,title,subject').ilike('title', pattern).limit(4),
+      supabase.from('events').select('id,title,type,start_at').ilike('title', pattern).limit(4),
+    ])
+    const results: SearchResult[] = [
+      ...(posts.data ?? []).map(p => ({
+        type: 'bericht' as const, id: p.id,
+        title: (p.content as string).slice(0, 60) + ((p.content as string).length > 60 ? '…' : ''),
+        sub: 'Bericht', href: `/platform/berichten/${p.group_id}`,
+      })),
+      ...(docs.data ?? []).map(d => ({
+        type: 'document' as const, id: d.id,
+        title: d.title, sub: d.subject ?? 'Document', href: '/platform/documenten',
+      })),
+      ...(events.data ?? []).map(e => ({
+        type: 'event' as const, id: String(e.id),
+        title: e.title, sub: new Date(e.start_at).toLocaleDateString('nl-BE', { day: 'numeric', month: 'short' }),
+        href: '/platform/agenda',
+      })),
+    ]
+    setSearchRes(results)
+    setSearching(false)
+  }, [])
+
+  useEffect(() => {
+    const t = setTimeout(() => doSearch(searchQ), 300)
+    return () => clearTimeout(t)
+  }, [searchQ, doSearch])
 
   async function logout() {
     await supabase.auth.signOut()
@@ -142,6 +193,65 @@ export default function PlatformNav() {
           </div>
 
           <div className="smsc-nav__divider hidden md:block" />
+
+          {/* ── Search icon ────────────────────────────────────── */}
+          <div ref={searchRef} style={{ position: 'relative' }}>
+            <button onClick={() => setSearchOpen(!searchOpen)}
+              className="smsc-nav__btn smsc-nav__btn--icon hidden md:flex" title="Zoeken">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+            </button>
+            {searchOpen && (
+              <div style={{
+                position: 'absolute', top: '100%', right: 0, width: 360,
+                background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.14)', zIndex: 200, overflow: 'hidden',
+              }}>
+                <div style={{ padding: '10px 12px', borderBottom: '1px solid #f4f4f4', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                  </svg>
+                  <input ref={searchInputRef}
+                    style={{ flex: 1, border: 'none', outline: 'none', fontSize: 14, color: '#242424' }}
+                    placeholder="Zoek berichten, documenten, agenda…"
+                    value={searchQ}
+                    onChange={e => setSearchQ(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Escape') setSearchOpen(false) }}
+                  />
+                  {searching && <div style={{ width: 14, height: 14, border: '2px solid #ff520e', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />}
+                </div>
+                {searchRes.length > 0 ? (
+                  <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+                    {searchRes.map(r => (
+                      <Link key={r.id} href={r.href}
+                        onClick={() => { setSearchOpen(false); setSearchQ('') }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', textDecoration: 'none', borderBottom: '1px solid #f9fafb' }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#fff3ef')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <span style={{ fontSize: 16, flexShrink: 0 }}>
+                          {r.type === 'bericht' ? '💬' : r.type === 'document' ? '📄' : '📅'}
+                        </span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 13, color: '#242424', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</p>
+                          <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{r.sub}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : searchQ.length >= 2 && !searching ? (
+                  <div style={{ padding: '20px', textAlign: 'center', color: '#9ca3af', fontSize: 13 }}>
+                    Geen resultaten voor "{searchQ}"
+                  </div>
+                ) : searchQ.length < 2 ? (
+                  <div style={{ padding: '16px 14px', fontSize: 12, color: '#9ca3af' }}>
+                    Type minimaal 2 tekens om te zoeken
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </div>
 
           {/* ── Notifications icon ─────────────────────────────── */}
           <Link href="/platform/meldingen" className="smsc-nav__btn smsc-nav__btn--icon hidden md:flex" title="Meldingen">

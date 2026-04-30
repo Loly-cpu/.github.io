@@ -6,7 +6,8 @@ import { supabase } from '@/lib/supabase'
 
 interface Event { id: string; title: string; start_at: string; type: string; color: string }
 interface Doc   { id: string; title: string; subject?: string; file_name: string; created_at: string }
-interface Post  { id: string; content: string; created_at: string; group_id: string; profiles?: { display_name: string }; groups?: { name: string; icon: string } }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Post = any
 
 function daysUntil(iso: string) {
   return Math.ceil((new Date(iso).getTime() - Date.now()) / 86400000)

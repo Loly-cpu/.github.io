@@ -746,7 +746,7 @@ export default function ExamenBoard() {
   return (
     <div className="min-h-screen bg-cream">
       {/* Header */}
-      <div className="bg-white border-b border-warm-gray sticky top-0 z-20 shadow-sm">
+      <div className="bg-white border-b border-warm-gray shadow-sm" style={{ position: 'sticky', top: 48, zIndex: 20 }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🎓</span>
@@ -761,9 +761,6 @@ export default function ExamenBoard() {
               </div>
             </div>
           </div>
-          <Link href="/platform" className="text-sm text-primary-600 hover:underline font-medium hidden sm:block">
-            ← Home
-          </Link>
         </div>
         <div className="max-w-4xl mx-auto px-4 flex gap-0 overflow-x-auto">
           {tabs.map((tab) => (

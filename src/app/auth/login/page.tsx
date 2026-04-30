@@ -79,10 +79,14 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-xs text-[#5b5b5b] mt-4">
-            Nog geen account?{' '}
-            <Link href="/auth/register" className="text-[#ff520e] font-semibold hover:underline">Registreer hier</Link>
-          </p>
+          <div className="flex items-center justify-between mt-4">
+            <Link href="/auth/wachtwoord-reset" className="text-xs text-[#5b5b5b] hover:underline">
+              Wachtwoord vergeten?
+            </Link>
+            <Link href="/auth/register" className="text-xs text-[#ff520e] font-semibold hover:underline">
+              Account aanmaken
+            </Link>
+          </div>
         </div>
       </div>
     </main>

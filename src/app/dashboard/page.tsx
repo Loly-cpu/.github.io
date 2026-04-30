@@ -8,7 +8,7 @@ import { AVAILABLE_LEVELS, LEVEL_LABELS, LANGUAGE_LABELS, LANGUAGE_FLAGS } from 
 import { loadPlacementResult } from '@/lib/placement'
 import type { Language, Level, TopicProgress } from '@/lib/types'
 import type { PlacementResult } from '@/lib/placement'
-import Navigation from '@/components/Navigation'
+
 
 const TOPIC_COUNTS: Partial<Record<string, number>> = {
   'fr-a0': 6,
@@ -64,7 +64,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Navigation title="Mijn voortgang" />
+      
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-10">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Welkom terug!</h1>

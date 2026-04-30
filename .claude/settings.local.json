@@ -26,7 +26,13 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'Events: {d.get\\(\\\\\"count\\\\\",\\\\\"error\\\\\"\\)}'\\); [print\\(f'  {e[\\\\\"start\\\\\"][:10]} | {e[\\\\\"summary\\\\\"][:60]}'\\) for e in \\(d.get\\('events'\\) or []\\)[:30]]\")",
       "mcp__plugin_vercel_vercel__get_project",
       "mcp__plugin_vercel_vercel__list_deployments",
-      "mcp__claude_ai_Supabase__list_projects"
+      "mcp__claude_ai_Supabase__list_projects",
+      "Bash(sed -i 's/import Navigation from .@\\\\/components\\\\/Navigation.//g' src/app/dashboard/page.tsx)",
+      "Bash(sed -i 's/<Navigation title=\"Mijn voortgang\" \\\\/>//g' src/app/dashboard/page.tsx)",
+      "Bash(sed -i 's/import Navigation from .@\\\\/components\\\\/Navigation.//g' src/app/placement/\\\\[language\\\\]/page.tsx)",
+      "Bash(sed -n '48,72p' src/app/placement/\\\\[language\\\\]/page.tsx)",
+      "Bash(sed -n '128,145p' src/app/placement/\\\\[language\\\\]/page.tsx)",
+      "Bash(grep -n \"Navigation\\\\|<>\\\\s*$\" src/app/placement/\\\\[language\\\\]/page.tsx)"
     ]
   }
 }

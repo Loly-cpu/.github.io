@@ -3,138 +3,291 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
-interface LinkItem { label: string; url: string; desc?: string; cat: string }
+interface Category { id: string; name: string; icon: string; position: number }
+interface LinkRow   { id: string; category_id: string; label: string; url: string; description?: string }
 
-const DEFAULT_LINKS: LinkItem[] = [
-  // Exam
-  { cat: 'CEV',       label: 'Kandidatenplatform',              url: 'https://examencommissie.vlaanderen.be/kandidaat/landingspagina', desc: 'Agenda & planning' },
-  { cat: 'CEV',       label: 'Oefenexamen digitale vraagtypes', url: 'https://www.vlaanderen.be/examencommissiesecundaironderwijs/voorbereiding' },
-  // Canvas
-  { cat: 'Canvas',    label: 'INZICHT PLUS — Aardrijkskunde',   url: 'https://canvas.instructure.com/courses/12731557', desc: 'Cursus + oefenreeksen + proefexamens' },
-  { cat: 'Canvas',    label: 'INZICHT PLUS — Nederlands 1',     url: 'https://canvas.instructure.com/courses/12361937', desc: 'Cursus + leerpad + proefexamens A-D' },
-  { cat: 'Canvas',    label: 'De Studie Factorie — Frans 1',    url: 'https://canvas.instructure.com/courses/12604925', desc: 'Lees- & luisteroefeningen B1/B2' },
-  // Study tools
-  { cat: 'Studie',    label: 'Geopunt',                         url: 'https://www.geopunt.be', desc: 'Geografisch informatiesysteem (ook op examen!)' },
-  { cat: 'Studie',    label: 'Van Dale woordenboek',            url: 'https://vandale.be', desc: 'Toegestaan op examen' },
-  // Languages
-  { cat: 'Talen',     label: 'Lingua.com',                      url: 'https://lingua.com/nl/', desc: 'Gratis taaloefeningen' },
-  { cat: 'Talen',     label: 'British Council Belgium',         url: 'https://www.britishcouncil.be/', desc: 'Engels B1/B2 oefeningen' },
-  { cat: 'Talen',     label: 'Examencommissie.be — talen',      url: 'https://examencommissie.be/', desc: 'CEV taalinformatie' },
-  // Platform
-  { cat: 'Platform',  label: 'Examenboard',                     url: '/examenboard', desc: 'Persoonlijke examendashboard' },
-  { cat: 'Platform',  label: 'Taalplatform',                    url: '/dashboard', desc: 'Frans & Engels oefeningen' },
-]
-
-const CATS = ['Alle', 'CEV', 'Canvas', 'Studie', 'Talen', 'Platform']
+const ICONS = ['🔗','🏛️','🖥️','📚','🌐','🎓','📄','🎯','💡','📊','🔬','🗺️','📝','🏠']
 
 export default function LinksPage() {
-  const [filter, setFilter] = useState('Alle')
+  const [cats, setCats]       = useState<Category[]>([])
+  const [links, setLinks]     = useState<LinkRow[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
-  const [showAdd, setShowAdd] = useState(false)
-  const [customLinks, setCustomLinks] = useState<LinkItem[]>([])
-  const [form, setForm] = useState({ label: '', url: '', desc: '', cat: 'Studie' })
+  const [filter, setFilter]   = useState('Alle')
+  const [toast, setToast]     = useState<string | null>(null)
+
+  // Modals
+  const [catModal,  setCatModal]  = useState<Partial<Category> | null>(null)
+  const [linkModal, setLinkModal] = useState<Partial<LinkRow> | null>(null)
+  const [delCat,    setDelCat]    = useState<Category | null>(null)
+  const [delLink,   setDelLink]   = useState<LinkRow | null>(null)
+  const [saving,    setSaving]    = useState(false)
 
   useEffect(() => {
+    load()
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) return
-      const { data: p } = await supabase.from('profiles').select('is_admin').eq('id', data.session.user.id).single()
-      setIsAdmin(p?.is_admin ?? false)
+      const { data: p } = await supabase.from('profiles').select('is_admin, is_superadmin').eq('id', data.session.user.id).single()
+      setIsAdmin((p?.is_admin || p?.is_superadmin) ?? false)
     })
-    try {
-      const stored = localStorage.getItem('platform-custom-links')
-      if (stored) setCustomLinks(JSON.parse(stored))
-    } catch { /* ignore */ }
   }, [])
 
-  function addLink() {
-    if (!form.label || !form.url) return
-    const next = [...customLinks, form]
-    setCustomLinks(next)
-    try { localStorage.setItem('platform-custom-links', JSON.stringify(next)) } catch { /* ignore */ }
-    setForm({ label: '', url: '', desc: '', cat: 'Studie' })
-    setShowAdd(false)
+  async function load() {
+    const [cRes, lRes] = await Promise.all([
+      supabase.from('link_categories').select('*').order('position'),
+      supabase.from('links').select('*').order('created_at'),
+    ])
+    if (cRes.data) setCats(cRes.data)
+    if (lRes.data) setLinks(lRes.data)
   }
 
-  const allLinks = [...DEFAULT_LINKS, ...customLinks]
-  const filtered = filter === 'Alle' ? allLinks : allLinks.filter((l) => l.cat === filter)
-  const grouped = CATS.slice(1).reduce((acc, cat) => {
-    const items = filtered.filter((l) => l.cat === cat)
-    if (items.length) acc[cat] = items
-    return acc
-  }, {} as Record<string, LinkItem[]>)
+  function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500) }
+
+  /* ── Categories ──────────────────────────────────────────── */
+  async function saveCategory() {
+    if (!catModal?.name) return
+    setSaving(true)
+    if (catModal.id) {
+      await supabase.from('link_categories').update({ name: catModal.name, icon: catModal.icon ?? '🔗' }).eq('id', catModal.id)
+    } else {
+      await supabase.from('link_categories').insert({ name: catModal.name, icon: catModal.icon ?? '🔗', position: cats.length + 1 })
+    }
+    await load(); setCatModal(null); setSaving(false)
+    showToast(catModal.id ? 'Afdeling bijgewerkt' : 'Afdeling toegevoegd')
+  }
+
+  async function deleteCategory() {
+    if (!delCat) return
+    await supabase.from('link_categories').delete().eq('id', delCat.id)
+    await load(); setDelCat(null)
+    showToast('Afdeling verwijderd')
+  }
+
+  /* ── Links ───────────────────────────────────────────────── */
+  async function saveLink() {
+    if (!linkModal?.label || !linkModal?.url || !linkModal?.category_id) return
+    setSaving(true)
+    if (linkModal.id) {
+      await supabase.from('links').update({ label: linkModal.label, url: linkModal.url, description: linkModal.description ?? null, category_id: linkModal.category_id }).eq('id', linkModal.id)
+    } else {
+      await supabase.from('links').insert({ label: linkModal.label, url: linkModal.url, description: linkModal.description ?? null, category_id: linkModal.category_id })
+    }
+    await load(); setLinkModal(null); setSaving(false)
+    showToast(linkModal.id ? 'Link bijgewerkt' : 'Link toegevoegd')
+  }
+
+  async function deleteLink() {
+    if (!delLink) return
+    await supabase.from('links').delete().eq('id', delLink.id)
+    setLinks(prev => prev.filter(l => l.id !== delLink.id)); setDelLink(null)
+    showToast('Link verwijderd')
+  }
+
+  const activeCats = filter === 'Alle' ? cats : cats.filter(c => c.name === filter)
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+    <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 16px' }}>
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">🔗 Handige links</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Alle belangrijke bronnen op één plek.</p>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: '#242424', margin: 0 }}>🔗 Handige links</h1>
+          <p style={{ fontSize: 13, color: '#5b5b5b', margin: '2px 0 0' }}>Alle belangrijke bronnen op één plek.</p>
         </div>
-        <button onClick={() => setShowAdd(true)} className="btn-ghost text-sm px-4 py-2">+ Link toevoegen</button>
+        {isAdmin && (
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => setCatModal({ icon: '🔗' })}
+              style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 500, cursor: 'pointer', color: '#5b5b5b' }}>
+              + Afdeling
+            </button>
+            <button onClick={() => setLinkModal({ category_id: cats[0]?.id })}
+              style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+              + Link
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Filter */}
-      <div className="flex gap-2 flex-wrap mb-6">
-        {CATS.map((c) => (
-          <button key={c} onClick={() => setFilter(c)}
-            className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
-              filter === c ? 'bg-primary-500 text-white' : 'bg-white border border-warm-gray text-gray-600 hover:bg-gray-50'
-            }`}>
-            {c}
+      {/* Filter tabs */}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
+        {['Alle', ...cats.map(c => c.name)].map((f) => (
+          <button key={f} onClick={() => setFilter(f)}
+            style={{
+              fontSize: 12, padding: '5px 14px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none',
+              background: filter === f ? '#ff520e' : '#fff',
+              color: filter === f ? '#fff' : '#5b5b5b',
+              boxShadow: filter === f ? 'none' : '0 1px 3px rgba(0,0,0,0.08)',
+            }}>
+            {f}
           </button>
         ))}
       </div>
 
-      {/* Grouped links */}
-      <div className="space-y-6">
-        {Object.entries(grouped).map(([cat, links]) => (
-          <div key={cat}>
-            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">{cat}</h2>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {links.map((l, i) => (
-                <a key={i} href={l.url} target={l.url.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer"
-                  className="bg-white border border-warm-gray rounded-xl px-4 py-3 hover:shadow-md transition-shadow flex items-start gap-3 group">
-                  <span className="text-xl flex-shrink-0">
-                    {cat === 'Canvas' ? '🖥️' : cat === 'CEV' ? '🏛️' : cat === 'Talen' ? '🌐' : cat === 'Studie' ? '📚' : '🔗'}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors text-sm">{l.label}</p>
-                    {l.desc && <p className="text-xs text-gray-500 mt-0.5">{l.desc}</p>}
-                    <p className="text-xs text-gray-400 truncate mt-1">{l.url}</p>
+      {/* Links grouped by category */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+        {activeCats.map(cat => {
+          const catLinks = links.filter(l => l.category_id === cat.id)
+          if (catLinks.length === 0 && !isAdmin) return null
+          return (
+            <div key={cat.id}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <span style={{ fontSize: 18 }}>{cat.icon}</span>
+                <h2 style={{ fontSize: 13, fontWeight: 700, color: '#5b5b5b', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>{cat.name}</h2>
+                <div style={{ flex: 1, height: 1, background: '#e8e8e8' }} />
+                {isAdmin && (
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    <button onClick={() => setLinkModal({ category_id: cat.id })}
+                      style={{ background: 'none', border: '1px solid #e8e8e8', borderRadius: 6, padding: '2px 8px', fontSize: 11, cursor: 'pointer', color: '#ff520e', fontWeight: 600 }}>
+                      + link
+                    </button>
+                    <button onClick={() => setCatModal({ id: cat.id, name: cat.name, icon: cat.icon })}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#9ca3af' }}
+                      title="Afdeling bewerken">✏️</button>
+                    <button onClick={() => setDelCat(cat)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#9ca3af' }}
+                      title="Afdeling verwijderen"
+                      onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#9ca3af')}
+                    >🗑</button>
                   </div>
-                  <span className="text-gray-300 group-hover:text-primary-400 flex-shrink-0">↗</span>
-                </a>
-              ))}
+                )}
+              </div>
+
+              {catLinks.length === 0 ? (
+                <p style={{ fontSize: 13, color: '#9ca3af', paddingLeft: 4 }}>Nog geen links in deze afdeling.</p>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+                  {catLinks.map(l => (
+                    <div key={l.id} style={{ position: 'relative' }}>
+                      <a href={l.url} target={l.url.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer"
+                        style={{ display: 'flex', alignItems: 'flex-start', gap: 12, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10, padding: '14px 16px', textDecoration: 'none', transition: 'box-shadow 0.15s' }}
+                        onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)')}
+                        onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+                      >
+                        <span style={{ fontSize: 20, flexShrink: 0 }}>{cat.icon}</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: '#242424', margin: 0 }}>{l.label}</p>
+                          {l.description && <p style={{ fontSize: 11, color: '#5b5b5b', margin: '2px 0 0' }}>{l.description}</p>}
+                          <p style={{ fontSize: 11, color: '#9ca3af', margin: '3px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.url}</p>
+                        </div>
+                        <span style={{ color: '#9ca3af', flexShrink: 0, fontSize: 16 }}>↗</span>
+                      </a>
+                      {isAdmin && (
+                        <div style={{ position: 'absolute', top: 8, right: 8, display: 'flex', gap: 4 }}>
+                          <button onClick={() => setLinkModal({ id: l.id, label: l.label, url: l.url, description: l.description, category_id: l.category_id })}
+                            style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid #e8e8e8', borderRadius: 5, padding: '2px 6px', fontSize: 12, cursor: 'pointer', color: '#5b5b5b' }}>✏️</button>
+                          <button onClick={() => setDelLink(l)}
+                            style={{ background: 'rgba(255,255,255,0.95)', border: '1px solid #e8e8e8', borderRadius: 5, padding: '2px 6px', fontSize: 12, cursor: 'pointer', color: '#5b5b5b' }}
+                            onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                            onMouseLeave={e => (e.currentTarget.style.color = '#5b5b5b')}
+                          >🗑</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      {showAdd && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">Link toevoegen</h2>
-              <button onClick={() => setShowAdd(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+      {/* ── Category modal ─────────────────────────────────── */}
+      {catModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 400, width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <p style={{ fontSize: 15, fontWeight: 700, margin: 0 }}>{catModal.id ? 'Afdeling bewerken' : 'Nieuwe afdeling'}</p>
+              <button onClick={() => setCatModal(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#9ca3af' }}>×</button>
             </div>
-            <div className="space-y-3">
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="Label*" value={form.label} onChange={(e) => setForm({ ...form, label: e.target.value })} />
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="URL* (https://...)" value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} />
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="Beschrijving" value={form.desc} onChange={(e) => setForm({ ...form, desc: e.target.value })} />
-              <select className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                value={form.cat} onChange={(e) => setForm({ ...form, cat: e.target.value })}>
-                {CATS.slice(1).map((c) => <option key={c}>{c}</option>)}
-              </select>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+              <input style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
+                placeholder="Naam afdeling*" value={catModal.name ?? ''}
+                onChange={e => setCatModal({ ...catModal, name: e.target.value })} />
+              <div>
+                <p style={{ fontSize: 12, color: '#5b5b5b', margin: '0 0 6px' }}>Icoon</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {ICONS.map(ic => (
+                    <button key={ic} onClick={() => setCatModal({ ...catModal, icon: ic })}
+                      style={{ fontSize: 20, background: catModal.icon === ic ? '#fff3ef' : '#f4f4f4', border: `2px solid ${catModal.icon === ic ? '#ff520e' : 'transparent'}`, borderRadius: 6, padding: '4px 6px', cursor: 'pointer' }}>
+                      {ic}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowAdd(false)} className="btn-ghost text-sm px-4 py-2">Annuleren</button>
-              <button onClick={addLink} disabled={!form.label || !form.url}
-                className="btn-primary text-sm px-4 py-2 disabled:opacity-50">Toevoegen</button>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button onClick={() => setCatModal(null)} style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', color: '#5b5b5b' }}>Annuleren</button>
+              <button onClick={saveCategory} disabled={saving || !catModal.name}
+                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving || !catModal.name ? 0.5 : 1 }}>
+                {saving ? 'Opslaan…' : 'Opslaan'}
+              </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── Link modal ─────────────────────────────────────── */}
+      {linkModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 440, width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <p style={{ fontSize: 15, fontWeight: 700, margin: 0 }}>{linkModal.id ? 'Link bewerken' : 'Nieuwe link'}</p>
+              <button onClick={() => setLinkModal(null)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#9ca3af' }}>×</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+              <select style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
+                value={linkModal.category_id ?? ''} onChange={e => setLinkModal({ ...linkModal, category_id: e.target.value })}>
+                {cats.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
+              </select>
+              <input style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
+                placeholder="Label*" value={linkModal.label ?? ''}
+                onChange={e => setLinkModal({ ...linkModal, label: e.target.value })} />
+              <input style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13, fontFamily: 'monospace' }}
+                placeholder="URL* (https://... of /intern/pad)" value={linkModal.url ?? ''}
+                onChange={e => setLinkModal({ ...linkModal, url: e.target.value })} />
+              <input style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
+                placeholder="Beschrijving (optioneel)" value={linkModal.description ?? ''}
+                onChange={e => setLinkModal({ ...linkModal, description: e.target.value })} />
+            </div>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button onClick={() => setLinkModal(null)} style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', color: '#5b5b5b' }}>Annuleren</button>
+              <button onClick={saveLink} disabled={saving || !linkModal.label || !linkModal.url || !linkModal.category_id}
+                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving || !linkModal.label || !linkModal.url ? 0.5 : 1 }}>
+                {saving ? 'Opslaan…' : 'Opslaan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete confirmations ───────────────────────────── */}
+      {(delCat || delLink) && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 360, width: '100%', textAlign: 'center' }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: '#242424', marginBottom: 8 }}>
+              {delCat ? `Afdeling "${delCat.name}" verwijderen?` : `Link "${delLink?.label}" verwijderen?`}
+            </p>
+            <p style={{ fontSize: 13, color: '#5b5b5b', marginBottom: 20 }}>
+              {delCat ? 'Alle links in deze afdeling worden ook verwijderd.' : 'Dit kan niet ongedaan worden gemaakt.'}
+            </p>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+              <button onClick={() => { setDelCat(null); setDelLink(null) }}
+                style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, cursor: 'pointer', fontWeight: 500, color: '#5b5b5b' }}>
+                Annuleren
+              </button>
+              <button onClick={delCat ? deleteCategory : deleteLink}
+                style={{ background: '#ef4444', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, cursor: 'pointer', fontWeight: 600, color: '#fff' }}>
+                Verwijderen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: 24, right: 24, background: '#242424', color: '#fff', borderRadius: 8, padding: '10px 18px', fontSize: 13, fontWeight: 500, zIndex: 100, boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+          ✓ {toast}
         </div>
       )}
     </div>

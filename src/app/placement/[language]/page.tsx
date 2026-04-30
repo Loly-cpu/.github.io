@@ -9,7 +9,7 @@ import {
   savePlacementResult,
 } from '@/lib/placement'
 import { LEVEL_LABELS, LANGUAGE_LABELS, LANGUAGE_FLAGS, AVAILABLE_LEVELS } from '@/lib/content'
-import Navigation from '@/components/Navigation'
+
 
 export default function PlacementPage() {
   const params = useParams()
@@ -49,7 +49,7 @@ export default function PlacementPage() {
   if (!questions.length) {
     return (
       <>
-        <Navigation backHref="/dashboard" backLabel="Dashboard" />
+        
         <main className="max-w-2xl mx-auto px-4 py-8">
           <p className="text-gray-500">Taal niet gevonden.</p>
         </main>
@@ -65,7 +65,7 @@ export default function PlacementPage() {
 
     return (
       <>
-        <Navigation backHref="/dashboard" backLabel="Dashboard" />
+        
         <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
           <div className="card text-center space-y-5">
             <div className="text-5xl">🎯</div>
@@ -130,11 +130,6 @@ export default function PlacementPage() {
 
   return (
     <>
-      <Navigation
-        backHref="/dashboard"
-        backLabel="Dashboard"
-        title={`${LANGUAGE_FLAGS[language]} Plaatsingstest ${LANGUAGE_LABELS[language]}`}
-      />
       <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         <div>
           <div className="flex justify-between text-sm text-gray-500 mb-1.5">
