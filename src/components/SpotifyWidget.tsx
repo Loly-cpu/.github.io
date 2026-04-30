@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { SkipBackIcon, PlayIcon, PauseIcon, SkipForwardIcon, Music2Icon, XIcon } from 'lucide-react'
 
 interface NowPlaying {
   connected: boolean
@@ -12,32 +13,27 @@ interface NowPlaying {
   track_url?: string
 }
 
-interface LastfmTrack {
-  name: string
-  artist: { '#text': string }
-  image: { '#text': string; size: string }[]
-  url: string
-  '@attr'?: { nowplaying: string }
-}
-
-async function fetchLastfm(username: string): Promise<NowPlaying> {
-  const key = process.env.NEXT_PUBLIC_LASTFM_API_KEY
-  if (!key || !username) return { connected: false }
-  const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(username)}&api_key=${key}&format=json&limit=1`
-  const res = await fetch(url)
-  if (!res.ok) return { connected: false }
-  const data = await res.json()
-  const track: LastfmTrack | undefined = data?.recenttracks?.track?.[0]
-  if (!track) return { connected: true, playing: false }
-  const playing = track['@attr']?.nowplaying === 'true'
-  const art = track.image?.find((i: { size: string }) => i.size === 'large')?.['#text'] ?? ''
-  return {
-    connected: true,
-    playing,
-    track: track.name,
-    artist: track.artist['#text'],
-    album_art: art && !art.includes('2a96cbd8b46e442fc41c2b86b821562f') ? art : undefined,
-    track_url: track.url,
+async function fetchLastfm(username: string, apiKey: string): Promise<NowPlaying> {
+  if (!apiKey || !username) return { connected: false }
+  try {
+    const res = await fetch(
+      `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(username)}&api_key=${apiKey}&format=json&limit=1`
+    )
+    if (!res.ok) return { connected: false }
+    const data = await res.json()
+    const track = data?.recenttracks?.track?.[0]
+    if (!track) return { connected: true, playing: false }
+    const playing = track['@attr']?.nowplaying === 'true'
+    const art = track.image?.find((i: { size: string }) => i.size === 'large')?.['#text'] ?? ''
+    return {
+      connected: true, playing,
+      track: track.name,
+      artist: track.artist['#text'],
+      album_art: art && !art.includes('2a96cbd8b46e442fc41c2b86b821562f') ? art : undefined,
+      track_url: track.url,
+    }
+  } catch {
+    return { connected: false }
   }
 }
 
@@ -47,39 +43,43 @@ export default function SpotifyWidget() {
   const [lastfmUser, setLastfmUser] = useState<string | null>(null)
   const [inputUser, setInputUser]   = useState('')
   const [saving, setSaving]         = useState(false)
-  const intervalRef                 = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [userId, setUserId]         = useState<string | null>(null)
+  const apiKey = process.env.NEXT_PUBLIC_LASTFM_API_KEY ?? ''
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) return
       const uid = data.session.user.id
+      setUserId(uid)
       const { data: token } = await supabase.from('spotify_tokens').select('display_name').eq('user_id', uid).maybeSingle()
       const stored = token?.display_name ?? localStorage.getItem('lastfm_username')
-      if (stored) { setLastfmUser(stored); fetchLastfm(stored).then(setNp) }
+      if (stored) {
+        setLastfmUser(stored)
+        fetchLastfm(stored, apiKey).then(setNp)
+      }
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if (!lastfmUser) return
-    intervalRef.current = setInterval(() => fetchLastfm(lastfmUser).then(setNp), 15000)
+    intervalRef.current = setInterval(() => fetchLastfm(lastfmUser, apiKey).then(setNp), 15000)
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [lastfmUser])
+  }, [lastfmUser, apiKey])
 
   async function saveUsername() {
     if (!inputUser.trim()) return
     setSaving(true)
     localStorage.setItem('lastfm_username', inputUser.trim())
-    // Save to spotify_tokens.display_name (reusing the field for lastfm username)
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
+    if (userId) {
       await supabase.from('spotify_tokens').upsert({
-        user_id: session.user.id,
-        display_name: inputUser.trim(),
+        user_id: userId, display_name: inputUser.trim(),
         access_token: '', refresh_token: '', expires_at: new Date(0).toISOString(),
       })
     }
     setLastfmUser(inputUser.trim())
-    const result = await fetchLastfm(inputUser.trim())
+    const result = await fetchLastfm(inputUser.trim(), apiKey)
     setNp(result)
     setSaving(false)
   }
@@ -88,91 +88,161 @@ export default function SpotifyWidget() {
 
   return (
     <>
+      {/* Floating button */}
       <button
-        onClick={() => { setOpen(o => !o); if (lastfmUser) fetchLastfm(lastfmUser).then(setNp) }}
+        onClick={() => { setOpen(o => !o); if (lastfmUser) fetchLastfm(lastfmUser, apiKey).then(setNp) }}
         title="Muziek"
         style={{
           position: 'fixed', bottom: 72, right: 20, zIndex: 80,
           width: 42, height: 42, borderRadius: '50%',
-          background: isPlaying ? '#1DB954' : '#1a1a1a',
           border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: isPlaying ? '0 2px 12px rgba(29,185,84,0.5)' : '0 2px 8px rgba(0,0,0,0.3)',
           transition: 'all 0.2s',
+          // Neumorphic style
+          background: '#e0e5ec',
+          boxShadow: isPlaying
+            ? '4px 4px 8px #b8bec7, -4px -4px 8px #ffffff, 0 0 16px rgba(99,102,241,0.4)'
+            : '4px 4px 8px #b8bec7, -4px -4px 8px #ffffff',
+          color: isPlaying ? '#6366f1' : '#64748b',
         }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-        </svg>
+        <Music2Icon size={18} />
       </button>
 
+      {/* Player panel */}
       {open && (
         <div style={{
           position: 'fixed', bottom: 124, right: 20, zIndex: 81,
-          background: '#121212', borderRadius: 16, padding: 16, width: 280,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)',
-          color: '#fff',
+          width: 300,
+          background: '#e0e5ec',
+          borderRadius: 24,
+          padding: 24,
+          boxShadow: '9px 9px 18px #b8bec7, -9px -9px 18px #ffffff',
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DB954">
-                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-              </svg>
-              <span style={{ fontSize: 13, fontWeight: 700 }}>
+          {/* Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Music2Icon size={16} style={{ color: '#6366f1' }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>
                 {lastfmUser ? `@${lastfmUser}` : 'Muziek'}
               </span>
             </div>
             <button onClick={() => setOpen(false)}
-              style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', display: 'flex' }}>
+              <XIcon size={16} />
+            </button>
           </div>
 
           {!lastfmUser ? (
+            /* Setup */
             <div>
-              <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 10 }}>
-                Vul je <strong style={{ color: '#fff' }}>Last.fm gebruikersnaam</strong> in om te zien wat je afspeelt op Spotify.
-              </p>
-              <p style={{ fontSize: 11, color: '#6b7280', marginBottom: 10 }}>
-                Nog geen Last.fm? Maak gratis aan op <span style={{ color: '#d11f4b' }}>last.fm</span> en koppel Spotify via Settings → Applications.
-              </p>
-              <input
-                style={{ width: '100%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, padding: '8px 10px', fontSize: 13, color: '#fff', marginBottom: 8, boxSizing: 'border-box' }}
-                placeholder="jouw-lastfm-username"
-                value={inputUser}
-                onChange={e => setInputUser(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') saveUsername() }}
-              />
+              <div style={{
+                background: '#e0e5ec',
+                borderRadius: 16,
+                padding: 16,
+                boxShadow: 'inset 4px 4px 8px #b8bec7, inset -4px -4px 8px #ffffff',
+                marginBottom: 12,
+              }}>
+                <p style={{ fontSize: 12, color: '#64748b', margin: '0 0 10px' }}>
+                  Vul je <strong style={{ color: '#374151' }}>Last.fm username</strong> in.{' '}
+                  <span style={{ color: '#9ca3af' }}>Koppel Spotify via last.fm → Settings → Apps.</span>
+                </p>
+                <input
+                  style={{
+                    width: '100%', background: 'transparent', border: 'none', outline: 'none',
+                    fontSize: 13, color: '#374151', boxSizing: 'border-box',
+                  }}
+                  placeholder="username..."
+                  value={inputUser}
+                  onChange={e => setInputUser(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') saveUsername() }}
+                />
+              </div>
               <button onClick={saveUsername} disabled={!inputUser.trim() || saving}
-                style={{ width: '100%', background: '#1DB954', color: '#000', border: 'none', borderRadius: 8, padding: '8px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: !inputUser.trim() || saving ? 0.6 : 1 }}>
+                style={{
+                  width: '100%', border: 'none', borderRadius: 12, padding: '10px',
+                  fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                  background: '#e0e5ec',
+                  color: !inputUser.trim() || saving ? '#9ca3af' : '#6366f1',
+                  boxShadow: !inputUser.trim() || saving
+                    ? 'inset 2px 2px 6px #b8bec7, inset -2px -2px 6px #ffffff'
+                    : '4px 4px 8px #b8bec7, -4px -4px 8px #ffffff',
+                  transition: 'all 0.2s',
+                }}>
                 {saving ? 'Opslaan…' : 'Verbinden'}
               </button>
             </div>
-          ) : isPlaying ? (
-            <div>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                {np?.album_art && (
-                  <img src={np.album_art} alt="album" style={{ width: 52, height: 52, borderRadius: 6, flexShrink: 0 }} />
-                )}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 600, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {np?.track_url
-                      ? <a href={np.track_url} target="_blank" rel="noreferrer" style={{ color: '#fff', textDecoration: 'none' }}>{np?.track}</a>
-                      : np?.track}
-                  </p>
-                  <p style={{ fontSize: 11, color: '#9ca3af', margin: '2px 0 6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{np?.artist}</p>
-                  <span style={{ fontSize: 10, color: '#1DB954', fontWeight: 700 }}>▶ Nu aan het afspelen</span>
-                </div>
-              </div>
-              <button onClick={() => { setLastfmUser(null); localStorage.removeItem('lastfm_username') }}
-                style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: 10, cursor: 'pointer', marginTop: 10, textDecoration: 'underline' }}>
-                Ander account
-              </button>
-            </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '8px 0' }}>
-              <p style={{ fontSize: 12, color: '#9ca3af', marginBottom: 4 }}>Niks aan het afspelen.</p>
-              <p style={{ fontSize: 11, color: '#6b7280' }}>Speel iets af op Spotify en het verschijnt hier.</p>
+            <div>
+              {/* Album art */}
+              <div style={{
+                width: '100%', aspectRatio: '1', borderRadius: 20, overflow: 'hidden', marginBottom: 20,
+                boxShadow: '6px 6px 12px #b8bec7, -6px -6px 12px #ffffff',
+              }}>
+                {np?.album_art ? (
+                  <img src={np.album_art} alt="album" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Music2Icon size={40} style={{ color: 'rgba(255,255,255,0.6)' }} />
+                  </div>
+                )}
+              </div>
+
+              {/* Track info */}
+              <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: '#1f2937', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {np?.track ?? '—'}
+                </p>
+                <p style={{ margin: '4px 0 0', fontSize: 13, color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {np?.artist ?? 'Niks aan het afspelen'}
+                </p>
+                {isPlaying && (
+                  <span style={{ fontSize: 11, color: '#6366f1', fontWeight: 700, display: 'inline-block', marginTop: 6 }}>▶ Nu aan het afspelen</span>
+                )}
+              </div>
+
+              {/* Progress bar */}
+              <div style={{
+                height: 6, borderRadius: 6, marginBottom: 20,
+                boxShadow: 'inset 3px 3px 6px #b8bec7, inset -3px -3px 6px #ffffff',
+                background: '#e0e5ec', overflow: 'hidden',
+              }}>
+                <div style={{
+                  height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+                  borderRadius: 6, width: isPlaying ? '45%' : '0%',
+                  transition: 'width 15s linear',
+                }} />
+              </div>
+
+              {/* Controls — open in Spotify */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 16, alignItems: 'center' }}>
+                {[
+                  { icon: <SkipBackIcon size={20} />, label: 'Vorige', onClick: () => {} },
+                  { icon: isPlaying ? <PauseIcon size={28} /> : <PlayIcon size={28} />, label: 'Spelen', onClick: () => np?.track_url && window.open(np.track_url, '_blank'), primary: true },
+                  { icon: <SkipForwardIcon size={20} />, label: 'Volgende', onClick: () => {} },
+                ].map(({ icon, label, onClick, primary }) => (
+                  <button key={label} onClick={onClick} title={label}
+                    style={{
+                      width: primary ? 60 : 46, height: primary ? 60 : 46,
+                      borderRadius: '50%', border: 'none', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      background: '#e0e5ec',
+                      color: primary ? '#6366f1' : '#64748b',
+                      boxShadow: primary
+                        ? '6px 6px 12px #b8bec7, -6px -6px 12px #ffffff'
+                        : '4px 4px 8px #b8bec7, -4px -4px 8px #ffffff',
+                      transition: 'all 0.15s',
+                    }}
+                    onMouseDown={e => (e.currentTarget.style.boxShadow = 'inset 3px 3px 6px #b8bec7, inset -3px -3px 6px #ffffff')}
+                    onMouseUp={e => (e.currentTarget.style.boxShadow = primary ? '6px 6px 12px #b8bec7, -6px -6px 12px #ffffff' : '4px 4px 8px #b8bec7, -4px -4px 8px #ffffff')}
+                  >
+                    {icon}
+                  </button>
+                ))}
+              </div>
+
               <button onClick={() => { setLastfmUser(null); localStorage.removeItem('lastfm_username') }}
-                style={{ background: 'none', border: 'none', color: '#6b7280', fontSize: 10, cursor: 'pointer', marginTop: 8, textDecoration: 'underline' }}>
+                style={{ display: 'block', margin: '16px auto 0', background: 'none', border: 'none', color: '#9ca3af', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
                 Ander account
               </button>
             </div>

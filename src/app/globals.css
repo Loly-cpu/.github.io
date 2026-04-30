@@ -68,6 +68,15 @@ body.sidebar-collapsed .app-content  { margin-left: 60px; }
   .app-content { margin-left: 0; padding: 16px; }
 }
 
+/* Full-bleed pagina's (examenboard, dashboard, chat) */
+.app-content:has(.page-fullbleed) {
+  padding: 0;
+  background: transparent;
+}
+body.sidebar-collapsed .app-content:has(.page-fullbleed) {
+  padding: 0;
+}
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Sign-in animaties ────────────────────────────────────────────────────── */

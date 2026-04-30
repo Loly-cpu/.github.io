@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import PomodoroTimer from '@/components/PomodoroTimer'
 
 // ─── Canvas types ──────────────────────────────────────────────────────────────
 
@@ -739,7 +738,7 @@ export default function ExamenBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="page-fullbleed min-h-screen bg-cream">
       {/* Header */}
       <div className="bg-white border-b border-warm-gray shadow-sm" style={{ position: 'sticky', top: 48, zIndex: 20 }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -939,8 +938,6 @@ export default function ExamenBoard() {
         )}
       </main>
 
-      {/* Floating Pomodoro timer */}
-      <PomodoroTimer />
     </div>
   )
 }
