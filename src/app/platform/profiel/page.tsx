@@ -1,5 +1,6 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 const FB = '#1877F2'
@@ -9,7 +10,8 @@ interface Profile {
   canvas_url?: string; canvas_token?: string
 }
 
-export default function ProfielPage() {
+function ProfielPage() {
+  const searchParams = useSearchParams()
   const [profile, setProfile]   = useState<Profile | null>(null)
   const [loading, setLoading]   = useState(true)
   const [saving, setSaving]     = useState(false)
@@ -20,8 +22,12 @@ export default function ProfielPage() {
   const [canvasToken, setCanvasToken] = useState('')
   const [testResult, setTestResult] = useState<string | null>(null)
   const [testing, setTesting]   = useState(false)
+  const [spotifyStatus, setSpotifyStatus] = useState<'connected'|'error'|null>(null)
 
   useEffect(() => {
+    const sp = searchParams.get('spotify')
+    if (sp === 'connected') { setSpotifyStatus('connected'); showToast('Spotify gekoppeld!') }
+    if (sp === 'error')     { setSpotifyStatus('error') }
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) return
       const uid = data.session.user.id
@@ -29,6 +35,7 @@ export default function ProfielPage() {
       if (p) { setProfile(p); setName(p.display_name ?? ''); setCanvasUrl(p.canvas_url ?? ''); setCanvasToken(p.canvas_token ?? '') }
       setLoading(false)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500) }
@@ -54,21 +61,22 @@ export default function ProfielPage() {
     if (!canvasUrl.trim() || !canvasToken.trim()) return
     setTesting(true); setTestResult(null)
     try {
-      const base = canvasUrl.trim().replace(/\/$/, '')
-      const res = await fetch(`${base}/api/v1/users/self/profile`, { headers: { Authorization: `Bearer ${canvasToken.trim()}` } })
-      if (res.ok) {
-        const d = await res.json()
-        setTestResult(`✅ Verbonden als: ${d.name ?? d.login_id}`)
-      } else {
-        setTestResult(`❌ Fout ${res.status}: controleer je URL en token`)
-      }
+      const res = await fetch('/api/canvas/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: canvasUrl.trim(), token: canvasToken.trim() }),
+      })
+      const d = await res.json()
+      if (res.ok) setTestResult(`✅ Verbonden als: ${d.name}`)
+      else setTestResult(`❌ ${d.error}`)
     } catch {
-      setTestResult('❌ Kan server niet bereiken. Controleer je Canvas-URL.')
+      setTestResult('❌ Kan de test niet uitvoeren. Probeer opnieuw.')
     }
     setTesting(false)
   }
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}><div className="fb-spinner" /></div>
+
 
   return (
     <div style={{ maxWidth: 680, margin: '0 auto', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif' }}>
@@ -164,8 +172,10 @@ export default function ProfielPage() {
               </div>
             </div>
             <div className="fb-card-body">
-              <a href="/api/auth/spotify" className="fb-btn fb-btn-primary" style={{ textDecoration: 'none', background: '#1DB954', display: 'inline-flex' }}>
-                Spotify koppelen
+              {spotifyStatus === 'connected' && <p style={{ margin: '0 0 10px', fontSize: 14, color: '#22c55e', fontWeight: 700 }}>✅ Spotify is gekoppeld!</p>}
+              {spotifyStatus === 'error' && <p style={{ margin: '0 0 10px', fontSize: 14, color: '#E41E3F', fontWeight: 700 }}>❌ Koppeling mislukt. Probeer opnieuw.</p>}
+              <a href={`/api/auth/spotify?user_id=${profile?.id ?? ''}`} className="fb-btn fb-btn-primary" style={{ textDecoration: 'none', background: '#1DB954', display: 'inline-flex' }}>
+                {spotifyStatus === 'connected' ? 'Opnieuw koppelen' : 'Spotify koppelen'}
               </a>
             </div>
           </div>
@@ -190,5 +200,13 @@ export default function ProfielPage() {
 
       {toast && <div className="fb-toast">✓ {toast}</div>}
     </div>
+  )
+}
+
+export default function ProfielPageWrapper() {
+  return (
+    <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}><div className="fb-spinner" /></div>}>
+      <ProfielPage />
+    </Suspense>
   )
 }

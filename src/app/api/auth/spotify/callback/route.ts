@@ -12,16 +12,21 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const code   = searchParams.get('code')
   const error  = searchParams.get('error')
-  const userId = searchParams.get('state') // passed as state from the authorize step
+  const userId = searchParams.get('state')
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://examen.atlasleads.be'
 
   if (error || !code) {
-    return NextResponse.redirect(`${siteUrl}/platform?spotify=error`)
+    return NextResponse.redirect(`${siteUrl}/platform/profiel?spotify=error`)
   }
 
-  const clientId     = process.env.SPOTIFY_CLIENT_ID!
-  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET!
+  const clientId     = process.env.SPOTIFY_CLIENT_ID
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
+
+  if (!clientId || !clientSecret) {
+    console.error('Spotify credentials not configured')
+    return NextResponse.redirect(`${siteUrl}/platform/profiel?spotify=error&reason=config`)
+  }
   const redirectUri  = process.env.SPOTIFY_REDIRECT_URI ?? `${siteUrl}/api/auth/spotify/callback`
 
   // Exchange code for tokens
@@ -39,7 +44,9 @@ export async function GET(req: NextRequest) {
   })
 
   if (!tokenRes.ok) {
-    return NextResponse.redirect(`${siteUrl}/platform?spotify=error`)
+    const body = await tokenRes.text().catch(() => '')
+    console.error('Spotify token exchange failed:', tokenRes.status, body)
+    return NextResponse.redirect(`${siteUrl}/platform/profiel?spotify=error`)
   }
 
   const tokens = await tokenRes.json()
@@ -64,5 +71,5 @@ export async function GET(req: NextRequest) {
     })
   }
 
-  return NextResponse.redirect(`${siteUrl}/platform?spotify=connected`)
+  return NextResponse.redirect(`${siteUrl}/platform/profiel?spotify=connected`)
 }
