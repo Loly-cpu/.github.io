@@ -1,31 +1,52 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-const BASE  = process.env.CANVAS_BASE_URL  ?? 'https://canvas.instructure.com'
-const TOKEN = process.env.CANVAS_API_TOKEN
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function cf(path: string): Promise<any> {
-  if (!TOKEN) throw new Error('CANVAS_API_TOKEN niet ingesteld')
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { Authorization: `Bearer ${TOKEN}` },
+async function cf(path: string, base: string, token: string): Promise<any> {
+  const res = await fetch(`${base}${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
     next: { revalidate: 300 },
   })
   if (!res.ok) throw new Error(`Canvas ${res.status}`)
   return res.json()
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url)
+  const userId = searchParams.get('user_id')
+
+  // Try personal canvas token from profile first
+  let BASE  = process.env.CANVAS_BASE_URL  ?? 'https://canvas.instructure.com'
+  let TOKEN = process.env.CANVAS_API_TOKEN ?? ''
+
+  if (userId) {
+    const sb = getSupabaseAdmin()
+    const { data: p } = await sb.from('profiles').select('canvas_url,canvas_token').eq('id', userId).single()
+    if (p?.canvas_url && p?.canvas_token) {
+      BASE  = p.canvas_url.replace(/\/$/, '')
+      TOKEN = p.canvas_token
+    }
+  }
+
+  if (!TOKEN) return NextResponse.json({ error: 'Geen Canvas-token. Koppel je Canvas-account via Profiel → Accounts beheren.' }, { status: 400 })
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawCourses: any[] = await cf('/api/v1/courses?enrollment_state=active&per_page=50')
+    const rawCourses: any[] = await cf('/api/v1/courses?enrollment_state=active&per_page=50', BASE, TOKEN)
     const active = rawCourses.filter((c) => c.workflow_state === 'available')
 
     const results = await Promise.allSettled(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       active.map(async (course: any) => {
         const [assignments, submissions] = await Promise.all([
-          cf(`/api/v1/courses/${course.id}/assignments?per_page=100&order_by=due_at`).catch(() => []),
-          cf(`/api/v1/courses/${course.id}/submissions?student_ids[]=self&per_page=100&include[]=assignment`).catch(() => []),
+          cf(`/api/v1/courses/${course.id}/assignments?per_page=100&order_by=due_at`, BASE, TOKEN).catch(() => []),
+          cf(`/api/v1/courses/${course.id}/submissions?student_ids[]=self&per_page=100&include[]=assignment`, BASE, TOKEN).catch(() => []),
         ])
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

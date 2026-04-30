@@ -203,210 +203,196 @@ export default function FormulierenPage() {
     (filterStatus === 'alle' || q.status === filterStatus)
   )
 
+  const FB = '#1877F2'
+  const STATUS_STYLE: Record<string, {bg:string;color:string}> = {
+    answered: { bg: '#D4EDDA', color: '#155724' },
+    closed:   { bg: '#E4E6EB', color: '#65676B' },
+    open:     { bg: '#FFF3CD', color: '#856404' },
+  }
+
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold text-gray-900">❓ Vragen & Antwoorden</h1>
-        <button onClick={() => setShowForm(true)} className="btn-primary text-sm px-4 py-2">+ Vraag stellen</button>
+    <div style={{ maxWidth: 740, margin: '0 auto', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif' }}>
+
+      {/* Page header */}
+      <div className="fb-card">
+        <div className="fb-page-cover" style={{ background: 'linear-gradient(135deg, #F5C400, #FF7043)' }} />
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, padding: '0 16px 16px', marginTop: -32 }}>
+          <div className="fb-page-icon">❓</div>
+          <div style={{ flex: 1, paddingBottom: 4 }}>
+            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#1C1E21' }}>Vragen & Antwoorden</h1>
+            <p style={{ margin: 0, fontSize: 14, color: '#65676B' }}>Stel een vraag — iedereen kan antwoorden</p>
+          </div>
+          <button onClick={() => setShowForm(true)} className="fb-btn fb-btn-primary">+ Vraag stellen</button>
+        </div>
+
+        {/* Status filters */}
+        <div className="fb-filter-tabs" style={{ borderTop: '1px solid #E4E6EB', paddingTop: 12 }}>
+          {[['open','❓ Open'],['answered','✅ Beantwoord'],['alle','Alle']].map(([s,l]) => (
+            <button key={s} onClick={() => setFilterStatus(s)} className={`fb-filter-btn ${filterStatus === s ? 'active' : ''}`}>{l}</button>
+          ))}
+        </div>
+
+        {/* Subject filters */}
+        <div className="fb-filter-tabs" style={{ paddingTop: 0, paddingBottom: 12 }}>
+          {['Alle',...SUBJECTS].map(s => (
+            <button key={s} onClick={() => setFilterSubject(s)} className={`fb-filter-btn ${filterSubject === s ? 'active' : ''}`} style={{ fontSize: 13 }}>{s}</button>
+          ))}
+        </div>
       </div>
-      <p className="text-gray-500 text-sm mb-6">
-        Stel een vraag over je vak of richting — iedereen kan antwoorden. Gebruik 🔔 om meldingen te krijgen.
-      </p>
 
       {sent && (
-        <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 text-sm text-green-800 mb-4">
+        <div style={{ background: '#D4EDDA', border: '1px solid #C3E6CB', borderRadius: 8, padding: '12px 16px', marginBottom: 16, fontSize: 14, color: '#155724', fontWeight: 600 }}>
           ✅ Vraag geplaatst! Iedereen kan nu antwoorden.
         </div>
       )}
 
-      {/* Filters */}
-      <div className="space-y-2 mb-5">
-        <div className="flex gap-1 flex-wrap">
-          {['open','answered','alle'].map(s => (
-            <button key={s} onClick={() => setFilterStatus(s)}
-              className={`text-xs px-3 py-1.5 rounded-full font-medium ${filterStatus === s ? 'bg-gray-800 text-white' : 'bg-white border border-warm-gray text-gray-600 hover:bg-gray-50'}`}>
-              {s === 'open' ? 'Open' : s === 'answered' ? '✅ Beantwoord' : 'Alle'}
-            </button>
-          ))}
-        </div>
-        <div className="flex gap-1 flex-wrap">
-          {['Alle',...SUBJECTS].map(s => (
-            <button key={s} onClick={() => setFilterSubject(s)}
-              className={`text-xs px-3 py-1.5 rounded-full font-medium ${filterSubject === s ? 'bg-primary-500 text-white' : 'bg-white border border-warm-gray text-gray-600 hover:bg-gray-50'}`}>
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Question list */}
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          <p className="text-3xl mb-2">❓</p>
-          <p className="font-semibold">Geen vragen gevonden</p>
-          <button onClick={() => setShowForm(true)} className="mt-3 btn-primary text-sm px-4 py-2">Stel de eerste vraag →</button>
+        <div className="fb-card" style={{ padding: '48px 20px', textAlign: 'center' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>❓</div>
+          <p style={{ fontWeight: 800, fontSize: 18, color: '#1C1E21', margin: '0 0 8px' }}>Geen vragen gevonden</p>
+          <button onClick={() => setShowForm(true)} className="fb-btn fb-btn-primary fb-btn-lg">Stel de eerste vraag</button>
         </div>
       )}
 
-      <div className="space-y-3">
-        {filtered.map(q => {
-          const isOpen = expanded === q.id
-          const qReactions = allReactions.filter(r => r.target_type === 'question' && r.target_id === q.id)
-          const answerCount = q.answers?.length ?? 0
+      {filtered.map(q => {
+        const isOpen = expanded === q.id
+        const qReactions = allReactions.filter(r => r.target_type === 'question' && r.target_id === q.id)
+        const answerCount = q.answers?.length ?? 0
+        const st = STATUS_STYLE[q.status] ?? STATUS_STYLE.open
 
-          return (
-            <div key={q.id} className={`bg-white border rounded-2xl overflow-hidden transition-shadow ${isOpen ? 'border-primary-300 shadow-md' : 'border-warm-gray hover:shadow-sm'}`}>
-              {/* Header */}
-              <button onClick={() => toggleExpand(q.id)} className="w-full text-left px-5 py-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        q.status === 'answered' ? 'bg-green-100 text-green-700' :
-                        q.status === 'closed'   ? 'bg-gray-100 text-gray-500' :
-                                                  'bg-amber-100 text-amber-700'
-                      }`}>
-                        {q.status === 'answered' ? '✅ Beantwoord' : q.status === 'closed' ? '🔒 Gesloten' : '❓ Open'}
-                      </span>
-                      <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-medium">{q.subject}</span>
-                    </div>
-                    <p className="font-semibold text-gray-900 text-sm leading-snug">
-                      {q.content.slice(0,140)}{q.content.length > 140 ? '…' : ''}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {q.name || 'Anoniem'} · {timeAgo(q.created_at)}
-                      {answerCount > 0 && ` · ${answerCount} antwoord${answerCount > 1 ? 'en' : ''}`}
-                    </p>
-                    {/* Reaction bar on question (collapsed view) */}
-                    <ReactionBar targetType="question" targetId={q.id}
-                      reactions={qReactions} userId={userId} onToggle={toggleReaction} />
-                  </div>
-                  <span className={`text-gray-400 text-xs transition-transform flex-shrink-0 mt-1 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+        return (
+          <div key={q.id} className="fb-card" style={{ border: isOpen ? `2px solid ${FB}` : '2px solid transparent', transition: 'border-color .15s' }}>
+            {/* Question header — clickable */}
+            <button onClick={() => toggleExpand(q.id)}
+              style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '12px 16px', textAlign: 'left', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#E4E6EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>❓</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+                  <span style={{ background: st.bg, color: st.color, borderRadius: 4, padding: '2px 8px', fontSize: 12, fontWeight: 700 }}>
+                    {q.status === 'answered' ? '✅ Beantwoord' : q.status === 'closed' ? '🔒 Gesloten' : '❓ Open'}
+                  </span>
+                  <span style={{ background: '#E7F3FF', color: FB, borderRadius: 4, padding: '2px 8px', fontSize: 12, fontWeight: 700 }}>{q.subject}</span>
                 </div>
-              </button>
+                <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#1C1E21', lineHeight: 1.4 }}>
+                  {q.content.slice(0,140)}{q.content.length > 140 ? '…' : ''}
+                </p>
+                <p style={{ margin: '4px 0 0', fontSize: 13, color: '#65676B' }}>
+                  {q.name || 'Anoniem'} · {timeAgo(q.created_at)}{answerCount > 0 ? ` · ${answerCount} antwoord${answerCount > 1 ? 'en' : ''}` : ''}
+                </p>
+                <ReactionBar targetType="question" targetId={q.id} reactions={qReactions} userId={userId} onToggle={toggleReaction} />
+              </div>
+              <span style={{ color: '#65676B', fontSize: 18, transition: 'transform .2s', transform: isOpen ? 'rotate(180deg)' : 'none', flexShrink: 0, marginTop: 4 }}>▾</span>
+            </button>
 
-              {/* Expanded */}
-              {isOpen && (
-                <div className="border-t border-warm-gray">
-                  {/* Full question */}
-                  <div className="px-5 py-4 bg-gray-50">
-                    <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{q.content}</p>
-                    {isAdmin && (
-                      <div className="flex gap-3 mt-3">
-                        {q.status !== 'closed' && (
-                          <button onClick={() => closeQuestion(q.id)} className="text-xs text-gray-500 hover:text-gray-700">🔒 Sluiten</button>
-                        )}
-                        <button onClick={() => deleteQuestion(q.id)} className="text-xs text-red-400 hover:text-red-600">🗑 Verwijderen</button>
+            {isOpen && (
+              <>
+                <div style={{ height: 1, background: '#E4E6EB' }} />
+                {/* Full content */}
+                <div style={{ padding: '12px 16px', background: '#F0F2F5' }}>
+                  <p style={{ margin: 0, fontSize: 15, color: '#1C1E21', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{q.content}</p>
+                  {isAdmin && (
+                    <div style={{ display: 'flex', gap: 12, marginTop: 10 }}>
+                      {q.status !== 'closed' && <button onClick={() => closeQuestion(q.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#65676B', fontFamily: 'inherit' }}>🔒 Sluiten</button>}
+                      <button onClick={() => deleteQuestion(q.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#E41E3F', fontFamily: 'inherit' }}>🗑 Verwijderen</button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Answers */}
+                {(q.answers ?? []).map(a => {
+                  const aReactions = allReactions.filter(r => r.target_type === 'answer' && r.target_id === a.id)
+                  const canMark = userId === q.user_id || isAdmin
+                  return (
+                    <div key={a.id} style={{ borderTop: '1px solid #E4E6EB', padding: '12px 16px', background: a.is_accepted ? '#F0FFF4' : '#fff', display: 'flex', gap: 10 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: FB, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
+                        {(a.profiles?.display_name ?? '?')[0].toUpperCase()}
                       </div>
-                    )}
-                  </div>
-
-                  {/* Answers */}
-                  {q.answers && q.answers.length > 0 && (
-                    <div className="divide-y divide-warm-gray">
-                      {q.answers.map(a => {
-                        const aReactions = allReactions.filter(r => r.target_type === 'answer' && r.target_id === a.id)
-                        const canMarkAnswer = userId === q.user_id || isAdmin
-                        return (
-                          <div key={a.id} className={`px-5 py-4 ${a.is_accepted ? 'bg-green-50' : ''}`}>
-                            <div className="flex items-start gap-3">
-                              <div className="w-7 h-7 rounded-full bg-primary-200 flex items-center justify-center text-xs font-bold text-primary-700 flex-shrink-0 mt-0.5">
-                                {(a.profiles?.display_name ?? '?')[0].toUpperCase()}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap mb-1">
-                                  <span className="text-xs font-semibold text-gray-800">{a.profiles?.display_name ?? 'Anoniem'}</span>
-                                  <span className="text-xs text-gray-400">{timeAgo(a.created_at)}</span>
-                                  {a.is_accepted && (
-                                    <span className="text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded-full font-bold">✅ Beste antwoord</span>
-                                  )}
-                                </div>
-                                <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{a.content}</p>
-                                <div className="flex items-center gap-3 mt-1 flex-wrap">
-                                  <ReactionBar targetType="answer" targetId={a.id}
-                                    reactions={aReactions} userId={userId} onToggle={toggleReaction} />
-                                  {canMarkAnswer && !a.is_accepted && q.status !== 'closed' && (
-                                    <button onClick={() => markAccepted(a.id, q.id)}
-                                      className="text-xs text-green-600 hover:text-green-800 font-medium border border-green-200 px-2 py-0.5 rounded-full hover:bg-green-50 transition-colors">
-                                      ✅ Markeer als antwoord
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: '#1C1E21' }}>{a.profiles?.display_name ?? 'Anoniem'}</span>
+                          <span style={{ fontSize: 13, color: '#65676B' }}>{timeAgo(a.created_at)}</span>
+                          {a.is_accepted && <span style={{ background: '#D4EDDA', color: '#155724', borderRadius: 4, padding: '2px 8px', fontSize: 12, fontWeight: 700 }}>✅ Beste antwoord</span>}
+                        </div>
+                        <p style={{ margin: '0 0 6px', fontSize: 15, color: '#1C1E21', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{a.content}</p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                          <ReactionBar targetType="answer" targetId={a.id} reactions={aReactions} userId={userId} onToggle={toggleReaction} />
+                          {canMark && !a.is_accepted && q.status !== 'closed' && (
+                            <button onClick={() => markAccepted(a.id, q.id)}
+                              style={{ background: 'none', border: '1px solid #42B72A', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700, color: '#42B72A', cursor: 'pointer', fontFamily: 'inherit' }}>
+                              ✅ Beste antwoord
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  )
+                })}
 
-                  {q.answers?.length === 0 && (
-                    <div className="px-5 py-4 text-sm text-gray-400 text-center">
-                      Nog geen antwoorden — wees de eerste!
-                    </div>
-                  )}
+                {(q.answers?.length ?? 0) === 0 && (
+                  <div style={{ borderTop: '1px solid #E4E6EB', padding: '16px', textAlign: 'center', color: '#65676B', fontSize: 14 }}>Nog geen antwoorden — wees de eerste!</div>
+                )}
 
-                  {/* Answer input */}
-                  {userId && q.status !== 'closed' && (
-                    <div className="px-5 py-4 border-t border-warm-gray bg-gray-50">
-                      <p className="text-xs font-semibold text-gray-600 mb-2">Jouw antwoord</p>
-                      <div className="flex gap-2 items-end">
+                {/* Answer input */}
+                {userId && q.status !== 'closed' && (
+                  <div style={{ borderTop: '1px solid #E4E6EB', padding: '12px 16px', background: '#F0F2F5' }}>
+                    <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: FB, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, flexShrink: 0 }}>
+                        {displayName[0]?.toUpperCase() ?? '?'}
+                      </div>
+                      <div style={{ flex: 1, background: '#fff', borderRadius: 20, padding: '8px 12px' }}>
                         <textarea
-                          className="flex-1 border border-warm-gray rounded-xl px-3 py-2 text-sm resize-none h-20 bg-white"
-                          placeholder="Schrijf een antwoord... Weet je het niet zeker? Reageer gerust, anderen kunnen aanvullen."
+                          style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 14, color: '#1C1E21', resize: 'none', minHeight: 36, fontFamily: 'inherit' }}
+                          placeholder="Schrijf een antwoord…"
                           value={answerText[q.id] ?? ''}
                           onChange={e => setAnswerText(prev => ({ ...prev, [q.id]: e.target.value }))}
+                          rows={2}
                         />
-                        <button onClick={() => submitAnswer(q.id)}
-                          disabled={posting || !answerText[q.id]?.trim()}
-                          className="btn-primary text-sm px-4 py-2 self-end disabled:opacity-50 flex-shrink-0">
-                          Plaatsen
-                        </button>
                       </div>
+                      <button onClick={() => submitAnswer(q.id)} disabled={posting || !answerText[q.id]?.trim()}
+                        className="fb-btn fb-btn-primary fb-btn-sm" style={{ flexShrink: 0, opacity: (posting || !answerText[q.id]?.trim()) ? 0.5 : 1 }}>
+                        Plaatsen
+                      </button>
                     </div>
-                  )}
-                  {!userId && (
-                    <div className="px-5 py-3 border-t border-warm-gray text-center text-sm text-gray-500">
-                      <a href="/auth/login" className="text-primary-600 underline font-medium">Inloggen</a> om te antwoorden of reageren.
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+                  </div>
+                )}
+                {!userId && (
+                  <div style={{ borderTop: '1px solid #E4E6EB', padding: '12px 16px', textAlign: 'center', fontSize: 14, color: '#65676B' }}>
+                    <a href="/auth/login" style={{ color: FB, fontWeight: 700, textDecoration: 'none' }}>Aanmelden</a> om te antwoorden.
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )
+      })}
 
       {/* New question modal */}
       {showForm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">❓ Vraag stellen</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+        <div className="fb-modal-overlay">
+          <div className="fb-modal">
+            <div className="fb-modal-header">
+              <h2 className="fb-modal-title">Vraag stellen</h2>
+              <button className="fb-modal-close" onClick={() => setShowForm(false)}>×</button>
             </div>
-            <p className="text-sm text-gray-500">Iedereen op het platform kan antwoorden. Gebruik 🔔 Volgen op vragen van anderen om meldingen te krijgen.</p>
-            <div className="space-y-3">
-              <select className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}>
+            <div className="fb-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <p style={{ margin: 0, fontSize: 14, color: '#65676B' }}>Stel je vraag duidelijk. Iedereen op het platform kan antwoorden.</p>
+              <select className="fb-input" value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}>
                 {SUBJECTS.map(s => <option key={s}>{s}</option>)}
               </select>
-              <textarea className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm resize-none h-36"
-                placeholder="Schrijf je vraag duidelijk. Geef context: welk niveau, welk onderdeel, wat snap je nog niet?"
+              <textarea className="fb-input" style={{ height: 120, resize: 'none' }}
+                placeholder="Geef context: welk niveau, welk onderdeel, wat snap je nog niet?"
                 value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
               {userId && (
-                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                  <input type="checkbox" checked={form.anonymous}
-                    onChange={e => setForm({ ...form, anonymous: e.target.checked })} className="w-4 h-4 rounded" />
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: '#65676B' }}>
+                  <input type="checkbox" checked={form.anonymous} onChange={e => setForm({ ...form, anonymous: e.target.checked })} style={{ width: 16, height: 16, accentColor: FB }} />
                   Anoniem plaatsen
                 </label>
               )}
             </div>
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowForm(false)} className="btn-ghost text-sm px-4 py-2">Annuleren</button>
-              <button onClick={submitQuestion} disabled={sending || !form.content.trim()}
-                className="btn-primary text-sm px-4 py-2 disabled:opacity-50">
-                {sending ? 'Plaatsen...' : 'Vraag plaatsen →'}
+            <div className="fb-modal-footer">
+              <button className="fb-btn fb-btn-secondary" onClick={() => setShowForm(false)}>Annuleren</button>
+              <button className="fb-btn fb-btn-primary" onClick={submitQuestion} disabled={sending || !form.content.trim()} style={{ opacity: (sending || !form.content.trim()) ? 0.5 : 1 }}>
+                {sending ? 'Plaatsen…' : 'Vraag plaatsen'}
               </button>
             </div>
           </div>

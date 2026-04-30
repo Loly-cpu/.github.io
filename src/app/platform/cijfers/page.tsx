@@ -1,5 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
 import { ChevronDownIcon, ChevronRightIcon, ExternalLinkIcon, TrendingUpIcon, AlertTriangleIcon } from 'lucide-react'
 
 interface Assignment {
@@ -131,17 +133,20 @@ export default function CijfersPage() {
   const [openCourses, setOpenCourses] = useState<Record<number, boolean>>({})
 
   useEffect(() => {
-    fetch('/api/canvas/grades')
-      .then(r => r.json())
-      .then(d => {
-        if (d.error) { setError(d.error); return }
-        setCourses(d.courses ?? [])
-        const firstOpen: Record<number, boolean> = {}
-        for (const c of d.courses ?? []) firstOpen[c.id] = true
-        setOpenCourses(firstOpen)
-      })
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false))
+    supabase.auth.getSession().then(async ({ data }) => {
+      const uid = data.session?.user?.id ?? ''
+      fetch(`/api/canvas/grades?user_id=${uid}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.error) { setError(d.error); return }
+          setCourses(d.courses ?? [])
+          const firstOpen: Record<number, boolean> = {}
+          for (const c of d.courses ?? []) firstOpen[c.id] = true
+          setOpenCourses(firstOpen)
+        })
+        .catch(e => setError(e.message))
+        .finally(() => setLoading(false))
+    })
   }, [])
 
   const toggleGroup = (key: string) => setOpenGroups(p => ({ ...p, [key]: !p[key] }))
@@ -176,8 +181,13 @@ export default function CijfersPage() {
       )}
 
       {error && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '16px 20px', color: '#dc2626', fontSize: 13 }}>
+        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '16px 20px', color: '#dc2626', fontSize: 14 }}>
           <strong>Fout:</strong> {error}
+          {error.includes('token') && (
+            <p style={{ margin: '8px 0 0', fontSize: 13 }}>
+              <Link href="/platform/profiel" style={{ color: '#1877F2', fontWeight: 700 }}>→ Ga naar Profiel → Accounts beheren</Link> om je Canvas-account te koppelen.
+            </p>
+          )}
         </div>
       )}
 

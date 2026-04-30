@@ -12,9 +12,10 @@ const ITEMS = [
   { href: '/platform/cijfers',     label: 'Cijfers',      emoji: '📊', bg: '#02B875' },
   { href: '/platform/agenda',      label: 'Agenda',       emoji: '📅', bg: '#E4409E' },
   { href: '/platform/documenten',  label: 'Documenten',   emoji: '📁', bg: '#F5C400' },
-  { href: '/platform/formulieren', label: 'Formulieren',  emoji: '📝', bg: '#FF7043' },
+  { href: '/platform/formulieren', label: 'Vragen & Ant.', emoji: '❓', bg: '#FF7043' },
   { href: '/platform/links',       label: 'Links',        emoji: '🔗', bg: '#8B5CF6' },
   { href: '/platform/meldingen',   label: 'Meldingen',    emoji: '🔔', bg: '#E41E3F', badge: true },
+  { href: '/platform/profiel',     label: 'Mijn Profiel', emoji: '👤', bg: '#1877F2' },
 ]
 const MODULES = [
   { href: '/examenboard', label: 'Examenboard', emoji: '🎓', bg: '#1877F2' },

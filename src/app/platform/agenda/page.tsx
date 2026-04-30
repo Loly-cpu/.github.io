@@ -217,363 +217,255 @@ function AgendaInner() {
   const monthGrid = getMonthGrid(month)
   const WEEKDAYS = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo']
 
+  const FB = '#1877F2'
+  const TYPE_COLORS_FB: Record<string, string> = {
+    personal: '#8B5CF6', school: FB, exam: '#E41E3F', study: '#42B72A', busy: '#9ca3af',
+  }
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">📅 Agenda</h1>
-        <div className="flex gap-2 flex-wrap">
-          {/* View toggle */}
-          <div style={{ display: 'flex', border: '1px solid #e8e8e8', borderRadius: 8, overflow: 'hidden' }}>
-            <button onClick={() => setView('week')}
-              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', background: view === 'week' ? '#2563eb' : '#fff', color: view === 'week' ? '#fff' : '#5b5b5b' }}>
-              Week
-            </button>
-            <button onClick={() => setView('month')}
-              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', borderLeft: '1px solid #e8e8e8', background: view === 'month' ? '#2563eb' : '#fff', color: view === 'month' ? '#fff' : '#5b5b5b' }}>
-              Maand
-            </button>
+    <div style={{ maxWidth: 900, margin: '0 auto', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif' }}>
+
+      {/* FB page header */}
+      <div className="fb-card">
+        <div className="fb-page-cover" style={{ background: 'linear-gradient(135deg, #E4409E, #1877F2)' }} />
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, padding: '0 16px 16px', marginTop: -32 }}>
+          <div className="fb-page-icon">📅</div>
+          <div style={{ flex: 1, paddingBottom: 4 }}>
+            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#1C1E21' }}>Agenda</h1>
+            <p style={{ margin: 0, fontSize: 14, color: '#65676B' }}>{events.length} evenementen gepland</p>
           </div>
-          <button onClick={() => setShowIcal(true)} className="btn-ghost text-sm flex items-center gap-1.5">
-            📥 iCal
-          </button>
-          <a href="/api/auth/google-calendar"
-            className={`btn-ghost text-sm flex items-center gap-1.5 ${gcalConnected ? 'text-green-600' : ''}`}>
-            {gcalConnected ? '✅ Google' : '🗓 Google'}
-          </a>
-          <button onClick={() => setShowAi(true)} className="btn-ghost text-sm flex items-center gap-1.5">
-            ✨ AI Plan
-          </button>
-          <button onClick={() => setShowForm(true)} className="btn-primary text-sm px-4 py-2">
-            + Evenement
-          </button>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button onClick={() => setShowIcal(true)} className="fb-btn fb-btn-secondary fb-btn-sm">📥 iCal</button>
+            <a href="/api/auth/google-calendar" className="fb-btn fb-btn-secondary fb-btn-sm" style={{ textDecoration: 'none', color: gcalConnected ? '#42B72A' : '#1C1E21' }}>{gcalConnected ? '✅ Google' : '🗓 Google'}</a>
+            <button onClick={() => setShowAi(true)} className="fb-btn fb-btn-secondary fb-btn-sm">✨ AI Plan</button>
+            <button onClick={() => setShowForm(true)} className="fb-btn fb-btn-primary">+ Evenement</button>
+          </div>
+        </div>
+
+        {/* View + nav tabs */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px 12px', gap: 8, borderTop: '1px solid #E4E6EB', paddingTop: 12 }}>
+          <button onClick={() => setView('week')} className={`fb-filter-btn ${view === 'week' ? 'active' : ''}`}>Week</button>
+          <button onClick={() => setView('month')} className={`fb-filter-btn ${view === 'month' ? 'active' : ''}`}>Maand</button>
+          <div style={{ flex: 1 }} />
+          {view === 'week' && <>
+            <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()-7); setWeek(d) }} className="fb-btn fb-btn-secondary fb-btn-sm">← Vorige</button>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#1C1E21', whiteSpace: 'nowrap' }}>{formatDate(days[0].toISOString())} – {formatDate(days[6].toISOString())}</span>
+            <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()+7); setWeek(d) }} className="fb-btn fb-btn-secondary fb-btn-sm">Volgende →</button>
+          </>}
+          {view === 'month' && <>
+            <button onClick={() => { const d = new Date(month); d.setMonth(d.getMonth()-1); setMonth(d) }} className="fb-btn fb-btn-secondary fb-btn-sm">← Vorige</button>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#1C1E21', whiteSpace: 'nowrap' }}>{month.toLocaleDateString('nl-BE', { month: 'long', year: 'numeric' })}</span>
+            <button onClick={() => { const d = new Date(month); d.setMonth(d.getMonth()+1); setMonth(d) }} className="fb-btn fb-btn-secondary fb-btn-sm">Volgende →</button>
+          </>}
         </div>
       </div>
 
       {/* ── WEEK VIEW ── */}
       {view === 'week' && (
-        <>
-          <div className="flex items-center gap-3 mb-4">
-            <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()-7); setWeek(d) }}
-              className="btn-ghost px-3 py-1.5 text-sm">← Vorige</button>
-            <span className="font-semibold text-gray-700 text-sm flex-1 text-center">
-              {formatDate(days[0].toISOString())} – {formatDate(days[6].toISOString())}
-            </span>
-            <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()+7); setWeek(d) }}
-              className="btn-ghost px-3 py-1.5 text-sm">Volgende →</button>
-          </div>
-          {/* Scrollable week grid on mobile */}
-          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: 32 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(120px, 1fr))', gap: 4, minWidth: 640 }}>
-              {days.map((d) => {
-                const ds = isoDate(d)
-                const dayEvents = eventsForDay(d)
-                const isToday = ds === today
-                return (
-                  <div key={ds} style={{ borderRadius: 10, border: `2px solid ${isToday ? '#2563eb' : '#e5e7eb'}`, minHeight: 120, padding: 8, background: isToday ? '#eff6ff' : '#fff' }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? '#2563eb' : '#6b7280', marginBottom: 6 }}>
-                      <div>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
-                      <div style={{ fontSize: 18, lineHeight: 1, color: isToday ? '#2563eb' : '#111827' }}>{d.getDate()}</div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {dayEvents.map((e) => (
-                        <div key={e.id}
-                          style={{ fontSize: 11, padding: '2px 6px', borderRadius: 5, fontWeight: 500, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', cursor: 'default', backgroundColor: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1', border: `1px solid ${e.color ?? '#6366f1'}44` }}
-                          title={e.title}>
-                          {e.title}
-                        </div>
-                      ))}
-                    </div>
+        <div className="fb-card" style={{ overflowX: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(110px, 1fr))', minWidth: 560 }}>
+            {days.map((d) => {
+              const ds = isoDate(d)
+              const dayEvents = eventsForDay(d)
+              const isToday = ds === today
+              return (
+                <div key={ds} style={{ borderRight: '1px solid #E4E6EB', minHeight: 140, padding: 8, background: isToday ? '#E7F3FF' : '#fff' }}>
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? FB : '#65676B', textTransform: 'uppercase' }}>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: isToday ? FB : 'transparent', color: isToday ? '#fff' : '#1C1E21', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: isToday ? 700 : 400, fontSize: 15 }}>{d.getDate()}</div>
                   </div>
-                )
-              })}
-            </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    {dayEvents.map(e => (
+                      <div key={e.id} style={{ fontSize: 11, padding: '2px 6px', borderRadius: 4, fontWeight: 600, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', background: (TYPE_COLORS_FB[e.type] ?? FB) + '22', color: TYPE_COLORS_FB[e.type] ?? FB, borderLeft: `3px solid ${TYPE_COLORS_FB[e.type] ?? FB}` }} title={e.title}>{e.title}</div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
           </div>
-        </>
+        </div>
       )}
 
       {/* ── MONTH VIEW ── */}
       {view === 'month' && (
-        <>
-          <div className="flex items-center gap-3 mb-4">
-            <button onClick={() => { const d = new Date(month); d.setMonth(d.getMonth()-1); setMonth(d) }}
-              className="btn-ghost px-3 py-1.5 text-sm">← Vorige</button>
-            <span className="font-semibold text-gray-700 text-sm flex-1 text-center">
-              {month.toLocaleDateString('nl-BE', { month: 'long', year: 'numeric' })}
-            </span>
-            <button onClick={() => { const d = new Date(month); d.setMonth(d.getMonth()+1); setMonth(d) }}
-              className="btn-ghost px-3 py-1.5 text-sm">Volgende →</button>
+        <div className="fb-card" style={{ overflow: 'hidden' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', borderBottom: '1px solid #E4E6EB' }}>
+            {WEEKDAYS.map(wd => <div key={wd} style={{ padding: '8px 0', textAlign: 'center', fontSize: 12, fontWeight: 700, color: '#65676B' }}>{wd}</div>)}
           </div>
-          <div className="bg-white rounded-xl border border-warm-gray overflow-hidden mb-8">
-            {/* Weekday headers */}
-            <div className="grid grid-cols-7 border-b border-warm-gray">
-              {WEEKDAYS.map((wd) => (
-                <div key={wd} style={{ padding: '8px 0', textAlign: 'center', fontSize: 12, fontWeight: 600, color: '#5b5b5b' }}>{wd}</div>
-              ))}
-            </div>
-            {/* Day cells */}
-            <div className="grid grid-cols-7">
-              {monthGrid.map((d, i) => {
-                if (!d) return <div key={i} style={{ minHeight: 80, borderRight: '1px solid #f4f4f4', borderBottom: '1px solid #f4f4f4', background: '#fafafa' }} />
-                const ds = isoDate(d)
-                const dayEvents = eventsForDay(d)
-                const isToday = ds === today
-                const isCurrentMonth = d.getMonth() === month.getMonth()
-                return (
-                  <div key={ds} style={{
-                    minHeight: 80, padding: 6,
-                    borderRight: '1px solid #f4f4f4', borderBottom: '1px solid #f4f4f4',
-                    background: isToday ? '#eff6ff' : '#fff',
-                  }}>
-                    <div style={{
-                      fontSize: 13, fontWeight: isToday ? 700 : 400,
-                      color: isToday ? '#2563eb' : isCurrentMonth ? '#242424' : '#c0c0c0',
-                      marginBottom: 4,
-                    }}>
-                      {isToday ? (
-                        <span style={{ background: '#2563eb', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>
-                          {d.getDate()}
-                        </span>
-                      ) : d.getDate()}
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                      {dayEvents.slice(0, 3).map((e) => (
-                        <div key={e.id}
-                          style={{ fontSize: 10, padding: '1px 4px', borderRadius: 4, fontWeight: 500, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', background: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1' }}
-                          title={e.title}>
-                          {e.title}
-                        </div>
-                      ))}
-                      {dayEvents.length > 3 && (
-                        <div style={{ fontSize: 10, color: '#5b5b5b' }}>+{dayEvents.length - 3} meer</div>
-                      )}
-                    </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)' }}>
+            {monthGrid.map((d, i) => {
+              if (!d) return <div key={i} style={{ minHeight: 80, borderRight: '1px solid #E4E6EB', borderBottom: '1px solid #E4E6EB', background: '#F0F2F5' }} />
+              const ds = isoDate(d)
+              const dayEvents = eventsForDay(d)
+              const isToday = ds === today
+              const isCurrentMonth = d.getMonth() === month.getMonth()
+              return (
+                <div key={ds} style={{ minHeight: 80, padding: 6, borderRight: '1px solid #E4E6EB', borderBottom: '1px solid #E4E6EB', background: isToday ? '#E7F3FF' : '#fff' }}>
+                  <div style={{ marginBottom: 3 }}>
+                    {isToday
+                      ? <span style={{ background: FB, color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{d.getDate()}</span>
+                      : <span style={{ fontSize: 13, color: isCurrentMonth ? '#1C1E21' : '#BEC3C9', fontWeight: isToday ? 700 : 400 }}>{d.getDate()}</span>
+                    }
                   </div>
-                )
-              })}
-            </div>
+                  {dayEvents.slice(0,3).map(e => (
+                    <div key={e.id} style={{ fontSize: 10, padding: '1px 4px', borderRadius: 3, fontWeight: 600, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', background: (TYPE_COLORS_FB[e.type] ?? FB) + '22', color: TYPE_COLORS_FB[e.type] ?? FB, marginBottom: 2 }} title={e.title}>{e.title}</div>
+                  ))}
+                  {dayEvents.length > 3 && <div style={{ fontSize: 10, color: '#65676B' }}>+{dayEvents.length - 3}</div>}
+                </div>
+              )
+            })}
           </div>
-        </>
+        </div>
       )}
 
-
-      {/* Upcoming list */}
-      <div>
-        <h2 className="font-bold text-gray-900 mb-3">Komende evenementen</h2>
-        {events.length === 0 && <p className="text-sm text-gray-500">Nog geen evenementen. Voeg er een toe of genereer een AI-studieplan.</p>}
-        <div className="space-y-2">
-          {events.filter((e) => {
-            const todayStart = new Date(); todayStart.setHours(0,0,0,0)
-            return new Date(e.start_at) >= todayStart
-          }).slice(0, 20).map((e) => (
-            <div key={e.id} className="flex items-center gap-3 bg-white border border-warm-gray rounded-xl px-4 py-3">
-              <div className="w-1.5 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: e.color }} />
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-900 text-sm truncate">{e.title}</p>
-                <p className="text-xs text-gray-500">{formatDate(e.start_at)} · {formatTime(e.start_at)}–{formatTime(e.end_at)}</p>
+      {/* ── Upcoming events list ── */}
+      <div className="fb-card">
+        <div className="fb-card-header"><span style={{ fontSize: 17, fontWeight: 800 }}>Aankomend</span></div>
+        <div style={{ padding: '8px 0' }}>
+          {events.filter(e => { const t = new Date(); t.setHours(0,0,0,0); return new Date(e.start_at) >= t }).slice(0,20).length === 0 && (
+            <p style={{ padding: '16px', textAlign: 'center', color: '#65676B', fontSize: 14, margin: 0 }}>Geen aankomende evenementen.</p>
+          )}
+          {events.filter(e => { const t = new Date(); t.setHours(0,0,0,0); return new Date(e.start_at) >= t }).slice(0,20).map(e => (
+            <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: '1px solid #E4E6EB', transition: 'background .1s' }}
+              onMouseEnter={el => (el.currentTarget.style.background = '#F2F2F2')}
+              onMouseLeave={el => (el.currentTarget.style.background = 'transparent')}>
+              <div style={{ width: 48, height: 48, borderRadius: 8, background: (TYPE_COLORS_FB[e.type] ?? FB) + '20', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: TYPE_COLORS_FB[e.type] ?? FB }}>{new Date(e.start_at).toLocaleDateString('nl-BE',{month:'short'}).toUpperCase()}</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: TYPE_COLORS_FB[e.type] ?? FB, lineHeight: 1 }}>{new Date(e.start_at).getDate()}</span>
               </div>
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                {TYPE_LABELS[e.type] ?? e.type}
-              </span>
-              <button onClick={() => deleteEvent(e.id)} className="text-gray-300 hover:text-red-400 text-lg leading-none">×</button>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: 15, color: '#1C1E21', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.title}</p>
+                <p style={{ margin: 0, fontSize: 13, color: '#65676B' }}>{TYPE_LABELS[e.type] ?? e.type} · {formatDate(e.start_at)} · {formatTime(e.start_at)}</p>
+              </div>
+              <button onClick={() => deleteEvent(e.id)}
+                style={{ width: 32, height: 32, borderRadius: '50%', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#BEC3C9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                onMouseEnter={e2 => { e2.currentTarget.style.background = '#FEE2E2'; e2.currentTarget.style.color = '#E41E3F' }}
+                onMouseLeave={e2 => { e2.currentTarget.style.background = 'none'; e2.currentTarget.style.color = '#BEC3C9' }}>×</button>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Add event modal */}
+      {/* Modals ─────────────────────────────────────────────── */}
+      {gcalStatus !== 'idle' && (
+        <div style={{ position: 'fixed', top: 68, right: 16, zIndex: 100, padding: '12px 16px', borderRadius: 8, fontSize: 14, fontWeight: 600, boxShadow: '0 4px 16px rgba(0,0,0,.2)', background: gcalStatus === 'success' ? '#D4EDDA' : '#F8D7DA', color: gcalStatus === 'success' ? '#155724' : '#721C24', display: 'flex', alignItems: 'center', gap: 10 }}>
+          {gcalStatus === 'success' ? '✅ Google Calendar gekoppeld!' : '❌ Koppeling mislukt'}
+          <button onClick={() => setGcalStatus('idle')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: 'inherit' }}>×</button>
+        </div>
+      )}
+
       {showForm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">Nieuw evenement</h2>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
-            </div>
-            <div className="space-y-3">
-              <input
-                className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="Titel"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-              />
-              <select
-                className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                value={form.type}
-                onChange={(e) => setForm({ ...form, type: e.target.value })}
-              >
-                {Object.entries(TYPE_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
-                ))}
+        <div className="fb-modal-overlay">
+          <div className="fb-modal">
+            <div className="fb-modal-header"><h2 className="fb-modal-title">Nieuw evenement</h2><button className="fb-modal-close" onClick={() => setShowForm(false)}>×</button></div>
+            <div className="fb-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <input className="fb-input" placeholder="Titel*" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+              <select className="fb-input" value={form.type} onChange={e => setForm({...form, type: e.target.value})}>
+                {Object.entries(TYPE_LABELS).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
               </select>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-xs text-gray-500 mb-1 block">Start</label>
-                  <input type="datetime-local" className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                    value={form.start_at}
-                    onChange={(e) => setForm({ ...form, start_at: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-500 mb-1 block">Eind</label>
-                  <input type="datetime-local" className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                    value={form.end_at}
-                    onChange={(e) => setForm({ ...form, end_at: e.target.value })} />
-                </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div><label style={{ fontSize: 12, fontWeight: 700, color: '#65676B', display: 'block', marginBottom: 4 }}>Start</label><input type="datetime-local" className="fb-input" value={form.start_at} onChange={e => setForm({...form, start_at: e.target.value})} /></div>
+                <div><label style={{ fontSize: 12, fontWeight: 700, color: '#65676B', display: 'block', marginBottom: 4 }}>Eind</label><input type="datetime-local" className="fb-input" value={form.end_at} onChange={e => setForm({...form, end_at: e.target.value})} /></div>
               </div>
-              <textarea
-                className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm resize-none h-20"
-                placeholder="Notities (optioneel)"
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              />
+              <textarea className="fb-input" placeholder="Notities (optioneel)" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} style={{ height: 80, resize: 'none' }} />
             </div>
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowForm(false)} className="btn-ghost text-sm px-4 py-2">Annuleren</button>
-              <button onClick={saveEvent} disabled={saving || !form.title || !form.start_at}
-                className="btn-primary text-sm px-4 py-2 disabled:opacity-50">
-                {saving ? 'Opslaan...' : 'Opslaan'}
-              </button>
+            <div className="fb-modal-footer">
+              <button className="fb-btn fb-btn-secondary" onClick={() => setShowForm(false)}>Annuleren</button>
+              <button className="fb-btn fb-btn-primary" onClick={saveEvent} disabled={saving || !form.title || !form.start_at} style={{ opacity: (saving || !form.title || !form.start_at) ? 0.5 : 1 }}>{saving ? 'Opslaan…' : 'Opslaan'}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Google Calendar status toast */}
-      {gcalStatus !== 'idle' && (
-        <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
-          gcalStatus === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
-        }`}>
-          {gcalStatus === 'success' ? '✅ Google Calendar gekoppeld!' : '❌ Koppeling mislukt — controleer je Client ID/Secret'}
-          <button onClick={() => setGcalStatus('idle')} className="ml-3 opacity-60 hover:opacity-100">×</button>
-        </div>
-      )}
-
-      {/* iCal import modal */}
       {showIcal && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-4 my-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">📥 iCal importeren</h2>
-              <button onClick={() => { setShowIcal(false); setIcalEvents([]); setIcalErr('') }} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
-            </div>
-            <p className="text-sm text-gray-500">
-              Plak je iCal-URL van <strong>Smartschool</strong>, <strong>Apple Agenda</strong> of een andere agenda.
-              In Smartschool: Agenda → ⚙️ → iCal-adres kopiëren.
-            </p>
-            <div className="space-y-3">
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                placeholder="Naam (bijv. Smartschool)" value={icalName}
-                onChange={e => setIcalName(e.target.value)} />
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm font-mono text-xs"
-                placeholder="https://smartschool.be/.../ical?..." value={icalUrl}
-                onChange={e => { setIcalUrl(e.target.value); setIcalEvents([]); setIcalErr('') }} />
-              {icalErr && <p className="text-sm text-red-600">{icalErr}</p>}
-              <button onClick={previewIcal} disabled={icalLoading || !icalUrl.trim()}
-                className="btn-ghost w-full py-2 text-sm disabled:opacity-50">
-                {icalLoading ? 'Laden…' : '🔍 Voorbeeld laden'}
-              </button>
-            </div>
-            {icalEvents.length > 0 && (
-              <>
-                <div className="max-h-48 overflow-y-auto border border-warm-gray rounded-xl divide-y divide-warm-gray">
-                  {icalEvents.slice(0, 20).map((e, i) => (
-                    <div key={i} className="px-3 py-2 flex items-center gap-2">
-                      <span className="text-xs text-gray-400 w-24 flex-shrink-0">
-                        {new Date(e.start).toLocaleDateString('nl-BE', { day:'numeric', month:'short' })}
-                      </span>
-                      <span className="text-sm text-gray-800 truncate">{e.summary}</span>
+        <div className="fb-modal-overlay">
+          <div className="fb-modal" style={{ maxWidth: 520 }}>
+            <div className="fb-modal-header"><h2 className="fb-modal-title">📥 iCal importeren</h2><button className="fb-modal-close" onClick={() => { setShowIcal(false); setIcalEvents([]); setIcalErr('') }}>×</button></div>
+            <div className="fb-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <p style={{ margin: 0, fontSize: 14, color: '#65676B' }}>Plak je iCal-URL van <strong>Smartschool</strong>, Apple Agenda of Google. In Smartschool: Agenda → ⚙️ → iCal-adres kopiëren.</p>
+              <input className="fb-input" placeholder="Naam (bijv. Smartschool)" value={icalName} onChange={e => setIcalName(e.target.value)} />
+              <input className="fb-input" placeholder="https://…/ical?…" value={icalUrl} onChange={e => { setIcalUrl(e.target.value); setIcalEvents([]); setIcalErr('') }} style={{ fontFamily: 'monospace', fontSize: 13 }} />
+              {icalErr && <p style={{ margin: 0, fontSize: 13, color: '#E41E3F' }}>{icalErr}</p>}
+              <button className="fb-btn fb-btn-secondary" onClick={previewIcal} disabled={icalLoading || !icalUrl.trim()} style={{ opacity: (icalLoading || !icalUrl.trim()) ? 0.5 : 1 }}>{icalLoading ? 'Laden…' : '🔍 Voorbeeld laden'}</button>
+              {icalEvents.length > 0 && (
+                <div style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #E4E6EB', borderRadius: 8 }}>
+                  {icalEvents.slice(0,20).map((e,i) => (
+                    <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 12px', borderBottom: '1px solid #E4E6EB' }}>
+                      <span style={{ fontSize: 13, color: '#65676B', flexShrink: 0, width: 80 }}>{new Date(e.start).toLocaleDateString('nl-BE',{day:'numeric',month:'short'})}</span>
+                      <span style={{ fontSize: 13, color: '#1C1E21', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.summary}</span>
                     </div>
                   ))}
-                  {icalEvents.length > 20 && <p className="px-3 py-2 text-xs text-gray-400">+ {icalEvents.length - 20} meer</p>}
+                  {icalEvents.length > 20 && <p style={{ padding: '8px 12px', fontSize: 13, color: '#65676B', margin: 0 }}>+ {icalEvents.length - 20} meer</p>}
                 </div>
-                <div className="flex gap-2">
-                  <button onClick={() => { setIcalEvents([]); setIcalUrl('') }} className="btn-ghost text-sm px-4 py-2 flex-1">Annuleren</button>
-                  <button onClick={importIcal} className="btn-primary text-sm px-4 py-2 flex-1">
-                    {icalEvents.length} evenementen importeren →
-                  </button>
-                </div>
-              </>
-            )}
+              )}
+            </div>
+            <div className="fb-modal-footer">
+              <button className="fb-btn fb-btn-secondary" onClick={() => { setIcalEvents([]); setIcalUrl(''); setShowIcal(false) }}>Annuleren</button>
+              {icalEvents.length > 0 && <button className="fb-btn fb-btn-primary" onClick={importIcal}>{icalEvents.length} importeren →</button>}
+            </div>
           </div>
         </div>
       )}
 
-      {/* AI studieplan modal */}
       {showAi && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 space-y-4 my-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900 flex items-center gap-2">✨ AI Studieplan genereren</h2>
-              <button onClick={() => { setShowAi(false); setAiPlan(null) }} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
-            </div>
+        <div className="fb-modal-overlay" style={{ alignItems: 'flex-start', paddingTop: 20, overflowY: 'auto' }}>
+          <div className="fb-modal" style={{ maxWidth: 640, marginBottom: 20 }}>
+            <div className="fb-modal-header"><h2 className="fb-modal-title">✨ AI Studieplan</h2><button className="fb-modal-close" onClick={() => { setShowAi(false); setAiPlan(null) }}>×</button></div>
 
             {!aiPlan ? (
               <>
-                <div>
-                  <label className="text-xs font-semibold text-gray-600 mb-1 block">
-                    Examens (één per lijn: Vak,YYYY-MM-DD,HH:MM)
-                  </label>
-                  <textarea className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm font-mono h-24 resize-none"
-                    value={aiExams} onChange={(e) => setAiExams(e.target.value)} />
+                <div className="fb-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: '#65676B', display: 'block', marginBottom: 4 }}>Examens (één per lijn: Vak,YYYY-MM-DD,HH:MM)</label>
+                    <textarea className="fb-input" style={{ height: 96, resize: 'none', fontFamily: 'monospace', fontSize: 13 }} value={aiExams} onChange={e => setAiExams(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: '#65676B', display: 'block', marginBottom: 4 }}>Bezette tijden (optioneel: YYYY-MM-DD,HH:MM,HH:MM,reden)</label>
+                    <textarea className="fb-input" style={{ height: 72, resize: 'none', fontFamily: 'monospace', fontSize: 13 }} placeholder="2026-05-02,09:00,17:00,werk" value={aiBusy} onChange={e => setAiBusy(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 12, fontWeight: 700, color: '#65676B', display: 'block', marginBottom: 4 }}>Voorkeuren</label>
+                    <input className="fb-input" value={aiPrefs} onChange={e => setAiPrefs(e.target.value)} />
+                  </div>
+                  {aiError && <p style={{ margin: 0, fontSize: 13, color: '#E41E3F' }}>{aiError}</p>}
                 </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-600 mb-1 block">
-                    Bezette tijden (één per lijn: YYYY-MM-DD,HH:MM,HH:MM,reden — optioneel)
-                  </label>
-                  <textarea className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm font-mono h-20 resize-none"
-                    placeholder="2026-05-02,09:00,17:00,werk" value={aiBusy} onChange={(e) => setAiBusy(e.target.value)} />
+                <div className="fb-modal-footer">
+                  <button className="fb-btn fb-btn-secondary" onClick={() => setShowAi(false)}>Annuleren</button>
+                  <button className="fb-btn fb-btn-primary" onClick={generatePlan} disabled={aiLoading} style={{ opacity: aiLoading ? 0.7 : 1 }}>{aiLoading ? '✨ Genereren…' : '✨ Genereer plan'}</button>
                 </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-600 mb-1 block">Voorkeuren</label>
-                  <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                    value={aiPrefs} onChange={(e) => setAiPrefs(e.target.value)} />
-                </div>
-                {aiError && <p className="text-sm text-red-600">{aiError}</p>}
-                <button onClick={generatePlan} disabled={aiLoading}
-                  className="btn-primary w-full py-2.5 disabled:opacity-50">
-                  {aiLoading ? '✨ Plan wordt gegenereerd...' : '✨ Genereer studieplan'}
-                </button>
               </>
             ) : (
               <>
-                {aiPlan.warning && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800">
-                    ⚠️ {aiPlan.warning}
-                  </div>
-                )}
-                <div className="max-h-96 overflow-y-auto space-y-3">
-                  {aiPlan.plan.map((day) => (
-                    <div key={day.date} className="border border-warm-gray rounded-xl overflow-hidden">
-                      <div className="bg-gray-50 px-4 py-2 font-semibold text-sm text-gray-700">
-                        {new Date(day.date).toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' })}
-                      </div>
-                      <div className="divide-y divide-warm-gray">
+                <div className="fb-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {aiPlan.warning && <div style={{ background: '#FFF3CD', border: '1px solid #FFD54F', borderRadius: 8, padding: '10px 14px', fontSize: 14, color: '#795548' }}>⚠️ {aiPlan.warning}</div>}
+                  <div style={{ maxHeight: 320, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {aiPlan.plan.map(day => (
+                      <div key={day.date} style={{ border: '1px solid #E4E6EB', borderRadius: 8, overflow: 'hidden' }}>
+                        <div style={{ background: '#F0F2F5', padding: '8px 14px', fontWeight: 700, fontSize: 14, color: '#1C1E21' }}>
+                          {new Date(day.date).toLocaleDateString('nl-BE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                        </div>
                         {day.sessions.map((s, i) => (
-                          <div key={i} className="px-4 py-2.5 flex items-center gap-3">
-                            <span className="text-xs text-gray-400 w-20 flex-shrink-0">{s.start}–{s.end}</span>
-                            <div className="flex-1">
-                              <p className="text-sm font-semibold text-gray-800">{s.subject}</p>
-                              <p className="text-xs text-gray-500">{s.topic}</p>
+                          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', borderTop: '1px solid #E4E6EB' }}>
+                            <span style={{ fontSize: 12, color: '#65676B', flexShrink: 0, width: 80 }}>{s.start}–{s.end}</span>
+                            <div style={{ flex: 1 }}>
+                              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#1C1E21' }}>{s.subject}</p>
+                              <p style={{ margin: 0, fontSize: 12, color: '#65676B' }}>{s.topic}</p>
                             </div>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                              s.priority === 'hoog' ? 'bg-red-100 text-red-700' :
-                              s.priority === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'
-                            }`}>{s.priority}</span>
+                            <span style={{ background: s.priority === 'hoog' ? '#FEE2E2' : s.priority === 'medium' ? '#FFF3CD' : '#E4E6EB', color: s.priority === 'hoog' ? '#E41E3F' : s.priority === 'medium' ? '#856404' : '#65676B', borderRadius: 12, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{s.priority}</span>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
-                {aiPlan.tips?.length > 0 && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 space-y-1">
-                    {aiPlan.tips.map((tip, i) => <p key={i} className="text-xs text-blue-800">→ {tip}</p>)}
+                    ))}
                   </div>
-                )}
-                <div className="flex gap-2">
-                  <button onClick={() => setAiPlan(null)} className="btn-ghost text-sm px-4 py-2 flex-1">Aanpassen</button>
-                  <button onClick={importAiPlan} className="btn-primary text-sm px-4 py-2 flex-1">
-                    Importeren in agenda →
-                  </button>
+                  {aiPlan.tips?.length > 0 && (
+                    <div style={{ background: '#E7F3FF', border: '1px solid #C0D9FF', borderRadius: 8, padding: '10px 14px' }}>
+                      {aiPlan.tips.map((tip, i) => <p key={i} style={{ margin: i === 0 ? 0 : '4px 0 0', fontSize: 13, color: '#1C1E21' }}>→ {tip}</p>)}
+                    </div>
+                  )}
+                </div>
+                <div className="fb-modal-footer">
+                  <button className="fb-btn fb-btn-secondary" onClick={() => setAiPlan(null)}>Aanpassen</button>
+                  <button className="fb-btn fb-btn-primary" onClick={importAiPlan}>Importeren in agenda →</button>
                 </div>
               </>
             )}
@@ -586,11 +478,7 @@ function AgendaInner() {
 
 export default function AgendaPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-4 border-primary-400 border-t-transparent rounded-full animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}><div className="fb-spinner" /></div>}>
       <AgendaInner />
     </Suspense>
   )

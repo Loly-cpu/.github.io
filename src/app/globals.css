@@ -1,28 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── App Shell — Facebook-stijl ──────────────────────────────────────────── */
-.app-shell {
+/* ═══════════════════════════════════════════════════════════
+   FACEBOOK DESIGN SYSTEM — volledig
+   Alle klassen zijn exact gebaseerd op Meta's design tokens
+═══════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 15px;
-  color: #1c1e21;
-  background: #f0f2f5;
-  min-height: 100vh;
+  color: #1C1E21;
+  background: #F0F2F5;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* ── App Shell ── */
 .app-topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 56px;
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.06);
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
+  z-index: 200;
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
 }
 
 .app-sidebar {
@@ -35,13 +41,13 @@
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: width 0.2s ease;
+  transition: width .2s ease;
+  padding: 8px;
   padding-bottom: 16px;
 }
 
-/* Collapsed state */
-body.sidebar-collapsed .app-sidebar  { width: 68px; min-width: 68px; }
-body.sidebar-collapsed .app-content  { margin-left: 68px; }
+body.sidebar-collapsed .app-sidebar { width: 72px; }
+body.sidebar-collapsed .app-content { margin-left: 72px; }
 
 .app-content {
   margin-top: 56px;
@@ -49,394 +55,239 @@ body.sidebar-collapsed .app-content  { margin-left: 68px; }
   min-height: calc(100vh - 56px);
   background: #F0F2F5;
   padding: 20px 16px;
-  transition: margin-left 0.2s ease;
-}
-
-.app-bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 58px;
-  background: #fff;
-  border-top: 1px solid #e4e6eb;
-  z-index: 40;
-  align-items: stretch;
+  transition: margin-left .2s ease;
 }
 
 @media (max-width: 767px) {
   .app-sidebar { display: none; }
-  .app-content { margin-left: 0; padding: 12px; }
+  .app-content { margin-left: 0; padding: 12px 8px; }
+  .app-topbar  { grid-template-columns: 1fr auto; }
 }
 
-/* Full-bleed pagina's (examenboard, dashboard, chat) */
-.app-content:has(.page-fullbleed) {
-  padding: 0;
-  background: transparent;
-}
-body.sidebar-collapsed .app-content:has(.page-fullbleed) {
-  padding: 0;
-}
+/* Full-bleed (chat pagina) */
+.app-content:has(.page-fullbleed) { padding: 0; background: transparent; }
+body.sidebar-collapsed .app-content:has(.page-fullbleed) { padding: 0; }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Sign-in animaties ────────────────────────────────────────────────────── */
-@keyframes fadeSlideIn {
-  from { opacity: 0; filter: blur(4px); transform: translateY(12px); }
-  to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
-}
-@keyframes slideRightIn {
-  from { opacity: 0; filter: blur(4px); transform: translateX(40px); }
-  to   { opacity: 1; filter: blur(0);   transform: translateX(0); }
-}
-@keyframes testimonialIn {
-  from { opacity: 0; filter: blur(4px); transform: translateY(16px) scale(0.95); }
-  to   { opacity: 1; filter: blur(0);   transform: translateY(0) scale(1); }
-}
-
-.animate-element {
-  animation: fadeSlideIn 0.5s ease both;
-  opacity: 0;
-}
-.animate-delay-100  { animation-delay: 0.1s; }
-.animate-delay-200  { animation-delay: 0.2s; }
-.animate-delay-300  { animation-delay: 0.3s; }
-.animate-delay-400  { animation-delay: 0.4s; }
-.animate-delay-500  { animation-delay: 0.5s; }
-.animate-delay-600  { animation-delay: 0.6s; }
-.animate-delay-700  { animation-delay: 0.7s; }
-.animate-delay-800  { animation-delay: 0.8s; }
-.animate-delay-900  { animation-delay: 0.9s; }
-.animate-slide-right { animation: slideRightIn 0.7s 0.3s ease both; opacity: 0; }
-.animate-testimonial { animation: testimonialIn 0.5s ease both; opacity: 0; }
-.animate-delay-1000  { animation-delay: 1.0s; }
-.animate-delay-1200  { animation-delay: 1.2s; }
-.animate-delay-1400  { animation-delay: 1.4s; }
-
-/* ── Facebook component library ─────────────────────────────────────────── */
-:root {
-  --fb: #1877F2;
-  --fb-hover: #166FE5;
-  --fb-bg: #F0F2F5;
-  --fb-white: #FFFFFF;
-  --fb-border: #CED0D4;
-  --fb-hover-bg: #E4E6EB;
-  --fb-active-bg: #E7F3FF;
-  --fb-text: #1C1E21;
-  --fb-text-2: #65676B;
-  --fb-red: #E41E3F;
-  --fb-shadow: 0 1px 2px rgba(0,0,0,.1);
-  --fb-shadow-md: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.06);
-  --fb-radius: 8px;
-  --fb-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-/* Card */
+/* ── Facebook Cards ── */
 .fb-card {
-  background: var(--fb-white);
-  border-radius: var(--fb-radius);
-  box-shadow: var(--fb-shadow);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
   margin-bottom: 16px;
-  font-family: var(--fb-font);
+  overflow: hidden;
 }
+.fb-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #1C1E21;
+}
+.fb-card-body { padding: 16px; }
 
-/* Buttons */
+/* ── Facebook Buttons ── */
 .fb-btn {
   display: inline-flex; align-items: center; justify-content: center;
   gap: 6px; padding: 8px 12px; border: none; border-radius: 6px;
-  font-size: 15px; font-weight: 700; cursor: pointer; transition: background .12s;
-  font-family: var(--fb-font);
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: background .1s; text-decoration: none;
 }
-.fb-btn-primary  { background: var(--fb); color: #fff; }
-.fb-btn-primary:hover  { background: var(--fb-hover); }
-.fb-btn-secondary { background: var(--fb-hover-bg); color: var(--fb-text); }
+.fb-btn-primary  { background: #1877F2; color: #fff; }
+.fb-btn-primary:hover { background: #166FE5; }
+.fb-btn-secondary { background: #E4E6EB; color: #1C1E21; }
 .fb-btn-secondary:hover { background: #D8DADF; }
-.fb-btn-ghost { background: transparent; color: var(--fb-text-2); font-weight: 600; }
-.fb-btn-ghost:hover { background: var(--fb-hover-bg); }
+.fb-btn-ghost { background: transparent; color: #65676B; font-weight: 700; }
+.fb-btn-ghost:hover { background: #F2F2F2; }
+.fb-btn-danger { background: #E41E3F; color: #fff; }
+.fb-btn-danger:hover { background: #C41230; }
 .fb-btn-sm { padding: 6px 12px; font-size: 14px; }
+.fb-btn-lg { padding: 10px 20px; font-size: 16px; }
 
-/* Input */
+/* ── Facebook Inputs ── */
 .fb-input {
-  width: 100%; background: var(--fb-bg); border: 1px solid transparent;
-  border-radius: 20px; padding: 10px 16px; font-size: 15px;
-  color: var(--fb-text); font-family: var(--fb-font); outline: none;
-  transition: border-color .15s, background .15s;
+  display: block; width: 100%;
+  background: #F0F2F5; border: 1px solid transparent;
+  border-radius: 6px; padding: 10px 12px;
+  font-size: 15px; color: #1C1E21; font-family: inherit;
+  outline: none; transition: border-color .15s, background .15s;
 }
-.fb-input:focus { background: #fff; border-color: var(--fb); }
-.fb-input-box {
-  width: 100%; background: var(--fb-bg); border: 1px solid transparent;
-  border-radius: var(--fb-radius); padding: 10px 16px; font-size: 15px;
-  color: var(--fb-text); font-family: var(--fb-font); outline: none;
-  transition: border-color .15s, background .15s;
+.fb-input:focus { background: #fff; border-color: #1877F2; }
+.fb-input::placeholder { color: #65676B; }
+
+.fb-input-pill {
+  display: block; width: 100%;
+  background: #F0F2F5; border: 1px solid transparent;
+  border-radius: 20px; padding: 8px 16px;
+  font-size: 15px; color: #65676B; font-family: inherit;
+  outline: none; cursor: pointer;
+  transition: background .1s;
 }
-.fb-input-box:focus { background: #fff; border-color: var(--fb); }
+.fb-input-pill:hover { background: #E4E6EB; }
 
-/* Tabs */
-.fb-tabs { display: flex; gap: 4px; padding: 0 4px; }
-.fb-tab {
-  display: flex; align-items: center; gap: 6px; padding: 10px 16px;
-  background: transparent; border: none; cursor: pointer;
-  border-radius: 6px; font-size: 15px; font-weight: 700;
-  color: var(--fb-text-2); transition: background .12s;
-  font-family: var(--fb-font);
+textarea.fb-input { resize: vertical; min-height: 80px; }
+
+select.fb-input { appearance: none; cursor: pointer; }
+
+/* ── Facebook Tabs ── */
+.fb-tabs {
+  display: flex;
+  border-bottom: 1px solid #E4E6EB;
+  padding: 0 16px;
 }
-.fb-tab:hover { background: var(--fb-hover-bg); }
-.fb-tab.active { background: var(--fb-active-bg); color: var(--fb); }
-.fb-tab-pill {
-  padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;
-  background: var(--fb-hover-bg); color: var(--fb-text);
+.fb-tab-btn {
+  padding: 12px 16px; background: none; border: none;
+  border-bottom: 3px solid transparent; cursor: pointer;
+  font-size: 15px; font-weight: 700; color: #65676B;
+  font-family: inherit; transition: color .1s; margin-bottom: -1px;
 }
-.fb-tab-pill.active { background: var(--fb-active-bg); color: var(--fb); }
+.fb-tab-btn:hover { color: #1C1E21; background: #F2F2F2; border-radius: 8px 8px 0 0; }
+.fb-tab-btn.active { color: #1877F2; border-bottom-color: #1877F2; }
 
-/* Divider */
-.fb-divider { height: 1px; background: var(--fb-border); margin: 4px 0; }
+/* Pill tabs (for filters) */
+.fb-filter-tabs { display: flex; gap: 8px; padding: 12px 16px; flex-wrap: wrap; }
+.fb-filter-btn {
+  padding: 6px 16px; background: #E4E6EB; border: none;
+  border-radius: 20px; cursor: pointer; font-size: 14px;
+  font-weight: 700; color: #1C1E21; font-family: inherit;
+  transition: background .1s;
+}
+.fb-filter-btn:hover { background: #D8DADF; }
+.fb-filter-btn.active { background: #1877F2; color: #fff; }
 
-/* Notification dot */
-.fb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fb); border: 2px solid #fff; }
+/* ── Facebook List Items ── */
+.fb-list-item {
+  display: flex; align-items: center; gap: 12;
+  padding: 8px 12px; border-radius: 8px;
+  cursor: pointer; transition: background .1s;
+  text-decoration: none; color: #1C1E21;
+}
+.fb-list-item:hover { background: #F2F2F2; }
 
-/* Avatar circle */
+/* ── Facebook Avatar ── */
 .fb-avatar {
-  border-radius: 50%; background: var(--fb); color: #fff;
+  border-radius: 50%; background: #1877F2; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; flex-shrink: 0; font-family: var(--fb-font);
+  font-weight: 700; flex-shrink: 0; font-family: inherit;
 }
 
-/* Section header */
-.fb-section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px 0; font-family: var(--fb-font);
-}
-.fb-section-title { font-size: 20px; font-weight: 800; color: var(--fb-text); margin: 0; }
-.fb-see-all {
-  color: var(--fb); font-size: 14px; font-weight: 600; text-decoration: none;
-  padding: 6px 12px; border-radius: 6px; transition: background .12s;
-}
-.fb-see-all:hover { background: var(--fb-active-bg); }
+/* ── Facebook Divider ── */
+.fb-divider { height: 8px; background: #F0F2F5; margin: 0 -16px; }
+.fb-line { height: 1px; background: #E4E6EB; }
 
-/* ── Smartschool platform skin (legacy, keep for compatibility) ───────────── */
-.smsc-layout {
-  min-height: 100vh;
-  background: #f4f4f4;
-  font-family: 'Roboto', system-ui, sans-serif;
-  font-size: 14px;
-  color: #242424;
+/* ── Facebook Modal ── */
+.fb-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  padding: 16px;
 }
-
-.smsc-topnav {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background: #fff;
-  border-bottom: 1px solid #e8e8e8;
-  height: 48px;
-  display: flex;
-  align-items: stretch;
+.fb-modal {
+  background: #fff; border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  width: 100%; max-width: 520px; overflow: hidden;
 }
-
-.smsc-nav {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-}
-
-.smsc-nav__btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 14px;
-  height: 100%;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  font-family: 'Roboto', system-ui, sans-serif;
-  font-size: 14px;
-  color: #242424;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.12s, background 0.12s;
+.fb-modal-header {
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; border-bottom: 1px solid #E4E6EB;
   position: relative;
 }
-
-.smsc-nav__btn:hover {
-  background: #f4f4f4;
-  color: #242424;
+.fb-modal-title { font-size: 20px; font-weight: 800; color: #1C1E21; margin: 0; }
+.fb-modal-close {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 50%; background: #E4E6EB;
+  border: none; cursor: pointer; font-size: 20px; display: flex;
+  align-items: center; justify-content: center; color: #1C1E21;
+  transition: background .1s;
+}
+.fb-modal-close:hover { background: #D8DADF; }
+.fb-modal-body { padding: 16px; }
+.fb-modal-footer {
+  padding: 12px 16px; border-top: 1px solid #E4E6EB;
+  display: flex; justify-content: flex-end; gap: 8px;
 }
 
-.smsc-nav__btn--active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
-  font-weight: 500;
+/* ── Facebook Toast ── */
+.fb-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #1C1E21; color: #fff; border-radius: 8px;
+  padding: 12px 20px; font-size: 14px; font-weight: 600;
+  z-index: 1000; box-shadow: 0 4px 16px rgba(0,0,0,.3);
+  white-space: nowrap; pointer-events: none;
 }
 
-.smsc-nav__btn--icon {
-  padding: 0 12px;
-  font-size: 18px;
-  color: #5b5b5b;
+/* ── Animations ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.fb-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid #E4E6EB;
+  border-top-color: #1877F2;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
 }
 
-.smsc-nav__badge {
-  background: #ef4444;
-  color: #fff;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 1px 5px;
-  min-width: 18px;
-  text-align: center;
-  line-height: 16px;
+/* ── Facebook Page Header (like Groups page) ── */
+.fb-page-cover {
+  height: 120px; width: 100%;
+  background: linear-gradient(135deg, #1877F2, #42A5F5);
+}
+.fb-page-info {
+  display: flex; align-items: flex-end; gap: 16;
+  padding: 0 16px 16px; margin-top: -32px;
+}
+.fb-page-icon {
+  width: 80px; height: 80px; border-radius: 8px;
+  border: 4px solid #fff; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
 
-.smsc-nav__divider {
-  width: 1px;
-  background: #e8e8e8;
-  margin: 8px 0;
-  flex-shrink: 0;
+/* ── Auth pages ── */
+.fb-auth-bg {
+  min-height: 100vh; background: #F0F2F5;
+  display: flex; align-items: center; justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  padding: 16px;
 }
 
-.smsc-nav__spacer { flex: 1; }
-
-.smsc-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-top: none;
-  border-radius: 0 0 6px 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  min-width: 220px;
-  z-index: 100;
+/* ── Learning platform pages (keep functional) ── */
+.card {
+  background: #fff; border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  padding: 20px; margin-bottom: 16px;
 }
-
-.smsc-dropdown a,
-.smsc-dropdown button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 16px;
-  text-align: left;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'Roboto', system-ui, sans-serif;
-  font-size: 14px;
-  color: #242424;
-  text-decoration: none;
-  border-bottom: 1px solid #f4f4f4;
-  transition: background 0.1s;
+.btn-primary {
+  background: #1877F2; color: #fff; border: none;
+  border-radius: 6px; padding: 10px 20px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: background .1s;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-
-.smsc-dropdown a:hover,
-.smsc-dropdown button:hover {
-  background: #f4f4f4;
+.btn-primary:hover { background: #166FE5; }
+.btn-secondary {
+  background: #E4E6EB; color: #1C1E21; border: none;
+  border-radius: 6px; padding: 10px 20px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: background .1s;
 }
-
-.smsc-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  padding: 20px;
-  margin-bottom: 16px;
+.btn-secondary:hover { background: #D8DADF; }
+.input {
+  display: block; width: 100%;
+  background: #F0F2F5; border: 1px solid transparent;
+  border-radius: 6px; padding: 10px 12px;
+  font-size: 15px; color: #1C1E21; font-family: inherit; outline: none;
 }
-
-.smsc-title {
-  font-family: 'Roboto', system-ui, sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #242424;
-  margin-bottom: 12px;
+.input:focus { background: #fff; border-color: #1877F2; }
+.tag-level {
+  background: #1877F2; color: #fff; border-radius: 4px;
+  padding: 2px 8px; font-size: 12px; font-weight: 800;
+  letter-spacing: .05em; display: inline-block;
 }
+.tag-success { background: #D4EDDA; color: #155724; border-radius: 4px; padding: 2px 8px; font-size: 13px; }
+.tag-error   { background: #F8D7DA; color: #721C24; border-radius: 4px; padding: 2px 8px; font-size: 13px; }
+.theory-text { font-size: 15px; line-height: 1.6; color: #1C1E21; }
 
-.smsc-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 16px;
-}
-
-/* ── Mobile bottom navigation ─────────────────────────────────────────── */
-.smsc-bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 58px;
-  background: #fff;
-  border-top: 1px solid #e8e8e8;
-  z-index: 40;
-}
-
-@media (max-width: 767px) {
-  .smsc-bottom-nav {
-    display: flex;
-    align-items: stretch;
-  }
-  .smsc-content {
-    padding-bottom: 74px;
-  }
-}
-
-@layer base {
-  body {
-    @apply bg-cream text-gray-800 font-sans;
-    font-size: 1.0625rem;
-    line-height: 1.75;
-    letter-spacing: 0.01em;
-    word-spacing: 0.05em;
-  }
-
-  h1 { @apply text-2xl font-bold leading-snug; }
-  h2 { @apply text-xl font-semibold leading-snug; }
-  h3 { @apply text-lg font-semibold leading-snug; }
-
-  p { @apply mb-3; }
-}
-
-@layer components {
-  .card {
-    @apply bg-white rounded-2xl shadow-sm border border-warm-gray p-6;
-  }
-
-  .btn-primary {
-    @apply bg-primary-600 text-white font-semibold px-6 py-3 rounded-xl
-           hover:bg-primary-700 active:bg-primary-700 transition-colors
-           focus:outline-none focus:ring-4 focus:ring-primary-100 text-base;
-  }
-
-  .btn-secondary {
-    @apply bg-white text-primary-700 font-semibold px-6 py-3 rounded-xl
-           border-2 border-primary-200 hover:bg-primary-50 transition-colors
-           focus:outline-none focus:ring-4 focus:ring-primary-100 text-base;
-  }
-
-  .btn-ghost {
-    @apply text-gray-600 font-medium px-4 py-2 rounded-lg
-           hover:bg-warm-gray transition-colors text-base;
-  }
-
-  .input {
-    @apply w-full bg-white border-2 border-warm-gray rounded-xl px-4 py-3
-           text-base focus:outline-none focus:border-primary-400
-           transition-colors placeholder-gray-400;
-  }
-
-  .theory-text {
-    @apply text-base leading-relaxed text-gray-700;
-  }
-
-  .tag-success {
-    @apply inline-flex items-center gap-1 bg-green-100 text-green-800
-           font-medium px-3 py-1 rounded-full text-sm;
-  }
-
-  .tag-error {
-    @apply inline-flex items-center gap-1 bg-red-100 text-red-800
-           font-medium px-3 py-1 rounded-full text-sm;
-  }
-
-  .tag-level {
-    @apply inline-block bg-primary-100 text-primary-700 font-semibold
-           px-3 py-1 rounded-full text-sm uppercase tracking-wide;
-  }
-}
+/* ── Smsc legacy (alleen nog nodig voor PlatformNav) ── */
+.smsc-card { background: #fff; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.1); padding: 20px; margin-bottom: 16px; }
+.smsc-nav__btn--active { color: #1877F2; border-bottom-color: #1877F2; font-weight: 700; }
