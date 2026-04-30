@@ -7,13 +7,14 @@ import { supabase } from '@/lib/supabase'
 import {
   HomeIcon, CalendarIcon, MessageCircleIcon, FolderIcon,
   ClipboardListIcon, LinkIcon, BellIcon, GraduationCapIcon,
-  GlobeIcon, UsersIcon, MessageSquareIcon, ChevronsRightIcon,
+  GlobeIcon, UsersIcon, MessageSquareIcon, ChevronsRightIcon, BarChart2Icon,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/platform',             Icon: HomeIcon,           label: 'Start',        exact: true },
   { href: '/platform/agenda',      Icon: CalendarIcon,       label: 'Agenda' },
   { href: '/platform/berichten',   Icon: MessageCircleIcon,  label: 'Berichten' },
+  { href: '/platform/cijfers',     Icon: BarChart2Icon,      label: 'Cijfers' },
   { href: '/platform/documenten',  Icon: FolderIcon,         label: 'Documenten' },
   { href: '/platform/formulieren', Icon: ClipboardListIcon,  label: 'Formulieren' },
   { href: '/platform/links',       Icon: LinkIcon,           label: 'Links' },
