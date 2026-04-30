@@ -6,11 +6,12 @@ import { supabase } from '@/lib/supabase'
 interface Doc {
   id: string; title: string; description?: string; subject?: string
   file_url: string; file_name: string; file_size?: number
-  downloads: number; created_at: string
+  downloads: number; created_at: string; is_private: boolean; user_id: string
   profiles?: { display_name: string }
 }
 
-const SUBJECTS = ['Alle vakken', 'Aardrijkskunde', 'Nederlands', 'Frans', 'Engels', 'Wiskunde', 'Economie', 'Overig']
+const SUBJECTS = ['Aardrijkskunde','Nederlands','Frans','Engels','Wiskunde','Economie','Overig']
+const MAX_PRIVATE = 15
 
 function formatSize(bytes?: number): string {
   if (!bytes) return ''
@@ -19,51 +20,82 @@ function formatSize(bytes?: number): string {
   return `${(bytes/1024/1024).toFixed(1)} MB`
 }
 
+function fileIcon(name: string) {
+  if (name.endsWith('.pdf'))        return '📕'
+  if (name.match(/\.(docx?)$/))    return '📄'
+  if (name.match(/\.(pptx?)$/))    return '📊'
+  if (name.match(/\.(xlsx?)$/))    return '📈'
+  if (name.match(/\.(png|jpg|jpeg|webp)$/)) return '🖼️'
+  return '📎'
+}
+
+function fmt(iso: string) {
+  return new Date(iso).toLocaleDateString('nl-BE', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
 export default function DocumentenPage() {
-  const [docs, setDocs] = useState<Doc[]>([])
-  const [userId, setUserId] = useState<string | null>(null)
-  const [filter, setFilter] = useState('Alle vakken')
+  const [docs, setDocs]         = useState<Doc[]>([])
+  const [userId, setUserId]     = useState<string | null>(null)
+  const [filter, setFilter]     = useState('Alle vakken')
+  const [tab, setTab]           = useState<'gedeeld'|'privé'>('gedeeld')
   const [showUpload, setShowUpload] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [uploadErr, setUploadErr] = useState('')
-  const [form, setForm] = useState({ title: '', description: '', subject: 'Overig' })
+  const [uploading, setUploading]   = useState(false)
+  const [uploadErr, setUploadErr]   = useState('')
+  const [toast, setToast]       = useState<string|null>(null)
+  const [privateCount, setPrivateCount] = useState(0)
+  const [form, setForm] = useState({ title: '', description: '', subject: 'Overig', is_private: false })
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
-      setUserId(data.session?.user?.id ?? null)
-      await loadDocs()
+      const uid = data.session?.user?.id ?? null
+      setUserId(uid)
+      await loadDocs(uid)
     })
   }, [])
 
-  async function loadDocs() {
-    const { data } = await supabase
+  async function loadDocs(uid: string | null) {
+    const { data, error } = await supabase
       .from('documents')
       .select('*, profiles(display_name)')
       .order('created_at', { ascending: false })
-    if (data) setDocs(data as Doc[])
+    if (error) console.error('Documenten laden:', error)
+    if (data) {
+      setDocs(data as Doc[])
+      if (uid) setPrivateCount(data.filter(d => d.is_private && d.user_id === uid).length)
+    }
   }
+
+  function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500) }
 
   async function uploadDoc() {
     const file = fileRef.current?.files?.[0]
     if (!file || !userId || !form.title) return
+    if (form.is_private && privateCount >= MAX_PRIVATE) {
+      setUploadErr(`Je hebt het maximum van ${MAX_PRIVATE} privédocumenten bereikt.`)
+      return
+    }
+    if (file.size > 50 * 1024 * 1024) { setUploadErr('Bestand mag max 50 MB zijn.'); return }
     setUploading(true); setUploadErr('')
     try {
-      const path = `${userId}/${Date.now()}_${file.name}`
+      const path = `${userId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
       const { error: uploadError } = await supabase.storage.from('documents').upload(path, file)
       if (uploadError) throw uploadError
       const { data: urlData } = supabase.storage.from('documents').getPublicUrl(path)
-      await supabase.from('documents').insert({
-        user_id: userId, title: form.title, description: form.description,
+      const { error: insertError } = await supabase.from('documents').insert({
+        user_id: userId, title: form.title, description: form.description || null,
         subject: form.subject, file_url: urlData.publicUrl,
         file_name: file.name, file_size: file.size,
+        downloads: 0, is_private: form.is_private,
       })
-      setForm({ title: '', description: '', subject: 'Overig' })
+      if (insertError) throw insertError
+      setForm({ title: '', description: '', subject: 'Overig', is_private: false })
       setShowUpload(false)
       if (fileRef.current) fileRef.current.value = ''
-      await loadDocs()
+      await loadDocs(userId)
+      showToast('Document geüpload')
     } catch (e) {
-      setUploadErr(e instanceof Error ? e.message : 'Upload mislukt. Probeer opnieuw.')
+      setUploadErr(e instanceof Error ? e.message : 'Upload mislukt.')
     } finally {
       setUploading(false)
     }
@@ -75,115 +107,175 @@ export default function DocumentenPage() {
   }
 
   async function deleteDoc(id: string) {
-    await supabase.from('documents').delete().eq('id', id)
-    setDocs((prev) => prev.filter((d) => d.id !== id))
+    const { error } = await supabase.from('documents').delete().eq('id', id)
+    if (!error) {
+      setDocs(prev => prev.filter(d => d.id !== id))
+      showToast('Verwijderd')
+    }
   }
 
-  const filtered = filter === 'Alle vakken' ? docs : docs.filter((d) => d.subject === filter)
+  const publicDocs  = docs.filter(d => !d.is_private)
+  const privateDocs = docs.filter(d => d.is_private && d.user_id === userId)
+
+  const visibleDocs = (tab === 'gedeeld' ? publicDocs : privateDocs)
+    .filter(d => filter === 'Alle vakken' || d.subject === filter)
+
+  const SUBJECTS_ALL = ['Alle vakken', ...SUBJECTS]
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+    <div style={{ maxWidth: 960, margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">📁 Documenten</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Deel samenvattingen en notities met andere studenten.</p>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: 0 }}>📁 Documenten</h1>
+          <p style={{ fontSize: 13, color: '#6b7280', margin: '2px 0 0' }}>Deel samenvattingen en notities.</p>
         </div>
         {userId && (
-          <button onClick={() => setShowUpload(true)} className="btn-primary text-sm px-4 py-2">+ Upload</button>
+          <button onClick={() => setShowUpload(true)}
+            style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            + Upload
+          </button>
         )}
       </div>
 
+      {/* Tabs: Gedeeld / Privé */}
+      {userId && (
+        <div style={{ display: 'flex', gap: 0, marginBottom: 16, border: '1px solid #e5e7eb', borderRadius: 10, overflow: 'hidden', width: 'fit-content' }}>
+          {([['gedeeld','🌐 Gedeeld'],['privé',`🔒 Privé (${privateCount}/${MAX_PRIVATE})`]] as const).map(([k, l]) => (
+            <button key={k} onClick={() => setTab(k)}
+              style={{ padding: '7px 20px', fontSize: 13, fontWeight: tab === k ? 600 : 400, border: 'none', cursor: 'pointer', background: tab === k ? '#ff520e' : '#fff', color: tab === k ? '#fff' : '#374151', transition: 'background 0.1s' }}>
+              {l}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Subject filter */}
-      <div className="flex gap-2 flex-wrap mb-6">
-        {SUBJECTS.map((s) => (
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 }}>
+        {SUBJECTS_ALL.map(s => (
           <button key={s} onClick={() => setFilter(s)}
-            className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
-              filter === s ? 'bg-primary-500 text-white' : 'bg-white border border-warm-gray text-gray-600 hover:bg-gray-50'
-            }`}>
+            style={{ fontSize: 11, padding: '4px 12px', borderRadius: 20, border: 'none', fontWeight: 500, cursor: 'pointer', background: filter === s ? '#111827' : '#f3f4f6', color: filter === s ? '#fff' : '#374151' }}>
             {s}
           </button>
         ))}
       </div>
 
-      {/* Document list */}
-      {filtered.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
-          <p className="text-4xl mb-3">📁</p>
-          <p className="font-semibold">Nog geen documenten{filter !== 'Alle vakken' ? ` voor ${filter}` : ''}</p>
-          {userId && <p className="text-sm mt-1">Upload als eerste een samenvatting!</p>}
+      {/* Document table */}
+      {visibleDocs.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>📂</div>
+          <p style={{ fontWeight: 600, fontSize: 15, color: '#374151', marginBottom: 4 }}>
+            {tab === 'privé' ? 'Geen privédocumenten' : 'Nog geen documenten'}
+          </p>
+          <p style={{ fontSize: 13 }}>
+            {tab === 'privé' ? `Upload tot ${MAX_PRIVATE} persoonlijke bestanden.` : 'Upload als eerste een samenvatting!'}
+          </p>
+          {userId && <button onClick={() => setShowUpload(true)}
+            style={{ marginTop: 14, background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            ↑ Eerste document uploaden
+          </button>}
+        </div>
+      ) : (
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden' }}>
+          {/* Table header */}
+          <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 100px 90px 90px 80px', gap: 0, padding: '10px 16px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', fontSize: 11, fontWeight: 700, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div />
+            <div>Naam</div>
+            <div>Vak</div>
+            <div>Grootte</div>
+            <div>Geüpload</div>
+            <div style={{ textAlign: 'right' }}>Acties</div>
+          </div>
+          {visibleDocs.map((doc, i) => (
+            <div key={doc.id} style={{ display: 'grid', gridTemplateColumns: '40px 1fr 100px 90px 90px 80px', gap: 0, padding: '12px 16px', borderBottom: i < visibleDocs.length - 1 ? '1px solid #f3f4f6' : 'none', alignItems: 'center', transition: 'background 0.1s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#fafafa')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+            >
+              <div style={{ fontSize: 20 }}>{fileIcon(doc.file_name)}</div>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 500, color: '#111827', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.title}</p>
+                {doc.description && <p style={{ fontSize: 11, color: '#9ca3af', margin: '1px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{doc.description}</p>}
+                <p style={{ fontSize: 11, color: '#d1d5db', margin: '1px 0 0' }}>door {doc.profiles?.display_name ?? 'Anoniem'}</p>
+              </div>
+              <div>
+                {doc.subject && <span style={{ fontSize: 11, background: '#f3f4f6', color: '#374151', borderRadius: 6, padding: '2px 7px', fontWeight: 500 }}>{doc.subject}</span>}
+              </div>
+              <div style={{ fontSize: 12, color: '#6b7280' }}>{formatSize(doc.file_size)}</div>
+              <div style={{ fontSize: 12, color: '#6b7280' }}>{fmt(doc.created_at)}</div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
+                <button onClick={() => downloadDoc(doc)}
+                  style={{ background: '#f3f4f6', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#374151', fontWeight: 500 }}>
+                  ↓
+                </button>
+                {userId === doc.user_id && (
+                  <button onClick={() => deleteDoc(doc.id)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#d1d5db' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#d1d5db')}>
+                    🗑
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      <div className="space-y-3">
-        {filtered.map((doc) => (
-          <div key={doc.id} className="bg-white border border-warm-gray rounded-2xl px-5 py-4 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-2xl flex-shrink-0">
-              {doc.file_name.endsWith('.pdf') ? '📕' :
-               doc.file_name.match(/\.(docx?|txt)$/) ? '📄' :
-               doc.file_name.match(/\.(pptx?|key)$/) ? '📊' : '📎'}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-gray-900 truncate">{doc.title}</p>
-                {doc.subject && (
-                  <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">{doc.subject}</span>
-                )}
-              </div>
-              {doc.description && <p className="text-sm text-gray-500 truncate">{doc.description}</p>}
-              <p className="text-xs text-gray-400 mt-0.5">
-                {doc.profiles?.display_name ?? 'Anoniem'} · {formatSize(doc.file_size)} · {doc.downloads} downloads ·{' '}
-                {new Date(doc.created_at).toLocaleDateString('nl-BE')}
-              </p>
-            </div>
-            <div className="flex gap-2 flex-shrink-0">
-              <button onClick={() => downloadDoc(doc)}
-                className="text-sm text-primary-600 hover:text-primary-800 font-medium px-3 py-1.5 border border-primary-200 rounded-lg hover:bg-primary-50 transition-colors">
-                ↓ Download
-              </button>
-              {userId === (doc as { user_id?: string }).user_id && (
-                <button onClick={() => deleteDoc(doc.id)} className="text-gray-300 hover:text-red-400 text-lg leading-none px-1">🗑</button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Upload modal */}
       {showUpload && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">Document uploaden</h2>
-              <button onClick={() => setShowUpload(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 14, padding: 24, maxWidth: 440, width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <p style={{ fontSize: 15, fontWeight: 700, margin: 0 }}>Document uploaden</p>
+              <button onClick={() => { setShowUpload(false); setUploadErr('') }} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#9ca3af' }}>×</button>
             </div>
-            <div className="space-y-3">
-              <input className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <input style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
                 placeholder="Titel*" value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })} />
-              <select className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm"
-                value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
-                {SUBJECTS.filter(s => s !== 'Alle vakken').map((s) => <option key={s}>{s}</option>)}
+                onChange={e => setForm({...form, title: e.target.value})} />
+              <select style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
+                value={form.subject} onChange={e => setForm({...form, subject: e.target.value})}>
+                {SUBJECTS.map(s => <option key={s}>{s}</option>)}
               </select>
-              <textarea className="w-full border border-warm-gray rounded-xl px-3 py-2 text-sm resize-none h-16"
+              <textarea style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: '8px 12px', fontSize: 13, resize: 'none', height: 60 }}
                 placeholder="Beschrijving (optioneel)" value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              <div>
-                <label className="text-xs font-semibold text-gray-600 mb-1 block">Bestand*</label>
-                <input ref={fileRef} type="file"
-                  accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.png,.jpg"
-                  className="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-primary-100 file:text-primary-700 file:font-medium file:text-sm hover:file:bg-primary-200" />
-              </div>
-              {uploadErr && <p className="text-sm text-red-600">{uploadErr}</p>}
-              <p className="text-xs text-gray-400">Max 50MB. PDF, Word, PowerPoint, afbeeldingen.</p>
+                onChange={e => setForm({...form, description: e.target.value})} />
+              <input ref={fileRef} type="file"
+                accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.webp"
+                style={{ fontSize: 13, color: '#374151' }} />
+
+              {/* Privacy toggle */}
+              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '10px 12px', background: form.is_private ? '#fff7ed' : '#f9fafb', border: `1px solid ${form.is_private ? '#fed7aa' : '#e5e7eb'}`, borderRadius: 8 }}>
+                <input type="checkbox" checked={form.is_private}
+                  onChange={e => setForm({...form, is_private: e.target.checked})}
+                  style={{ width: 16, height: 16, accentColor: '#ff520e' }} />
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', margin: 0 }}>🔒 Privédocument</p>
+                  <p style={{ fontSize: 11, color: '#6b7280', margin: 0 }}>Alleen zichtbaar voor jou · {privateCount}/{MAX_PRIVATE} gebruikt</p>
+                </div>
+              </label>
+
+              <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>Max 50 MB · PDF, Word, PowerPoint, Excel, afbeeldingen</p>
+              {uploadErr && <p style={{ fontSize: 12, color: '#dc2626' }}>⚠️ {uploadErr}</p>}
             </div>
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setShowUpload(false)} className="btn-ghost text-sm px-4 py-2">Annuleren</button>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
+              <button onClick={() => { setShowUpload(false); setUploadErr('') }}
+                style={{ background: '#f3f4f6', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', color: '#374151' }}>
+                Annuleren
+              </button>
               <button onClick={uploadDoc} disabled={uploading || !form.title}
-                className="btn-primary text-sm px-4 py-2 disabled:opacity-50">
-                {uploading ? 'Uploaden...' : 'Uploaden'}
+                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: uploading || !form.title ? 0.5 : 1 }}>
+                {uploading ? 'Uploaden…' : 'Uploaden'}
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: 24, right: 24, background: '#111827', color: '#fff', borderRadius: 8, padding: '10px 18px', fontSize: 13, fontWeight: 500, zIndex: 100, boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+          ✓ {toast}
         </div>
       )}
     </div>

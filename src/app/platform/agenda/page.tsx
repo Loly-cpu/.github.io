@@ -259,34 +259,32 @@ function AgendaInner() {
             <button onClick={() => { const d = new Date(week); d.setDate(d.getDate()+7); setWeek(d) }}
               className="btn-ghost px-3 py-1.5 text-sm">Volgende →</button>
           </div>
-          <div className="grid grid-cols-7 gap-1 mb-8">
-            {days.map((d) => {
-              const ds = isoDate(d)
-              const dayEvents = eventsForDay(d)
-              const isToday = ds === today
-              return (
-                <div key={ds} className={`rounded-xl border-2 min-h-32 p-2 transition-colors ${
-                  isToday ? 'border-primary-400 bg-primary-50' : 'border-warm-gray bg-white'
-                }`}>
-                  <div className={`text-xs font-bold mb-1.5 ${isToday ? 'text-primary-700' : 'text-gray-500'}`}>
-                    <div>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
-                    <div className={`text-lg leading-none ${isToday ? 'text-primary-700' : 'text-gray-800'}`}>{d.getDate()}</div>
+          {/* Scrollable week grid on mobile */}
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: 32 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(120px, 1fr))', gap: 4, minWidth: 640 }}>
+              {days.map((d) => {
+                const ds = isoDate(d)
+                const dayEvents = eventsForDay(d)
+                const isToday = ds === today
+                return (
+                  <div key={ds} style={{ borderRadius: 10, border: `2px solid ${isToday ? '#ff520e' : '#e5e7eb'}`, minHeight: 120, padding: 8, background: isToday ? '#fff7ed' : '#fff' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? '#ff520e' : '#6b7280', marginBottom: 6 }}>
+                      <div>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
+                      <div style={{ fontSize: 18, lineHeight: 1, color: isToday ? '#ff520e' : '#111827' }}>{d.getDate()}</div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      {dayEvents.map((e) => (
+                        <div key={e.id}
+                          style={{ fontSize: 11, padding: '2px 6px', borderRadius: 5, fontWeight: 500, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', cursor: 'default', backgroundColor: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1', border: `1px solid ${e.color ?? '#6366f1'}44` }}
+                          title={e.title}>
+                          {e.title}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="space-y-0.5">
-                    {dayEvents.map((e) => (
-                      <div key={e.id}
-                        className="text-xs px-1.5 py-0.5 rounded font-medium truncate cursor-default group relative"
-                        style={{ backgroundColor: (e.color ?? '#6366f1') + '22', color: e.color ?? '#6366f1', border: `1px solid ${e.color ?? '#6366f1'}44` }}
-                        title={e.title}>
-                        <span className="truncate block">{e.title}</span>
-                        <button onClick={() => deleteEvent(e.id)}
-                          className="absolute right-0.5 top-0.5 hidden group-hover:block text-red-400 hover:text-red-600 leading-none">×</button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </>
       )}
