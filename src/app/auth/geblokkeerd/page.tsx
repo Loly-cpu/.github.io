@@ -25,7 +25,7 @@ export default function GeblokkeerddPage() {
           <button
             onClick={logout}
             className="w-full py-2 rounded-lg text-white text-sm font-medium"
-            style={{ background: '#ff520e' }}
+            style={{ background: '#2563eb' }}
           >
             Afmelden
           </button>

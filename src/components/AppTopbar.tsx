@@ -113,7 +113,7 @@ export default function AppTopbar() {
     router.replace('/auth/login')
   }
 
-  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#ff520e'
+  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#2563eb'
 
   return (
     <header className="app-topbar">
@@ -130,7 +130,7 @@ export default function AppTopbar() {
 
       {/* Mobile logo */}
       <Link href="/platform" className="md:hidden" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
-        <div style={{ width: 24, height: 24, borderRadius: 6, background: '#ff520e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
+        <div style={{ width: 24, height: 24, borderRadius: 6, background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
         <span style={{ fontWeight: 700, fontSize: 13, color: '#242424' }}>Platform</span>
       </Link>
 
@@ -160,7 +160,7 @@ export default function AppTopbar() {
                 onChange={e => setSearchQ(e.target.value)}
                 onKeyDown={e => e.key === 'Escape' && setSearchOpen(false)}
               />
-              {searching && <div style={{ width: 12, height: 12, border: '2px solid #ff520e', borderTopColor: 'transparent', borderRadius: '50%', flexShrink: 0, animation: 'spin 0.6s linear infinite' }} />}
+              {searching && <div style={{ width: 12, height: 12, border: '2px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', flexShrink: 0, animation: 'spin 0.6s linear infinite' }} />}
             </div>
             {searchRes.length > 0 ? (
               <div style={{ maxHeight: 300, overflowY: 'auto' }}>
@@ -168,7 +168,7 @@ export default function AppTopbar() {
                   <Link key={r.id} href={r.href}
                     onClick={() => { setSearchOpen(false); setSearchQ('') }}
                     style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', textDecoration: 'none', borderBottom: '1px solid #f9fafb' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#fff3ef')}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#eff6ff')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   >
                     <span style={{ fontSize: 15 }}>{r.type === 'bericht' ? '💬' : r.type === 'document' ? '📄' : '📅'}</span>
@@ -263,7 +263,7 @@ function MobileNavItems({ onClose }: { onClose: () => void }) {
     <nav style={{ padding: '8px 0' }}>
       <div style={{ padding: '14px 16px', borderBottom: '1px solid #f4f4f4', marginBottom: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 24, height: 24, borderRadius: 6, background: '#ff520e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
+          <div style={{ width: 24, height: 24, borderRadius: 6, background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
           <span style={{ fontWeight: 700, fontSize: 14 }}>Schoolplatform</span>
         </div>
       </div>
@@ -271,7 +271,7 @@ function MobileNavItems({ onClose }: { onClose: () => void }) {
         const active = item.exact ? path === item.href : path.startsWith(item.href)
         return (
           <Link key={item.href} href={item.href} onClick={onClose}
-            style={{ display: 'block', padding: '12px 20px', fontSize: 14, fontWeight: active ? 600 : 400, color: active ? '#ff520e' : '#242424', textDecoration: 'none', background: active ? '#fff3ef' : 'transparent', borderBottom: '1px solid #f4f4f4' }}>
+            style={{ display: 'block', padding: '12px 20px', fontSize: 14, fontWeight: active ? 600 : 400, color: active ? '#2563eb' : '#242424', textDecoration: 'none', background: active ? '#eff6ff' : 'transparent', borderBottom: '1px solid #f4f4f4' }}>
             {item.label}
           </Link>
         )

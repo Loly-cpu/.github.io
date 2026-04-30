@@ -70,10 +70,10 @@ export default function FeedbackButton() {
                   {TYPES.map(t => (
                     <button key={t.key} onClick={() => setType(t.key)}
                       style={{
-                        flex: 1, padding: '6px 4px', border: `2px solid ${type === t.key ? '#ff520e' : '#e8e8e8'}`,
-                        borderRadius: 8, background: type === t.key ? '#fff3ef' : '#fff',
+                        flex: 1, padding: '6px 4px', border: `2px solid ${type === t.key ? '#2563eb' : '#e8e8e8'}`,
+                        borderRadius: 8, background: type === t.key ? '#eff6ff' : '#fff',
                         cursor: 'pointer', fontSize: 11, fontWeight: 600,
-                        color: type === t.key ? '#ff520e' : '#5b5b5b', textAlign: 'center',
+                        color: type === t.key ? '#2563eb' : '#5b5b5b', textAlign: 'center',
                       }}>
                       <div style={{ fontSize: 18, marginBottom: 2 }}>{t.icon}</div>
                       {t.label}
@@ -92,7 +92,7 @@ export default function FeedbackButton() {
                 <p style={{ fontSize: 10, color: '#9ca3af', margin: '4px 0 10px' }}>Pagina: {path} · Ctrl+Enter om te versturen</p>
 
                 <button onClick={send} disabled={sending || !message.trim()}
-                  style={{ width: '100%', background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '9px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: sending || !message.trim() ? 0.5 : 1 }}>
+                  style={{ width: '100%', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '9px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: sending || !message.trim() ? 0.5 : 1 }}>
                   {sending ? 'Versturen…' : 'Versturen'}
                 </button>
               </>

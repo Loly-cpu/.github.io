@@ -60,7 +60,7 @@ export function DeleteConfirmProvider() {
 
         <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20, cursor: 'pointer' }}>
           <input type="checkbox" checked={dontAsk} onChange={e => setDontAsk(e.target.checked)}
-            style={{ width: 16, height: 16, accentColor: '#ff520e', cursor: 'pointer' }} />
+            style={{ width: 16, height: 16, accentColor: '#2563eb', cursor: 'pointer' }} />
           <span style={{ fontSize: 12, color: '#6b7280' }}>Vraag dit niet meer voor dit type</span>
         </label>
 

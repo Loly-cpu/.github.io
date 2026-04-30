@@ -17,7 +17,7 @@ export default function GlobalError({ error, reset }: { error: Error; reset: () 
         </p>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
           <button onClick={reset}
-            style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
             Opnieuw proberen
           </button>
           <a href="/platform"

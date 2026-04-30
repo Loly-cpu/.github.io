@@ -68,7 +68,7 @@ export default function AppSidebar() {
       <div style={{ height: 48, display: 'flex', alignItems: 'center', borderBottom: '1px solid #f3f4f6', flexShrink: 0, overflow: 'hidden', paddingLeft: open ? 12 : 0, justifyContent: open ? 'flex-start' : 'center' }}>
         <Link href="/platform" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flex: 1, height: '100%' }}
           title={open ? undefined : 'Schoolplatform — Home'}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #ff520e, #ff7043)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0, boxShadow: '0 2px 8px rgba(255,82,14,0.3)' }}>S</div>
+          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #1d4ed8, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0, boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>S</div>
           {open && <span style={{ fontWeight: 700, fontSize: 14, color: '#111827', whiteSpace: 'nowrap' }}>Schoolplatform</span>}
         </Link>
       </div>
@@ -89,9 +89,9 @@ export default function AppSidebar() {
                   justifyContent: open ? 'flex-start' : 'center',
                   margin: '1px 0', borderRadius: 8, textDecoration: 'none',
                   fontSize: 13, fontWeight: active ? 600 : 400,
-                  color: active ? '#ff520e' : '#4b5563',
-                  background: active ? '#fff7ed' : 'transparent',
-                  borderLeft: active ? '2px solid #ff520e' : '2px solid transparent',
+                  color: active ? '#2563eb' : '#4b5563',
+                  background: active ? '#eff6ff' : 'transparent',
+                  borderLeft: active ? '2px solid #2563eb' : '2px solid transparent',
                   transition: 'all 0.15s',
                   position: 'relative',
                 }}
@@ -127,9 +127,9 @@ export default function AppSidebar() {
                 justifyContent: open ? 'flex-start' : 'center',
                 margin: '1px 0', borderRadius: 8, textDecoration: 'none',
                 fontSize: 13, fontWeight: active ? 600 : 400,
-                color: active ? '#ff520e' : '#4b5563',
-                background: active ? '#fff7ed' : 'transparent',
-                borderLeft: active ? '2px solid #ff520e' : '2px solid transparent',
+                color: active ? '#2563eb' : '#4b5563',
+                background: active ? '#eff6ff' : 'transparent',
+                borderLeft: active ? '2px solid #2563eb' : '2px solid transparent',
                 transition: 'all 0.15s',
               }}
               onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#f9fafb' }}
@@ -154,9 +154,9 @@ export default function AppSidebar() {
                   height: 40, padding: open ? '0 10px' : '0',
                   justifyContent: open ? 'flex-start' : 'center',
                   margin: '1px 0', borderRadius: 8, textDecoration: 'none',
-                  fontSize: 13, color: isActive('/platform/admin/gebruikers') ? '#ff520e' : '#4b5563',
-                  background: isActive('/platform/admin/gebruikers') ? '#fff7ed' : 'transparent',
-                  borderLeft: isActive('/platform/admin/gebruikers') ? '2px solid #ff520e' : '2px solid transparent',
+                  fontSize: 13, color: isActive('/platform/admin/gebruikers') ? '#2563eb' : '#4b5563',
+                  background: isActive('/platform/admin/gebruikers') ? '#eff6ff' : 'transparent',
+                  borderLeft: isActive('/platform/admin/gebruikers') ? '2px solid #2563eb' : '2px solid transparent',
                   transition: 'all 0.15s',
                 }}
                 onMouseEnter={e => { if (!isActive('/platform/admin/gebruikers')) e.currentTarget.style.background = '#f9fafb' }}
@@ -173,9 +173,9 @@ export default function AppSidebar() {
                 height: 40, padding: open ? '0 10px' : '0',
                 justifyContent: open ? 'flex-start' : 'center',
                 margin: '1px 0', borderRadius: 8, textDecoration: 'none',
-                fontSize: 13, color: isActive('/platform/admin/feedback') ? '#ff520e' : '#4b5563',
-                background: isActive('/platform/admin/feedback') ? '#fff7ed' : 'transparent',
-                borderLeft: isActive('/platform/admin/feedback') ? '2px solid #ff520e' : '2px solid transparent',
+                fontSize: 13, color: isActive('/platform/admin/feedback') ? '#2563eb' : '#4b5563',
+                background: isActive('/platform/admin/feedback') ? '#eff6ff' : 'transparent',
+                borderLeft: isActive('/platform/admin/feedback') ? '2px solid #2563eb' : '2px solid transparent',
                 transition: 'all 0.15s',
               }}
               onMouseEnter={e => { if (!isActive('/platform/admin/feedback')) e.currentTarget.style.background = '#f9fafb' }}

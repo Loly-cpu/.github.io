@@ -152,7 +152,7 @@ export default function DocumentenPage() {
         </div>
         {userId && (
           <button onClick={() => setShowUpload(true)}
-            style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
             + Upload
           </button>
         )}
@@ -163,7 +163,7 @@ export default function DocumentenPage() {
         <div style={{ display: 'flex', gap: 0, marginBottom: 16, border: '1px solid #e5e7eb', borderRadius: 10, overflow: 'hidden', width: 'fit-content' }}>
           {([['gedeeld','🌐 Gedeeld'],['privé',`🔒 Privé (${privateCount}/${MAX_PRIVATE})`]] as const).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
-              style={{ padding: '7px 20px', fontSize: 13, fontWeight: tab === k ? 600 : 400, border: 'none', cursor: 'pointer', background: tab === k ? '#ff520e' : '#fff', color: tab === k ? '#fff' : '#374151', transition: 'background 0.1s' }}>
+              style={{ padding: '7px 20px', fontSize: 13, fontWeight: tab === k ? 600 : 400, border: 'none', cursor: 'pointer', background: tab === k ? '#2563eb' : '#fff', color: tab === k ? '#fff' : '#374151', transition: 'background 0.1s' }}>
               {l}
             </button>
           ))}
@@ -191,7 +191,7 @@ export default function DocumentenPage() {
             {tab === 'privé' ? `Upload tot ${MAX_PRIVATE} persoonlijke bestanden.` : 'Upload als eerste een samenvatting!'}
           </p>
           {userId && <button onClick={() => setShowUpload(true)}
-            style={{ marginTop: 14, background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ marginTop: 14, background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
             ↑ Eerste document uploaden
           </button>}
         </div>
@@ -265,10 +265,10 @@ export default function DocumentenPage() {
                 style={{ fontSize: 13, color: '#374151' }} />
 
               {/* Privacy toggle */}
-              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '10px 12px', background: form.is_private ? '#fff7ed' : '#f9fafb', border: `1px solid ${form.is_private ? '#fed7aa' : '#e5e7eb'}`, borderRadius: 8 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '10px 12px', background: form.is_private ? '#eff6ff' : '#f9fafb', border: `1px solid ${form.is_private ? '#bfdbfe' : '#e5e7eb'}`, borderRadius: 8 }}>
                 <input type="checkbox" checked={form.is_private}
                   onChange={e => setForm({...form, is_private: e.target.checked})}
-                  style={{ width: 16, height: 16, accentColor: '#ff520e' }} />
+                  style={{ width: 16, height: 16, accentColor: '#2563eb' }} />
                 <div>
                   <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', margin: 0 }}>🔒 Privédocument</p>
                   <p style={{ fontSize: 11, color: '#6b7280', margin: 0 }}>Alleen zichtbaar voor jou · {privateCount}/{MAX_PRIVATE} gebruikt</p>
@@ -284,7 +284,7 @@ export default function DocumentenPage() {
                 Annuleren
               </button>
               <button onClick={uploadDoc} disabled={uploading || !form.title}
-                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: uploading || !form.title ? 0.5 : 1 }}>
+                style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: uploading || !form.title ? 0.5 : 1 }}>
                 {uploading ? 'Uploaden…' : 'Uploaden'}
               </button>
             </div>

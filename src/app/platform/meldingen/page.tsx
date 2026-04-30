@@ -119,7 +119,7 @@ export default function MeldingenPage() {
           )}
           {isAdmin && (
             <button onClick={() => setShowCreate(true)}
-              style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
               + Melding
             </button>
           )}
@@ -132,7 +132,7 @@ export default function MeldingenPage() {
           <button key={key} onClick={() => setFilter(key)}
             style={{
               fontSize: 12, padding: '5px 14px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none',
-              background: filter === key ? '#ff520e' : '#fff',
+              background: filter === key ? '#2563eb' : '#fff',
               color: filter === key ? '#fff' : '#5b5b5b',
               boxShadow: filter === key ? 'none' : '0 1px 3px rgba(0,0,0,0.08)',
             }}>
@@ -149,7 +149,7 @@ export default function MeldingenPage() {
             {filter === 'unread' ? 'Alles gelezen!' : 'Geen meldingen'}
           </p>
           {filter === 'unread' && (
-            <button onClick={() => setFilter('all')} style={{ background: 'none', border: 'none', color: '#ff520e', cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
+            <button onClick={() => setFilter('all')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
               Alle meldingen bekijken →
             </button>
           )}
@@ -178,7 +178,7 @@ export default function MeldingenPage() {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
                       <p style={{ fontWeight: 600, color: '#242424', fontSize: 14, margin: 0 }}>{n.title}</p>
-                      {!read && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#ff520e', flexShrink: 0, display: 'inline-block' }} />}
+                      {!read && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#2563eb', flexShrink: 0, display: 'inline-block' }} />}
                     </div>
                     <p style={{ fontSize: 13, color: '#374151', margin: '0 0 6px', whiteSpace: 'pre-wrap' }}>{n.content}</p>
                     <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{timeAgo(n.created_at)}</p>
@@ -246,7 +246,7 @@ export default function MeldingenPage() {
                 Annuleren
               </button>
               <button onClick={createNotif} disabled={posting || !form.title || !form.content}
-                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (posting || !form.title || !form.content) ? 0.5 : 1 }}>
+                style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (posting || !form.title || !form.content) ? 0.5 : 1 }}>
                 {posting ? 'Versturen...' : 'Versturen'}
               </button>
             </div>

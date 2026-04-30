@@ -34,7 +34,7 @@ export default function WachtwoordNieuwPage() {
 
   if (!ready) return (
     <div className="min-h-screen bg-[#f4f4f4] flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[#ff520e] border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-[#2563eb] border-t-transparent rounded-full animate-spin" />
     </div>
   )
 
@@ -47,17 +47,17 @@ export default function WachtwoordNieuwPage() {
           </h2>
           <form onSubmit={handleSubmit} className="space-y-3">
             <input type="password" required autoComplete="new-password"
-              className="w-full border border-[#e8e8e8] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff520e]"
+              className="w-full border border-[#e8e8e8] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#2563eb]"
               placeholder="Nieuw wachtwoord (min. 8 tekens)" value={password}
               onChange={e => setPassword(e.target.value)} />
             <input type="password" required autoComplete="new-password"
-              className="w-full border border-[#e8e8e8] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff520e]"
+              className="w-full border border-[#e8e8e8] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#2563eb]"
               placeholder="Herhaal wachtwoord" value={confirm}
               onChange={e => setConfirm(e.target.value)} />
             {error && <p className="text-xs text-red-600">{error}</p>}
             <button type="submit" disabled={loading}
               className="w-full py-2 rounded-lg text-white text-sm font-medium disabled:opacity-60"
-              style={{ background: '#ff520e' }}>
+              style={{ background: '#2563eb' }}>
               {loading ? 'Opslaan…' : 'Wachtwoord opslaan'}
             </button>
           </form>

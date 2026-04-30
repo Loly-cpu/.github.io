@@ -40,8 +40,8 @@ function Avatar({ profile, size = 32 }: { profile?: Profile; size?: number }) {
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%', flexShrink: 0,
-      background: isSA ? 'rgba(147,51,234,0.6)' : isA ? 'rgba(22,163,74,0.6)' : 'rgba(255,82,14,0.6)',
-      border: `1px solid ${isSA ? 'rgba(216,180,254,0.4)' : isA ? 'rgba(134,239,172,0.4)' : 'rgba(255,82,14,0.4)'}`,
+      background: isSA ? 'rgba(147,51,234,0.6)' : isA ? 'rgba(22,163,74,0.6)' : 'rgba(37,99,235,0.6)',
+      border: `1px solid ${isSA ? 'rgba(216,180,254,0.4)' : isA ? 'rgba(134,239,172,0.4)' : 'rgba(37,99,235,0.4)'}`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       color: '#fff', fontWeight: 700, fontSize: size * 0.38,
       backdropFilter: 'blur(4px)',
@@ -157,7 +157,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
 
   if (!group) return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#ff520e', borderTopColor: 'transparent' }} />
+      <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#2563eb', borderTopColor: 'transparent' }} />
     </div>
   )
 
@@ -185,7 +185,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
           <h1 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#f1f5f9', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{group.name}</h1>
           {group.description && <p style={{ margin: 0, fontSize: 12, color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{group.description}</p>}
         </div>
-        {isMember && <span style={{ fontSize: 11, background: 'rgba(255,82,14,0.2)', color: '#fb923c', borderRadius: 20, padding: '3px 10px', fontWeight: 600, border: '1px solid rgba(255,82,14,0.3)', flexShrink: 0 }}>Lid</span>}
+        {isMember && <span style={{ fontSize: 11, background: 'rgba(37,99,235,0.2)', color: '#60a5fa', borderRadius: 20, padding: '3px 10px', fontWeight: 600, border: '1px solid rgba(37,99,235,0.3)', flexShrink: 0 }}>Lid</span>}
       </div>
 
       {/* Posts */}
@@ -280,7 +280,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                     autoFocus
                   />
                   <button onClick={submitReply} disabled={!replyText.trim()}
-                    style={{ background: 'rgba(255,82,14,0.8)', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', opacity: !replyText.trim() ? 0.4 : 1 }}>
+                    style={{ background: 'rgba(37,99,235,0.9)', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', opacity: !replyText.trim() ? 0.4 : 1 }}>
                     <SendIcon size={14} />
                   </button>
                 </div>
@@ -296,7 +296,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
         <div style={{ position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)', background: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(12px)', color: '#f1f5f9', borderRadius: 12, padding: '10px 16px', fontSize: 13, fontWeight: 500, zIndex: 200, boxShadow: '0 4px 24px rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap', border: '1px solid rgba(255,255,255,0.1)' }}>
           <span style={{ color: '#94a3b8' }}>Verwijderd — herstelbaar tot 12u</span>
           <button onClick={undoDelete}
-            style={{ background: 'rgba(255,82,14,0.8)', color: '#fff', border: 'none', borderRadius: 8, padding: '4px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '4px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
             Ongedaan maken
           </button>
         </div>
@@ -312,7 +312,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           {userId ? (
             <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, overflow: 'hidden', backdropFilter: 'blur(12px)', transition: 'border-color 0.2s' }}
-              onFocusCapture={e => (e.currentTarget.style.borderColor = 'rgba(255,82,14,0.5)')}
+              onFocusCapture={e => (e.currentTarget.style.borderColor = 'rgba(37,99,235,0.5)')}
               onBlurCapture={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 14px 0' }}>
                 <Avatar profile={myProfile} size={28} />
@@ -334,7 +334,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                 <span style={{ fontSize: 11, color: '#475569' }}>Ctrl+Enter om te posten</span>
                 <button onClick={submitPost} disabled={posting || !newPost.trim()}
                   style={{
-                    background: posting || !newPost.trim() ? 'rgba(255,255,255,0.08)' : 'rgba(255,82,14,0.85)',
+                    background: posting || !newPost.trim() ? 'rgba(255,255,255,0.08)' : 'rgba(37,99,235,0.9)',
                     color: posting || !newPost.trim() ? '#475569' : '#fff',
                     border: 'none', borderRadius: 10, padding: '7px 18px',
                     fontSize: 13, cursor: 'pointer', fontWeight: 600,

@@ -126,7 +126,7 @@ export default function PlatformNav() {
   const active = (href: string) =>
     href === '/platform' ? path === '/platform' : path.startsWith(href)
 
-  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#ff520e'
+  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#2563eb'
   const roleBadge = isSuperAdmin
     ? <span style={{ fontSize: 10, background: '#f3e8ff', color: '#7e22ce', borderRadius: 6, padding: '1px 5px', fontWeight: 700, marginLeft: 4 }}>Superadmin</span>
     : isAdmin
@@ -219,7 +219,7 @@ export default function PlatformNav() {
                     onChange={e => setSearchQ(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Escape') setSearchOpen(false) }}
                   />
-                  {searching && <div style={{ width: 14, height: 14, border: '2px solid #ff520e', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />}
+                  {searching && <div style={{ width: 14, height: 14, border: '2px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />}
                 </div>
                 {searchRes.length > 0 ? (
                   <div style={{ maxHeight: 320, overflowY: 'auto' }}>
@@ -227,7 +227,7 @@ export default function PlatformNav() {
                       <Link key={r.id} href={r.href}
                         onClick={() => { setSearchOpen(false); setSearchQ('') }}
                         style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', textDecoration: 'none', borderBottom: '1px solid #f9fafb' }}
-                        onMouseEnter={e => (e.currentTarget.style.background = '#fff3ef')}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#eff6ff')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
                         <span style={{ fontSize: 16, flexShrink: 0 }}>
@@ -290,8 +290,8 @@ export default function PlatformNav() {
             style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               justifyContent: 'center', textDecoration: 'none', gap: 2, padding: '4px 0',
-              color: active(item.href) ? '#ff520e' : '#5b5b5b',
-              borderTop: active(item.href) ? '2px solid #ff520e' : '2px solid transparent',
+              color: active(item.href) ? '#2563eb' : '#5b5b5b',
+              borderTop: active(item.href) ? '2px solid #2563eb' : '2px solid transparent',
             }}
           >
             <span style={{ fontSize: 18, position: 'relative' }}>
@@ -322,11 +322,11 @@ export default function PlatformNav() {
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '14px 20px',
-                  color: active(item.href) ? '#ff520e' : '#242424',
+                  color: active(item.href) ? '#2563eb' : '#242424',
                   textDecoration: 'none',
                   fontSize: 14,
                   borderBottom: '1px solid #f4f4f4',
-                  background: active(item.href) ? '#fff3ef' : 'transparent',
+                  background: active(item.href) ? '#eff6ff' : 'transparent',
                   fontWeight: active(item.href) ? 500 : 400,
                 }}
               >

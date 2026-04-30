@@ -163,8 +163,8 @@ body.sidebar-collapsed .app-content:has(.page-fullbleed) {
 }
 
 .smsc-nav__btn--active {
-  color: #ff520e;
-  border-bottom-color: #ff520e;
+  color: #2563eb;
+  border-bottom-color: #2563eb;
   font-weight: 500;
 }
 

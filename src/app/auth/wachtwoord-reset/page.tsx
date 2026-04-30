@@ -31,7 +31,7 @@ export default function WachtwoordResetPage() {
           <p className="text-[#5b5b5b] text-sm mb-6">
             We hebben een resetlink gestuurd naar <strong>{email}</strong>.
           </p>
-          <Link href="/auth/login" className="text-[#ff520e] font-semibold text-sm hover:underline">
+          <Link href="/auth/login" className="text-[#2563eb] font-semibold text-sm hover:underline">
             Terug naar inloggen
           </Link>
         </div>
@@ -49,18 +49,18 @@ export default function WachtwoordResetPage() {
           <p className="text-xs text-[#5b5b5b] mb-4">Vul je e-mailadres in — we sturen je een resetlink.</p>
           <form onSubmit={handleSubmit} className="space-y-3">
             <input type="email" required autoComplete="email"
-              className="w-full border border-[#e8e8e8] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#ff520e]"
+              className="w-full border border-[#e8e8e8] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#2563eb]"
               placeholder="jouw@email.be" value={email}
               onChange={e => setEmail(e.target.value)} />
             {error && <p className="text-xs text-red-600">{error}</p>}
             <button type="submit" disabled={loading}
               className="w-full py-2 rounded-lg text-white text-sm font-medium disabled:opacity-60"
-              style={{ background: '#ff520e' }}>
+              style={{ background: '#2563eb' }}>
               {loading ? 'Versturen…' : 'Resetlink sturen'}
             </button>
           </form>
           <p className="text-center text-xs text-[#5b5b5b] mt-4">
-            <Link href="/auth/login" className="text-[#ff520e] font-semibold hover:underline">Terug naar inloggen</Link>
+            <Link href="/auth/login" className="text-[#2563eb] font-semibold hover:underline">Terug naar inloggen</Link>
           </p>
         </div>
       </div>

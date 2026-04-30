@@ -11,7 +11,7 @@ interface FeedbackRow {
 
 const TYPE_ICON: Record<string, string> = { bug: '🐛', suggestion: '💡', compliment: '⭐' }
 const TYPE_LABEL: Record<string, string> = { bug: 'Bug', suggestion: 'Suggestie', compliment: 'Compliment' }
-const STATUS_COLORS: Record<string, string> = { open: '#ff520e', read: '#3b82f6', done: '#22c55e' }
+const STATUS_COLORS: Record<string, string> = { open: '#2563eb', read: '#3b82f6', done: '#22c55e' }
 
 function timeAgo(iso: string) {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000)
@@ -49,7 +49,7 @@ export default function FeedbackAdminPage() {
 
   const counts = { open: rows.filter(r => r.status === 'open').length, bug: rows.filter(r => r.type === 'bug').length }
 
-  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}><div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#ff520e', borderTopColor: 'transparent' }} /></div>
+  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}><div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#2563eb', borderTopColor: 'transparent' }} /></div>
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto' }}>
@@ -63,7 +63,7 @@ export default function FeedbackAdminPage() {
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
         {([['open','Ongelezen'],['all','Alle'],['bug','🐛 Bugs'],['suggestion','💡 Suggesties'],['compliment','⭐ Complimenten']] as const).map(([k,l]) => (
           <button key={k} onClick={() => setFilter(k)}
-            style={{ fontSize: 12, padding: '5px 14px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none', background: filter === k ? '#ff520e' : '#fff', color: filter === k ? '#fff' : '#5b5b5b', boxShadow: filter === k ? 'none' : '0 1px 3px rgba(0,0,0,0.08)' }}>
+            style={{ fontSize: 12, padding: '5px 14px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none', background: filter === k ? '#2563eb' : '#fff', color: filter === k ? '#fff' : '#5b5b5b', boxShadow: filter === k ? 'none' : '0 1px 3px rgba(0,0,0,0.08)' }}>
             {l}
           </button>
         ))}

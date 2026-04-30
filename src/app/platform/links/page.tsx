@@ -100,7 +100,7 @@ export default function LinksPage() {
               + Afdeling
             </button>
             <button onClick={() => setLinkModal({ category_id: cats[0]?.id })}
-              style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
               + Link
             </button>
           </div>
@@ -113,7 +113,7 @@ export default function LinksPage() {
           <button key={f} onClick={() => setFilter(f)}
             style={{
               fontSize: 12, padding: '5px 14px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none',
-              background: filter === f ? '#ff520e' : '#fff',
+              background: filter === f ? '#2563eb' : '#fff',
               color: filter === f ? '#fff' : '#5b5b5b',
               boxShadow: filter === f ? 'none' : '0 1px 3px rgba(0,0,0,0.08)',
             }}>
@@ -136,7 +136,7 @@ export default function LinksPage() {
                 {isAdmin && (
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button onClick={() => setLinkModal({ category_id: cat.id })}
-                      style={{ background: 'none', border: '1px solid #e8e8e8', borderRadius: 6, padding: '2px 8px', fontSize: 11, cursor: 'pointer', color: '#ff520e', fontWeight: 600 }}>
+                      style={{ background: 'none', border: '1px solid #e8e8e8', borderRadius: 6, padding: '2px 8px', fontSize: 11, cursor: 'pointer', color: '#2563eb', fontWeight: 600 }}>
                       + link
                     </button>
                     <button onClick={() => setCatModal({ id: cat.id, name: cat.name, icon: cat.icon })}
@@ -208,7 +208,7 @@ export default function LinksPage() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {ICONS.map(ic => (
                     <button key={ic} onClick={() => setCatModal({ ...catModal, icon: ic })}
-                      style={{ fontSize: 20, background: catModal.icon === ic ? '#fff3ef' : '#f4f4f4', border: `2px solid ${catModal.icon === ic ? '#ff520e' : 'transparent'}`, borderRadius: 6, padding: '4px 6px', cursor: 'pointer' }}>
+                      style={{ fontSize: 20, background: catModal.icon === ic ? '#eff6ff' : '#f4f4f4', border: `2px solid ${catModal.icon === ic ? '#2563eb' : 'transparent'}`, borderRadius: 6, padding: '4px 6px', cursor: 'pointer' }}>
                       {ic}
                     </button>
                   ))}
@@ -218,7 +218,7 @@ export default function LinksPage() {
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
               <button onClick={() => setCatModal(null)} style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', color: '#5b5b5b' }}>Annuleren</button>
               <button onClick={saveCategory} disabled={saving || !catModal.name}
-                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving || !catModal.name ? 0.5 : 1 }}>
+                style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving || !catModal.name ? 0.5 : 1 }}>
                 {saving ? 'Opslaan…' : 'Opslaan'}
               </button>
             </div>
@@ -252,7 +252,7 @@ export default function LinksPage() {
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
               <button onClick={() => setLinkModal(null)} style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', color: '#5b5b5b' }}>Annuleren</button>
               <button onClick={saveLink} disabled={saving || !linkModal.label || !linkModal.url || !linkModal.category_id}
-                style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving || !linkModal.label || !linkModal.url ? 0.5 : 1 }}>
+                style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: saving || !linkModal.label || !linkModal.url ? 0.5 : 1 }}>
                 {saving ? 'Opslaan…' : 'Opslaan'}
               </button>
             </div>

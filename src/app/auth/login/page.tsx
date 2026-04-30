@@ -44,7 +44,7 @@ export default function LoginPage() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <SignInPage
-        title={<>Welkom op het<br /><span className="text-[#ff520e]">Schoolplatform</span></>}
+        title={<>Welkom op het<br /><span className="text-[#2563eb]">Schoolplatform</span></>}
         description="Log in om je agenda, berichten, documenten en taalplatform te openen."
         heroImageSrc={HERO_IMAGE}
         testimonials={TESTIMONIALS}

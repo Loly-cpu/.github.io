@@ -85,7 +85,7 @@ export default function BerichtenPage() {
 
   if (loading) return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-      <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#ff520e', borderTopColor: 'transparent' }} />
+      <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#2563eb', borderTopColor: 'transparent' }} />
     </div>
   )
 
@@ -104,7 +104,7 @@ export default function BerichtenPage() {
           <button key={f} onClick={() => setFilter(f)}
             style={{
               fontSize: 12, padding: '5px 12px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none',
-              background: filter === f ? '#ff520e' : '#fff',
+              background: filter === f ? '#2563eb' : '#fff',
               color: filter === f ? '#fff' : '#5b5b5b',
               boxShadow: filter === f ? 'none' : '0 1px 3px rgba(0,0,0,0.08)',
             }}>
@@ -121,7 +121,7 @@ export default function BerichtenPage() {
             <p style={{ fontWeight: 600, fontSize: 15, marginBottom: 6 }}>Je bent nog geen lid van een groep</p>
             <p style={{ fontSize: 13, marginBottom: 16 }}>Sluit je aan bij de groep van jouw richting.</p>
             <button onClick={() => setFilter('Alle')}
-              style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+              style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
               Alle groepen bekijken →
             </button>
           </div>
@@ -168,7 +168,7 @@ function GroupCard({ group: g, userId, onToggle }: {
 }) {
   return (
     <div style={{
-      background: '#fff', border: `2px solid ${g.is_member ? '#ff520e' : '#e8e8e8'}`,
+      background: '#fff', border: `2px solid ${g.is_member ? '#2563eb' : '#e8e8e8'}`,
       borderRadius: 10, overflow: 'hidden',
       transition: 'box-shadow 0.15s',
     }}
@@ -185,7 +185,7 @@ function GroupCard({ group: g, userId, onToggle }: {
             <p style={{ fontSize: 11, color: '#9ca3af', margin: '2px 0 0' }}>{g.member_count} leden</p>
           </div>
           {g.is_member && (
-            <span style={{ fontSize: 10, background: '#fff3ef', color: '#ff520e', borderRadius: 6, padding: '2px 7px', fontWeight: 700, flexShrink: 0 }}>Lid</span>
+            <span style={{ fontSize: 10, background: '#eff6ff', color: '#2563eb', borderRadius: 6, padding: '2px 7px', fontWeight: 700, flexShrink: 0 }}>Lid</span>
           )}
         </div>
       </Link>
@@ -193,7 +193,7 @@ function GroupCard({ group: g, userId, onToggle }: {
         <div style={{ borderTop: '1px solid #f4f4f4', padding: '8px 16px' }}>
           <button onClick={() => onToggle(g.id, g.is_member)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600,
-              color: g.is_member ? '#ef4444' : '#ff520e', padding: 0 }}>
+              color: g.is_member ? '#ef4444' : '#2563eb', padding: 0 }}>
             {g.is_member ? 'Groep verlaten' : '+ Aansluiten'}
           </button>
         </div>

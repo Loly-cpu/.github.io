@@ -112,9 +112,9 @@ function BanDialog({ config, onClose, onConfirm }: {
             </button>
 
             {/* Per kanaal */}
-            <div style={{ border: `2px solid ${!allPlatform ? '#f97316' : '#e5e7eb'}`, borderRadius: 10, overflow: 'hidden' }}>
-              <div style={{ padding: '8px 14px', background: !allPlatform ? '#fff7ed' : '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
-                <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: !allPlatform ? '#ea580c' : '#6b7280' }}>Specifieke kanalen</p>
+            <div style={{ border: `2px solid ${!allPlatform ? '#2563eb' : '#e5e7eb'}`, borderRadius: 10, overflow: 'hidden' }}>
+              <div style={{ padding: '8px 14px', background: !allPlatform ? '#eff6ff' : '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: !allPlatform ? '#2563eb' : '#6b7280' }}>Specifieke kanalen</p>
               </div>
               {CHANNELS.map(ch => {
                 const active = local.channels.includes(ch.key)
@@ -123,11 +123,11 @@ function BanDialog({ config, onClose, onConfirm }: {
                     onClick={() => { if (allPlatform) setLocal(c => ({ ...c, channels: [ch.key] })); else toggleChannel(ch.key) }}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px',
-                      width: '100%', background: active ? '#fff7ed' : '#fff',
+                      width: '100%', background: active ? '#eff6ff' : '#fff',
                       border: 'none', borderBottom: '1px solid #f4f4f4', cursor: 'pointer', textAlign: 'left',
                     }}>
                     <input type="checkbox" checked={active} readOnly
-                      style={{ width: 15, height: 15, accentColor: '#f97316', cursor: 'pointer', flexShrink: 0 }} />
+                      style={{ width: 15, height: 15, accentColor: '#2563eb', cursor: 'pointer', flexShrink: 0 }} />
                     <span style={{ fontSize: 15 }}>{ch.icon}</span>
                     <span style={{ fontSize: 13, fontWeight: active ? 600 : 400, color: active ? '#ea580c' : '#374151' }}>{ch.label}</span>
                   </button>
@@ -335,7 +335,7 @@ export default function GebruikersBeheerPage() {
                 {/* Avatar */}
                 <div style={{
                   width: 42, height: 42, borderRadius: '50%', flexShrink: 0,
-                  background: isBanned ? '#fecaca' : p.is_superadmin ? '#9333ea' : p.is_admin ? '#16a34a' : '#ff520e',
+                  background: isBanned ? '#fecaca' : p.is_superadmin ? '#9333ea' : p.is_admin ? '#16a34a' : '#2563eb',
                   color: isBanned ? '#dc2626' : '#fff',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700,
                 }}>

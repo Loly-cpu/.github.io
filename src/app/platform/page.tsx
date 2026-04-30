@@ -92,9 +92,9 @@ export default function PlatformHome() {
         </div>
         {unread > 0 && (
           <Link href="/platform/meldingen" style={{ textDecoration: 'none' }}>
-            <div style={{ background: '#fff3ef', border: '1px solid #ffcba4', borderRadius: 8, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 16 }}>🔔</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#ff520e' }}>{unread} ongelezen melding{unread !== 1 ? 'en' : ''}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#2563eb' }}>{unread} ongelezen melding{unread !== 1 ? 'en' : ''}</span>
             </div>
           </Link>
         )}
@@ -106,13 +106,13 @@ export default function PlatformHome() {
           <p style={{ fontSize: 12, fontWeight: 700, color: '#5b5b5b', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 12px' }}>Vandaag & morgen</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {nextExam && examDays !== null && examDays <= 7 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: examDays <= 2 ? '#fef2f2' : '#fff3ef', borderRadius: 8, padding: '10px 14px', border: `1px solid ${examDays <= 2 ? '#fecaca' : '#fed7aa'}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: examDays <= 2 ? '#fef2f2' : '#eff6ff', borderRadius: 8, padding: '10px 14px', border: `1px solid ${examDays <= 2 ? '#fecaca' : '#bfdbfe'}` }}>
                 <span style={{ fontSize: 20 }}>🎓</span>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontSize: 13, fontWeight: 600, color: '#242424', margin: 0 }}>{nextExam.title}</p>
                   <p style={{ fontSize: 12, color: '#5b5b5b', margin: '1px 0 0' }}>{fmt(nextExam.start_at)}</p>
                 </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: examDays <= 2 ? '#dc2626' : '#ff520e', flexShrink: 0 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: examDays <= 2 ? '#dc2626' : '#2563eb', flexShrink: 0 }}>
                   {examDays === 0 ? 'Vandaag!' : examDays === 1 ? 'Morgen!' : `${examDays} dagen`}
                 </span>
               </div>
@@ -133,7 +133,7 @@ export default function PlatformHome() {
       {/* ── Snelle acties ──────────────────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
         {[
-          { href: '/examenboard', icon: '🎓', label: 'Examenboard', sub: 'Studieplan & aftelling', bg: '#fff3ef', border: '#ffcba4', color: '#ff520e' },
+          { href: '/examenboard', icon: '🎓', label: 'Examenboard', sub: 'Studieplan & aftelling', bg: '#eff6ff', border: '#bfdbfe', color: '#2563eb' },
           { href: '/platform/berichten', icon: '💬', label: 'Berichten', sub: 'Groepen & discussies', bg: '#f0f9ff', border: '#bae6fd', color: '#0284c7' },
           { href: '/platform/agenda', icon: '📅', label: 'Agenda', sub: 'Week & maandoverzicht', bg: '#f0fdf4', border: '#bbf7d0', color: '#16a34a' },
         ].map(a => (
@@ -157,12 +157,12 @@ export default function PlatformHome() {
         <div className="smsc-card" style={{ margin: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: '#242424', margin: 0 }}>📅 Aankomend</p>
-            <Link href="/platform/agenda" style={{ fontSize: 12, color: '#ff520e', textDecoration: 'none' }}>Alles →</Link>
+            <Link href="/platform/agenda" style={{ fontSize: 12, color: '#2563eb', textDecoration: 'none' }}>Alles →</Link>
           </div>
           {upcoming.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '20px 0', color: '#9ca3af' }}>
               <p style={{ fontSize: 13 }}>Geen events gepland</p>
-              <Link href="/platform/agenda" style={{ fontSize: 12, color: '#ff520e' }}>Event toevoegen →</Link>
+              <Link href="/platform/agenda" style={{ fontSize: 12, color: '#2563eb' }}>Event toevoegen →</Link>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -183,12 +183,12 @@ export default function PlatformHome() {
         <div className="smsc-card" style={{ margin: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: '#242424', margin: 0 }}>📁 Documenten</p>
-            <Link href="/platform/documenten" style={{ fontSize: 12, color: '#ff520e', textDecoration: 'none' }}>Alles →</Link>
+            <Link href="/platform/documenten" style={{ fontSize: 12, color: '#2563eb', textDecoration: 'none' }}>Alles →</Link>
           </div>
           {recentDocs.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '20px 0', color: '#9ca3af' }}>
               <p style={{ fontSize: 13 }}>Nog geen documenten</p>
-              <Link href="/platform/documenten" style={{ fontSize: 12, color: '#ff520e' }}>Upload eerste →</Link>
+              <Link href="/platform/documenten" style={{ fontSize: 12, color: '#2563eb' }}>Upload eerste →</Link>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -211,12 +211,12 @@ export default function PlatformHome() {
         <div className="smsc-card" style={{ margin: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <p style={{ fontSize: 13, fontWeight: 600, color: '#242424', margin: 0 }}>💬 Activiteit</p>
-            <Link href="/platform/berichten" style={{ fontSize: 12, color: '#ff520e', textDecoration: 'none' }}>Alles →</Link>
+            <Link href="/platform/berichten" style={{ fontSize: 12, color: '#2563eb', textDecoration: 'none' }}>Alles →</Link>
           </div>
           {recentPosts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '20px 0', color: '#9ca3af' }}>
               <p style={{ fontSize: 13 }}>Nog geen activiteit</p>
-              <Link href="/platform/berichten" style={{ fontSize: 12, color: '#ff520e' }}>Ga naar berichten →</Link>
+              <Link href="/platform/berichten" style={{ fontSize: 12, color: '#2563eb' }}>Ga naar berichten →</Link>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

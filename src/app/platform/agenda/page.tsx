@@ -226,11 +226,11 @@ function AgendaInner() {
           {/* View toggle */}
           <div style={{ display: 'flex', border: '1px solid #e8e8e8', borderRadius: 8, overflow: 'hidden' }}>
             <button onClick={() => setView('week')}
-              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', background: view === 'week' ? '#ff520e' : '#fff', color: view === 'week' ? '#fff' : '#5b5b5b' }}>
+              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', background: view === 'week' ? '#2563eb' : '#fff', color: view === 'week' ? '#fff' : '#5b5b5b' }}>
               Week
             </button>
             <button onClick={() => setView('month')}
-              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', borderLeft: '1px solid #e8e8e8', background: view === 'month' ? '#ff520e' : '#fff', color: view === 'month' ? '#fff' : '#5b5b5b' }}>
+              style={{ padding: '5px 14px', fontSize: 13, fontWeight: 500, cursor: 'pointer', border: 'none', borderLeft: '1px solid #e8e8e8', background: view === 'month' ? '#2563eb' : '#fff', color: view === 'month' ? '#fff' : '#5b5b5b' }}>
               Maand
             </button>
           </div>
@@ -270,10 +270,10 @@ function AgendaInner() {
                 const dayEvents = eventsForDay(d)
                 const isToday = ds === today
                 return (
-                  <div key={ds} style={{ borderRadius: 10, border: `2px solid ${isToday ? '#ff520e' : '#e5e7eb'}`, minHeight: 120, padding: 8, background: isToday ? '#fff7ed' : '#fff' }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? '#ff520e' : '#6b7280', marginBottom: 6 }}>
+                  <div key={ds} style={{ borderRadius: 10, border: `2px solid ${isToday ? '#2563eb' : '#e5e7eb'}`, minHeight: 120, padding: 8, background: isToday ? '#eff6ff' : '#fff' }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: isToday ? '#2563eb' : '#6b7280', marginBottom: 6 }}>
                       <div>{d.toLocaleDateString('nl-BE', { weekday: 'short' })}</div>
-                      <div style={{ fontSize: 18, lineHeight: 1, color: isToday ? '#ff520e' : '#111827' }}>{d.getDate()}</div>
+                      <div style={{ fontSize: 18, lineHeight: 1, color: isToday ? '#2563eb' : '#111827' }}>{d.getDate()}</div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       {dayEvents.map((e) => (
@@ -323,15 +323,15 @@ function AgendaInner() {
                   <div key={ds} style={{
                     minHeight: 80, padding: 6,
                     borderRight: '1px solid #f4f4f4', borderBottom: '1px solid #f4f4f4',
-                    background: isToday ? '#fff3ef' : '#fff',
+                    background: isToday ? '#eff6ff' : '#fff',
                   }}>
                     <div style={{
                       fontSize: 13, fontWeight: isToday ? 700 : 400,
-                      color: isToday ? '#ff520e' : isCurrentMonth ? '#242424' : '#c0c0c0',
+                      color: isToday ? '#2563eb' : isCurrentMonth ? '#242424' : '#c0c0c0',
                       marginBottom: 4,
                     }}>
                       {isToday ? (
-                        <span style={{ background: '#ff520e', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>
+                        <span style={{ background: '#2563eb', color: '#fff', borderRadius: '50%', width: 22, height: 22, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>
                           {d.getDate()}
                         </span>
                       ) : d.getDate()}
