@@ -62,6 +62,10 @@ body.sidebar-collapsed .app-content { margin-left: 72px; }
   .app-sidebar { display: none; }
   .app-content { margin-left: 0; padding: 12px 8px; }
   .app-topbar  { grid-template-columns: 1fr auto; }
+
+  /* Platform home: stapel feed + sidebar vertikaal */
+  .platform-home-grid { flex-direction: column !important; }
+  .platform-home-sidebar { width: 100% !important; }
 }
 
 /* Full-bleed (chat pagina) */

@@ -86,7 +86,7 @@ export default function PlatformHome() {
   const examDays = nextExam ? daysUntil(nextExam.start_at) : null
 
   return (
-    <div style={{
+    <div className="platform-home-grid" style={{
       display: 'flex', gap: 26, maxWidth: 1120, margin: '0 auto',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       alignItems: 'flex-start',
@@ -95,7 +95,7 @@ export default function PlatformHome() {
       {/* ══════════════════════════════════════════════════════
           FEED — midden (exact Facebook)
       ══════════════════════════════════════════════════════ */}
-      <div style={{ flex: 1, minWidth: 0, maxWidth: 590 }}>
+      <div style={{ flex: 1, minWidth: 0, maxWidth: 590, width: '100%' }}>
 
         {/* ── Create Post box — EXACT Facebook ── */}
         <div style={{ background: '#fff', borderRadius: 8, boxShadow: '0 1px 2px rgba(0,0,0,.1)', marginBottom: 16, padding: '12px 16px' }}>
@@ -268,7 +268,7 @@ export default function PlatformHome() {
       {/* ══════════════════════════════════════════════════════
           RECHTERKOLOM — widgets (exact Facebook)
       ══════════════════════════════════════════════════════ */}
-      <div style={{ width: 360, flexShrink: 0 }}>
+      <div className="platform-home-sidebar" style={{ width: 360, flexShrink: 0 }}>
 
         {/* ── Shortcuts (Facebook "Shortcuts" widget) ── */}
         <div style={{ marginBottom: 20 }}>
