@@ -144,6 +144,7 @@ export default function AppSidebar() {
             {isSuperAdmin && (
               <NavItem href="/platform/admin/gebruikers" icon="users" label="Gebruikers" />
             )}
+            <NavItem href="/platform/admin/feedback" icon="chat" label="Feedback" />
           </>
         )}
       </nav>

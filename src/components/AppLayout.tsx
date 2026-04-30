@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import AppTopbar from './AppTopbar'
 import AppSidebar from './AppSidebar'
+import FeedbackButton from './FeedbackButton'
 
 const BOTTOM_ITEMS = [
   { href: '/platform',            icon: '🏠', label: 'Home',    exact: true },
@@ -40,6 +41,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <main className="app-content">
         {children}
       </main>
+      <FeedbackButton />
       <MobileBottomNav />
     </div>
   )
