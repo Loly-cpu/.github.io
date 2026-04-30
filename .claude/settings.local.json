@@ -32,7 +32,9 @@
       "Bash(sed -i 's/import Navigation from .@\\\\/components\\\\/Navigation.//g' src/app/placement/\\\\[language\\\\]/page.tsx)",
       "Bash(sed -n '48,72p' src/app/placement/\\\\[language\\\\]/page.tsx)",
       "Bash(sed -n '128,145p' src/app/placement/\\\\[language\\\\]/page.tsx)",
-      "Bash(grep -n \"Navigation\\\\|<>\\\\s*$\" src/app/placement/\\\\[language\\\\]/page.tsx)"
+      "Bash(grep -n \"Navigation\\\\|<>\\\\s*$\" src/app/placement/\\\\[language\\\\]/page.tsx)",
+      "Bash(ls src/components/ui)",
+      "Bash(cat src/lib/utils.ts)"
     ]
   }
 }

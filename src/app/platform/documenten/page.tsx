@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useDeleteConfirm } from '@/components/DeleteConfirm'
 
 interface Doc {
   id: string; title: string; description?: string; subject?: string
@@ -42,6 +43,7 @@ export default function DocumentenPage() {
   const [uploading, setUploading]   = useState(false)
   const [uploadErr, setUploadErr]   = useState('')
   const [toast, setToast]       = useState<string|null>(null)
+  const deleteConfirm           = useDeleteConfirm()
   const [privateCount, setPrivateCount] = useState(0)
   const [form, setForm] = useState({ title: '', description: '', subject: 'Overig', is_private: false })
   const fileRef = useRef<HTMLInputElement>(null)
@@ -55,15 +57,29 @@ export default function DocumentenPage() {
   }, [])
 
   async function loadDocs(uid: string | null) {
+    // Gebruik geen join — haal docs apart op om RLS-join-problemen te vermijden
     const { data, error } = await supabase
       .from('documents')
-      .select('*, profiles(display_name)')
+      .select('id, title, description, subject, file_url, file_name, file_size, downloads, created_at, is_private, user_id')
       .order('created_at', { ascending: false })
-    if (error) console.error('Documenten laden:', error)
-    if (data) {
-      setDocs(data as Doc[])
-      if (uid) setPrivateCount(data.filter(d => d.is_private && d.user_id === uid).length)
+    if (error) { console.error('Docs error:', error.message); return }
+    if (!data) return
+
+    // Haal display_names op voor uploaders
+    const uids = [...new Set(data.map(d => d.user_id).filter(Boolean))]
+    let nameMap: Record<string, string> = {}
+    if (uids.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles').select('id, display_name').in('id', uids)
+      if (profiles) profiles.forEach(p => { nameMap[p.id] = p.display_name })
     }
+
+    const enriched = data.map(d => ({
+      ...d,
+      profiles: { display_name: nameMap[d.user_id] ?? 'Anoniem' },
+    }))
+    setDocs(enriched as Doc[])
+    if (uid) setPrivateCount(enriched.filter(d => d.is_private && d.user_id === uid).length)
   }
 
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500) }
@@ -106,12 +122,16 @@ export default function DocumentenPage() {
     window.open(doc.file_url, '_blank')
   }
 
-  async function deleteDoc(id: string) {
-    const { error } = await supabase.from('documents').delete().eq('id', id)
-    if (!error) {
-      setDocs(prev => prev.filter(d => d.id !== id))
-      showToast('Verwijderd')
-    }
+  function deleteDoc(id: string, title: string) {
+    deleteConfirm({
+      title: `"${title}" verwijderen?`,
+      body: 'Het bestand wordt permanent verwijderd.',
+      prefKey: 'document',
+      onConfirm: async () => {
+        const { error } = await supabase.from('documents').delete().eq('id', id)
+        if (!error) { setDocs(prev => prev.filter(d => d.id !== id)); showToast('Verwijderd') }
+      },
+    })
   }
 
   const publicDocs  = docs.filter(d => !d.is_private)
@@ -208,7 +228,7 @@ export default function DocumentenPage() {
                   ↓
                 </button>
                 {userId === doc.user_id && (
-                  <button onClick={() => deleteDoc(doc.id)}
+                  <button onClick={() => deleteDoc(doc.id, doc.title)}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#d1d5db' }}
                     onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
                     onMouseLeave={e => (e.currentTarget.style.color = '#d1d5db')}>

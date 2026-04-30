@@ -21,10 +21,14 @@ export default function RegisterPage() {
     if (password !== confirm) { setError('De wachtwoorden komen niet overeen.'); return }
     if (password.length < 8)  { setError('Wachtwoord moet minstens 8 tekens bevatten.'); return }
     setLoading(true)
+    const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://examen.atlasleads.be'
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: name || email.split('@')[0] } },
+      options: {
+        data: { display_name: name || email.split('@')[0] },
+        emailRedirectTo: `${siteUrl}/platform`,
+      },
     })
     setLoading(false)
     if (signUpError) {

@@ -32,7 +32,10 @@ function formatDate(iso: string) {
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })
 }
-function isoDate(d: Date) { return d.toISOString().split('T')[0] }
+// Gebruik lokale datum (niet UTC) om timezone-bugs te vermijden
+function isoDate(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+}
 
 function getWeekDays(base: Date): Date[] {
   const monday = new Date(base)
@@ -208,7 +211,7 @@ function AgendaInner() {
 
   function eventsForDay(d: Date) {
     const ds = isoDate(d)
-    return events.filter((e) => e.start_at.startsWith(ds))
+    return events.filter((e) => isoDate(new Date(e.start_at)) === ds)
   }
 
   const monthGrid = getMonthGrid(month)

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import AppTopbar from './AppTopbar'
 import AppSidebar from './AppSidebar'
 import FeedbackButton from './FeedbackButton'
+import { DeleteConfirmProvider } from './DeleteConfirm'
 
 // ── Limelight bottom nav ───────────────────────────────────────────────────────
 const BOTTOM_ITEMS = [
@@ -156,6 +157,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </main>
       <FeedbackButton />
       <SpotifyButton />
+      <DeleteConfirmProvider />
       <MobileBottomNav />
     </div>
   )

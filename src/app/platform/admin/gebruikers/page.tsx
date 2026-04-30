@@ -105,75 +105,40 @@ export default function GebruikersBeheerPage() {
         ))}
       </div>
 
-      {/* Gebruikerslijst */}
-      <div className="smsc-card" style={{ padding: 0, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: '#fafafa', borderBottom: '1px solid #e8e8e8' }}>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, color: '#5b5b5b', fontSize: 12 }}>Naam</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 600, color: '#5b5b5b', fontSize: 12 }}>Rol</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 600, color: '#5b5b5b', fontSize: 12 }}>Admin</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 600, color: '#5b5b5b', fontSize: 12 }}>Geblokkeerd</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 && (
-              <tr><td colSpan={4} style={{ padding: 32, textAlign: 'center', color: '#9ca3af' }}>Geen gebruikers gevonden</td></tr>
-            )}
-            {filtered.map((p, i) => (
-              <tr key={p.id} style={{ borderBottom: i < filtered.length - 1 ? '1px solid #f4f4f4' : 'none', background: p.is_blocked ? '#fef2f2' : 'transparent' }}>
-                <td style={{ padding: '12px 16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{
-                      width: 32, height: 32, borderRadius: '50%',
-                      background: p.is_superadmin ? '#9333ea' : p.is_admin ? '#16a34a' : '#ff520e',
-                      color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 13, fontWeight: 700, flexShrink: 0,
-                    }}>
-                      {(p.display_name ?? '?')[0].toUpperCase()}
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: 500, color: '#242424' }}>{p.display_name ?? 'Onbekend'}</p>
-                      {p.email && <p style={{ margin: 0, fontSize: 11, color: '#9ca3af' }}>{p.email}</p>}
-                    </div>
-                  </div>
-                </td>
-                <td style={{ padding: '12px 16px' }}><RoleBadge p={p} /></td>
-                <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                  {!p.is_superadmin && (
-                    <button
-                      onClick={() => updateProfile(p.id, { is_admin: !p.is_admin })}
-                      disabled={saving === p.id}
-                      style={{
-                        background: p.is_admin ? '#dcfce7' : '#f4f4f4',
-                        color: p.is_admin ? '#15803d' : '#5b5b5b',
-                        border: 'none', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                        opacity: saving === p.id ? 0.5 : 1,
-                      }}>
-                      {p.is_admin ? 'Admin ✓' : 'Maak admin'}
-                    </button>
-                  )}
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                  {!p.is_superadmin && (
-                    <button
-                      onClick={() => updateProfile(p.id, { is_blocked: !p.is_blocked })}
-                      disabled={saving === p.id}
-                      style={{
-                        background: p.is_blocked ? '#fee2e2' : '#f4f4f4',
-                        color: p.is_blocked ? '#dc2626' : '#5b5b5b',
-                        border: 'none', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                        opacity: saving === p.id ? 0.5 : 1,
-                      }}>
-                      {p.is_blocked ? 'Geblokkeerd ✓' : 'Blokkeer'}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Gebruikerslijst — kaarten (werkt op mobiel) */}
+      {filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 40, color: '#9ca3af', fontSize: 13 }}>Geen gebruikers gevonden</div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {filtered.map((p) => (
+            <div key={p.id} style={{ background: p.is_blocked ? '#fef2f2' : '#fff', border: `1px solid ${p.is_blocked ? '#fecaca' : '#e5e7eb'}`, borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+              {/* Avatar */}
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: p.is_superadmin ? '#9333ea' : p.is_admin ? '#16a34a' : '#ff520e', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>
+                {(p.display_name ?? '?')[0].toUpperCase()}
+              </div>
+              {/* Info */}
+              <div style={{ flex: 1, minWidth: 120 }}>
+                <p style={{ margin: 0, fontWeight: 600, color: '#111827', fontSize: 14 }}>{p.display_name ?? 'Onbekend'}</p>
+                {p.email && <p style={{ margin: '1px 0 4px', fontSize: 12, color: '#9ca3af' }}>{p.email}</p>}
+                <RoleBadge p={p} />
+              </div>
+              {/* Acties */}
+              {!p.is_superadmin && (
+                <div style={{ display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>
+                  <button onClick={() => updateProfile(p.id, { is_admin: !p.is_admin })} disabled={saving === p.id}
+                    style={{ background: p.is_admin ? '#dcfce7' : '#f3f4f6', color: p.is_admin ? '#15803d' : '#374151', border: 'none', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: saving === p.id ? 0.5 : 1 }}>
+                    {p.is_admin ? '✓ Admin' : 'Admin maken'}
+                  </button>
+                  <button onClick={() => updateProfile(p.id, { is_blocked: !p.is_blocked })} disabled={saving === p.id}
+                    style={{ background: p.is_blocked ? '#fee2e2' : '#f3f4f6', color: p.is_blocked ? '#dc2626' : '#374151', border: 'none', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', opacity: saving === p.id ? 0.5 : 1 }}>
+                    {p.is_blocked ? '✓ Geblokkeerd' : 'Blokkeer'}
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Toast */}
       {toast && (
