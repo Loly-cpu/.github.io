@@ -162,11 +162,10 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   )
 
   return (
-    <div style={{
-      minHeight: '100vh',
+    <div className="page-fullbleed" style={{
+      minHeight: 'calc(100vh - 48px)',
       background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)',
       display: 'flex', flexDirection: 'column',
-      paddingBottom: 0,
     }}>
       {/* Header */}
       <div style={{
