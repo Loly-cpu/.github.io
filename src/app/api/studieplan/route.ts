@@ -56,15 +56,40 @@ Regels:
 
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
+      max_tokens: 8000,
       messages: [{ role: 'user', content: prompt }],
     })
 
     const raw = message.content[0].type === 'text' ? message.content[0].text : ''
-    const jsonMatch = raw.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) return NextResponse.json({ error: 'AI gaf geen geldig plan terug' }, { status: 500 })
 
-    const plan = JSON.parse(jsonMatch[0])
+    // Extract JSON — find the outermost { ... } block
+    const start = raw.indexOf('{')
+    const end   = raw.lastIndexOf('}')
+    if (start === -1 || end === -1) {
+      return NextResponse.json({ error: 'AI gaf geen geldig plan terug' }, { status: 500 })
+    }
+
+    let jsonStr = raw.slice(start, end + 1)
+
+    // If truncated (max_tokens hit), try to repair by closing open arrays/objects
+    try {
+      JSON.parse(jsonStr)
+    } catch {
+      // Count unclosed brackets and close them
+      let opens = 0
+      let closeChar = ''
+      const stack: string[] = []
+      for (const ch of jsonStr) {
+        if (ch === '{') stack.push('}')
+        else if (ch === '[') stack.push(']')
+        else if (ch === '}' || ch === ']') stack.pop()
+      }
+      // Remove trailing incomplete item (ends with comma or partial string)
+      jsonStr = jsonStr.replace(/,\s*$/, '').replace(/,\s*[^,{[\]}"]*$/, '')
+      jsonStr += stack.reverse().join('')
+    }
+
+    const plan = JSON.parse(jsonStr)
     return NextResponse.json(plan)
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)

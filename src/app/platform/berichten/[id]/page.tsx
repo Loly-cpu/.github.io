@@ -50,6 +50,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   const [replyTo, setReplyTo]   = useState<string | null>(null)
   const [replyText, setReplyText] = useState('')
   const [posting, setPosting]   = useState(false)
+  const [undoToast, setUndoToast] = useState<{ id: string; type: 'post'|'reply'; postId?: string; timer: ReturnType<typeof setTimeout> } | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -101,19 +102,40 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
   }
 
   async function deletePost(postId: string) {
-    const { error } = await supabase.from('group_posts').delete().eq('id', postId)
-    if (!error) setPosts((prev) => prev.filter((p) => p.id !== postId))
+    // Soft delete
+    await supabase.from('group_posts').update({ deleted_at: new Date().toISOString() }).eq('id', postId)
+    setPosts((prev) => prev.filter((p) => p.id !== postId))
+    // Undo toast
+    if (undoToast) clearTimeout(undoToast.timer)
+    const timer = setTimeout(async () => {
+      // After 12h hard-delete via the cron, nothing to do here
+      setUndoToast(null)
+    }, 8000)
+    setUndoToast({ id: postId, type: 'post', timer })
+  }
+
+  async function undoDelete() {
+    if (!undoToast) return
+    clearTimeout(undoToast.timer)
+    if (undoToast.type === 'post') {
+      await supabase.from('group_posts').update({ deleted_at: null }).eq('id', undoToast.id)
+    } else {
+      await supabase.from('group_post_replies').update({ deleted_at: null }).eq('id', undoToast.id)
+    }
+    setUndoToast(null)
+    await loadPosts()
   }
 
   async function deleteReply(replyId: string, postId: string) {
-    const { error } = await supabase.from('group_post_replies').delete().eq('id', replyId)
-    if (!error) {
-      setPosts((prev) => prev.map((p) =>
-        p.id === postId
-          ? { ...p, group_post_replies: p.group_post_replies?.filter((r) => r.id !== replyId) }
-          : p
-      ))
-    }
+    await supabase.from('group_post_replies').update({ deleted_at: new Date().toISOString() }).eq('id', replyId)
+    setPosts((prev) => prev.map((p) =>
+      p.id === postId
+        ? { ...p, group_post_replies: p.group_post_replies?.filter((r) => r.id !== replyId) }
+        : p
+    ))
+    if (undoToast) clearTimeout(undoToast.timer)
+    const timer = setTimeout(() => setUndoToast(null), 8000)
+    setUndoToast({ id: replyId, type: 'reply', postId, timer })
   }
 
   if (!group) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-[#ff520e] border-t-transparent rounded-full animate-spin" /></div>
@@ -245,6 +267,17 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
       </div>
 
       {/* New post */}
+      {/* Undo toast */}
+      {undoToast && (
+        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#242424', color: '#fff', borderRadius: 10, padding: '10px 16px', fontSize: 13, fontWeight: 500, zIndex: 200, boxShadow: '0 4px 16px rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap' }}>
+          <span>Verwijderd — herstelbaar tot 12u</span>
+          <button onClick={undoDelete}
+            style={{ background: '#ff520e', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+            Ongedaan maken
+          </button>
+        </div>
+      )}
+
       {userId ? (
         <div style={{ position: 'sticky', bottom: 16, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10, padding: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.10)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
