@@ -9,13 +9,18 @@ import { loadPlacementResult } from '@/lib/placement'
 import type { Language, Level, TopicProgress } from '@/lib/types'
 import type { PlacementResult } from '@/lib/placement'
 
+const FB = '#1877F2'
 
 const TOPIC_COUNTS: Partial<Record<string, number>> = {
-  'fr-a0': 6,
-  'fr-a1': 8,
-  'fr-a2': 6,
-  'en-a1': 4,
-  'en-a2': 6,
+  'fr-a0': 6, 'fr-a1': 8, 'fr-a2': 6, 'en-a1': 4, 'en-a2': 6,
+}
+
+const LANG_COLOR: Record<string, string> = {
+  fr: '#003189', en: '#012169',
+}
+const LANG_BG: Record<string, string> = {
+  fr: 'linear-gradient(135deg, #002395 0%, #ED2939 100%)',
+  en: 'linear-gradient(135deg, #012169 0%, #C8102E 100%)',
 }
 
 export default function DashboardPage() {
@@ -28,124 +33,130 @@ export default function DashboardPage() {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) { router.replace('/auth/login'); return }
       const uid = data.session.user.id
-      try {
-        const p = await getProgress(uid)
-        setProgress(p)
-      } catch { /* no progress yet */ }
-
+      try { const p = await getProgress(uid); setProgress(p) } catch { /* no progress yet */ }
       const langs = Object.keys(AVAILABLE_LEVELS) as Language[]
       const results: Partial<Record<Language, PlacementResult>> = {}
-      for (const lang of langs) {
-        const r = loadPlacementResult(lang)
-        if (r) results[lang] = r
-      }
+      for (const lang of langs) { const r = loadPlacementResult(lang); if (r) results[lang] = r }
       setPlacements(results)
       setLoading(false)
     })
   }, [router])
 
   function completedCount(lang: Language, level: Level) {
-    return progress.filter((p) => p.language === lang && p.level === level && p.completed).length
+    return progress.filter(p => p.language === lang && p.level === level && p.completed).length
   }
-
   function progressPct(lang: Language, level: Level) {
     const done = completedCount(lang, level)
     const total = TOPIC_COUNTS[`${lang}-${level}`] ?? 0
     return total > 0 ? Math.round((done / total) * 100) : 0
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
+  if (loading) return (
+    <div className="page-fullbleed" style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
+      <div style={{ width: 32, height: 32, border: `4px solid ${FB}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    </div>
+  )
 
   return (
-    <div className="page-fullbleed">
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-10">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welkom terug!</h1>
-          <p className="text-gray-500">Kies een taal en niveau om te beginnen of verder te gaan.</p>
+    <div style={{ maxWidth: 900, margin: '0 auto', fontFamily: 'var(--fb-font)' }}>
+
+      {/* Page header — FB Groups style */}
+      <div className="fb-card" style={{ marginBottom: 16, overflow: 'hidden' }}>
+        <div style={{ height: 120, background: 'linear-gradient(135deg, #1877F2 0%, #42A5F5 100%)' }} />
+        <div style={{ padding: '0 20px 16px', display: 'flex', alignItems: 'flex-end', gap: 16, marginTop: -32 }}>
+          <div style={{ width: 80, height: 80, borderRadius: 8, background: '#fff', border: '4px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, boxShadow: '0 2px 8px rgba(0,0,0,.15)', flexShrink: 0 }}>🌐</div>
+          <div style={{ flex: 1, paddingBottom: 4 }}>
+            <h1 style={{ margin: '0 0 4px', fontSize: 22, fontWeight: 800, color: '#1C1E21' }}>Taalplatform</h1>
+            <p style={{ margin: 0, fontSize: 14, color: '#65676B' }}>Oefen Frans en Engels op jouw niveau · CEV Examenvoorbereiding</p>
+          </div>
         </div>
+      </div>
 
-        {(Object.keys(AVAILABLE_LEVELS) as Language[]).map((lang) => {
-          const placement = placements[lang]
-          const recommendedLevel = placement?.recommendedLevel
+      {/* Languages */}
+      {(Object.keys(AVAILABLE_LEVELS) as Language[]).map((lang) => {
+        const placement = placements[lang]
+        const recommendedLevel = placement?.recommendedLevel
 
-          return (
-            <section key={lang}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold">
-                  {LANGUAGE_FLAGS[lang]} {LANGUAGE_LABELS[lang]}
-                </h2>
-                <Link
-                  href={`/placement/${lang}`}
-                  className="text-sm text-primary-600 hover:underline font-medium"
-                >
-                  {placement ? 'Test opnieuw' : '🎯 Doe de plaatsingstest'}
+        return (
+          <div key={lang} style={{ marginBottom: 24 }}>
+            {/* Language header — FB group cover style */}
+            <div className="fb-card" style={{ overflow: 'hidden', marginBottom: 12 }}>
+              <div style={{ height: 80, background: LANG_BG[lang] ?? 'linear-gradient(135deg, #1877F2, #42A5F5)', display: 'flex', alignItems: 'center', padding: '0 20px', gap: 12 }}>
+                <span style={{ fontSize: 36 }}>{LANGUAGE_FLAGS[lang]}</span>
+                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: '#fff', textShadow: '0 1px 4px rgba(0,0,0,.3)' }}>{LANGUAGE_LABELS[lang]}</h2>
+              </div>
+              <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <p style={{ margin: 0, fontSize: 14, color: '#65676B' }}>
+                  {placement ? `Niveau: ${placement.recommendedLevel?.toUpperCase()}` : 'Nog geen plaatsingstest gedaan'}
+                </p>
+                <Link href={`/placement/${lang}`}
+                  style={{ background: '#E4E6EB', color: '#1C1E21', borderRadius: 6, padding: '7px 14px', fontSize: 14, fontWeight: 700, textDecoration: 'none', transition: 'background .12s' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#D8DADF')}
+                  onMouseLeave={e => (e.currentTarget.style.background = '#E4E6EB')}>
+                  {placement ? 'Test opnieuw' : '🎯 Plaatsingstest'}
                 </Link>
               </div>
+            </div>
 
-              {!placement && (
-                <Link
-                  href={`/placement/${lang}`}
-                  className="block mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 hover:bg-amber-100 transition-colors"
-                >
-                  <span className="font-semibold">Weet je niet waar te beginnen?</span> Doe de gratis plaatsingstest en ontdek welk niveau het beste bij jou past — in 10 vragen. →
-                </Link>
-              )}
+            {!placement && (
+              <Link href={`/placement/${lang}`}
+                style={{ display: 'block', marginBottom: 12, background: '#FFF3CD', border: '1px solid #FFD54F', borderRadius: 8, padding: '12px 16px', textDecoration: 'none' }}>
+                <p style={{ margin: 0, fontSize: 14, color: '#795548', fontWeight: 600 }}>
+                  💡 Weet je niet waar te beginnen? Doe de gratis plaatsingstest in 10 vragen →
+                </p>
+              </Link>
+            )}
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                {AVAILABLE_LEVELS[lang].map((level) => {
-                  const done = completedCount(lang, level)
-                  const pct = progressPct(lang, level)
-                  const isRecommended = level === recommendedLevel
+            {/* Level cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+              {AVAILABLE_LEVELS[lang].map((level) => {
+                const done = completedCount(lang, level)
+                const total = TOPIC_COUNTS[`${lang}-${level}`] ?? 0
+                const pct = progressPct(lang, level)
+                const isRecommended = level === recommendedLevel
 
-                  return (
-                    <Link
-                      key={level}
-                      href={`/learn/${lang}/${level}`}
-                      className={`card hover:shadow-md transition-shadow group flex flex-col gap-3 relative ${
-                        isRecommended ? 'border-2 border-primary-400' : ''
-                      }`}
-                    >
+                return (
+                  <Link key={level} href={`/learn/${lang}/${level}`} style={{ textDecoration: 'none' }}>
+                    <div className="fb-card" style={{
+                      margin: 0, overflow: 'hidden', cursor: 'pointer', transition: 'box-shadow .15s',
+                      border: isRecommended ? `2px solid ${FB}` : '2px solid transparent',
+                    }}
+                      onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,.15)')}
+                      onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 1px 2px rgba(0,0,0,.1)')}>
+
                       {isRecommended && (
-                        <div className="absolute -top-2.5 left-4 bg-primary-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                          Aanbevolen voor jou
+                        <div style={{ background: FB, color: '#fff', fontSize: 12, fontWeight: 700, padding: '5px 12px', textAlign: 'center' }}>
+                          ⭐ Aanbevolen voor jou
                         </div>
                       )}
-                      <div className="flex items-start justify-between">
-                        <span className="tag-level">
-                          {level.toUpperCase().replace('BPLUS', 'B+')}
-                        </span>
-                        {done > 0 && (
-                          <span className="text-green-600 text-sm font-medium">{done} afgerond</span>
-                        )}
+
+                      <div style={{ padding: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                          <span style={{ background: LANG_COLOR[lang] ?? FB, color: '#fff', borderRadius: 4, padding: '2px 8px', fontSize: 12, fontWeight: 800, letterSpacing: '0.05em' }}>
+                            {level.toUpperCase().replace('BPLUS', 'B+')}
+                          </span>
+                          {done > 0 && <span style={{ fontSize: 13, color: '#22c55e', fontWeight: 600 }}>✓ {done}/{total}</span>}
+                        </div>
+
+                        <p style={{ margin: '0 0 10px', fontSize: 16, fontWeight: 700, color: '#1C1E21' }}>{LEVEL_LABELS[level]}</p>
+
+                        <div style={{ height: 6, background: '#E4E6EB', borderRadius: 6, overflow: 'hidden', marginBottom: 10 }}>
+                          <div style={{ height: '100%', width: `${pct}%`, background: FB, borderRadius: 6, transition: 'width .4s ease' }} />
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: 13, color: '#65676B' }}>{pct}% voltooid</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: FB }}>{done > 0 ? 'Verdergaan →' : 'Starten →'}</span>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900 group-hover:text-primary-700 transition-colors">
-                          {LEVEL_LABELS[level]}
-                        </h3>
-                      </div>
-                      <div className="h-1.5 bg-warm-gray rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-primary-500 rounded-full transition-all"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="text-primary-600 font-medium text-sm group-hover:underline">
-                        {done > 0 ? `Verder leren — ${pct}% →` : 'Beginnen →'}
-                      </span>
-                    </Link>
-                  )
-                })}
-              </div>
-            </section>
-          )
-        })}
-      </main>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

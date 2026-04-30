@@ -3,39 +3,30 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
-interface Notification {
-  id: string; title: string; content: string; type: string; created_at: string
-}
+interface Notification { id: string; title: string; content: string; type: string; created_at: string }
 
-const TYPE_STYLE: Record<string, { border: string; bg: string }> = {
-  info:    { border: '#60a5fa', bg: '#eff6ff' },
-  warning: { border: '#f59e0b', bg: '#fffbeb' },
-  update:  { border: '#22c55e', bg: '#f0fdf4' },
-  event:   { border: '#a855f7', bg: '#faf5ff' },
-}
-const TYPE_ICON: Record<string, string> = {
-  info: '💡', warning: '⚠️', update: '✅', event: '📅',
-}
+const FB = '#1877F2'
+const TYPE_ICON: Record<string, string>  = { info: '💡', warning: '⚠️', update: '✅', event: '📅' }
+const TYPE_COLOR: Record<string, string> = { info: FB, warning: '#F59E0B', update: '#22C55E', event: '#8B5CF6' }
 
 function timeAgo(iso: string): string {
   const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000)
-  if (m < 1)    return 'zojuist'
-  if (m < 60)   return `${m}m geleden`
-  if (m < 1440) return `${Math.floor(m / 60)}u geleden`
-  if (m < 10080) return `${Math.floor(m / 1440)}d geleden`
-  return new Date(iso).toLocaleDateString('nl-BE', { day: 'numeric', month: 'short' })
+  if (m < 1) return 'zojuist'; if (m < 60) return `${m} minuten geleden`
+  if (m < 1440) return `${Math.floor(m/60)} uur geleden`
+  if (m < 10080) return `${Math.floor(m/1440)} dag${Math.floor(m/1440) !== 1 ? 'en' : ''} geleden`
+  return new Date(iso).toLocaleDateString('nl-BE', { day: 'numeric', month: 'long' })
 }
 
 export default function MeldingenPage() {
-  const [notifs, setNotifs]   = useState<Notification[]>([])
-  const [userId, setUserId]   = useState<string | null>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [notifs, setNotifs]     = useState<Notification[]>([])
+  const [userId, setUserId]     = useState<string | null>(null)
+  const [isAdmin, setIsAdmin]   = useState(false)
   const [showCreate, setShowCreate] = useState(false)
-  const [form, setForm]       = useState({ title: '', content: '', type: 'info' })
-  const [posting, setPosting] = useState(false)
-  const [readIds, setReadIds] = useState<Set<string>>(new Set())
-  const [filter, setFilter]   = useState<'all' | 'unread'>('unread')
-  const [toast, setToast]     = useState<string | null>(null)
+  const [form, setForm]         = useState({ title: '', content: '', type: 'info' })
+  const [posting, setPosting]   = useState(false)
+  const [readIds, setReadIds]   = useState<Set<string>>(new Set())
+  const [filter, setFilter]     = useState<'all' | 'unread'>('unread')
+  const [toast, setToast]       = useState<string | null>(null)
   const [delConfirm, setDelConfirm] = useState<string | null>(null)
 
   useEffect(() => {
@@ -56,23 +47,18 @@ export default function MeldingenPage() {
     const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending: false })
     if (data) setNotifs(data)
   }
-
   async function markRead(id: string) {
     if (!userId || readIds.has(id)) return
     await supabase.from('notification_reads').upsert({ notification_id: id, user_id: userId })
     setReadIds(prev => new Set([...prev, id]))
   }
-
   async function markAllRead() {
     if (!userId) return
     const unread = notifs.filter(n => !readIds.has(n.id))
-    await Promise.all(unread.map(n =>
-      supabase.from('notification_reads').upsert({ notification_id: n.id, user_id: userId })
-    ))
+    await Promise.all(unread.map(n => supabase.from('notification_reads').upsert({ notification_id: n.id, user_id: userId })))
     setReadIds(prev => new Set([...prev, ...unread.map(n => n.id)]))
-    showToast('Alles gelezen')
+    showToastMsg('Alles als gelezen gemarkeerd')
   }
-
   async function createNotif() {
     if (!userId || !form.title || !form.content) return
     setPosting(true)
@@ -81,173 +67,159 @@ export default function MeldingenPage() {
     setShowCreate(false)
     await loadNotifs()
     setPosting(false)
-    showToast('Melding verzonden')
+    showToastMsg('Melding verzonden')
   }
-
   async function deleteNotif(id: string) {
     await supabase.from('notifications').delete().eq('id', id)
     setNotifs(prev => prev.filter(n => n.id !== id))
     setDelConfirm(null)
-    showToast('Melding verwijderd')
+    showToastMsg('Melding verwijderd')
   }
-
-  function showToast(msg: string) {
-    setToast(msg)
-    setTimeout(() => setToast(null), 2500)
-  }
+  function showToastMsg(msg: string) { setToast(msg); setTimeout(() => setToast(null), 2500) }
 
   const unreadCount = notifs.filter(n => !readIds.has(n.id)).length
   const displayed   = filter === 'unread' ? notifs.filter(n => !readIds.has(n.id)) : notifs
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
+    <div style={{ maxWidth: 700, margin: '0 auto', fontFamily: 'var(--fb-font)' }}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 18, fontWeight: 700, color: '#242424', margin: 0 }}>🔔 Meldingen</h1>
-          <p style={{ fontSize: 13, color: '#5b5b5b', margin: '3px 0 0' }}>
-            {unreadCount > 0 ? `${unreadCount} ongelezen` : 'Alles gelezen'}
-          </p>
+      {/* Header — FB Notifications style */}
+      <div className="fb-card" style={{ padding: '16px 20px', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#1C1E21' }}>Meldingen</h1>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {unreadCount > 0 && (
+              <button onClick={markAllRead}
+                style={{ background: '#E4E6EB', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: 14, fontWeight: 700, cursor: 'pointer', color: '#1C1E21', transition: 'background .12s' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#D8DADF')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#E4E6EB')}>
+                Alles gelezen
+              </button>
+            )}
+            {isAdmin && (
+              <button onClick={() => setShowCreate(true)}
+                style={{ background: FB, color: '#fff', border: 'none', borderRadius: 6, padding: '8px 14px', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'background .12s' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#166FE5')}
+                onMouseLeave={e => (e.currentTarget.style.background = FB)}>
+                + Melding
+              </button>
+            )}
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {unreadCount > 0 && (
-            <button onClick={markAllRead}
-              style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 500, cursor: 'pointer', color: '#5b5b5b' }}>
-              Alles gelezen
+
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 4 }}>
+          {([['unread', 'Ongelezen'], ['all', 'Alle meldingen']] as const).map(([key, label]) => (
+            <button key={key} onClick={() => setFilter(key)}
+              style={{
+                padding: '8px 16px', borderRadius: 20, border: 'none', cursor: 'pointer',
+                fontWeight: 700, fontSize: 14, transition: 'background .12s',
+                background: filter === key ? FB : 'transparent',
+                color: filter === key ? '#fff' : '#65676B',
+              }}>
+              {label}{key === 'unread' && unreadCount > 0 ? ` (${unreadCount})` : ''}
             </button>
-          )}
-          {isAdmin && (
-            <button onClick={() => setShowCreate(true)}
-              style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-              + Melding
-            </button>
-          )}
+          ))}
         </div>
       </div>
 
-      {/* Filter */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        {([['unread', 'Ongelezen'], ['all', 'Alle']] as const).map(([key, label]) => (
-          <button key={key} onClick={() => setFilter(key)}
-            style={{
-              fontSize: 12, padding: '5px 14px', borderRadius: 20, fontWeight: 500, cursor: 'pointer', border: 'none',
-              background: filter === key ? '#2563eb' : '#fff',
-              color: filter === key ? '#fff' : '#5b5b5b',
-              boxShadow: filter === key ? 'none' : '0 1px 3px rgba(0,0,0,0.08)',
-            }}>
-            {label}{key === 'unread' && unreadCount > 0 ? ` (${unreadCount})` : ''}
-          </button>
-        ))}
-      </div>
-
-      {/* Notifications */}
+      {/* Empty state */}
       {displayed.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '64px 0', color: '#9ca3af' }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
-          <p style={{ fontWeight: 600, fontSize: 15, margin: '0 0 4px' }}>
+        <div className="fb-card" style={{ padding: '48px 20px', textAlign: 'center' }}>
+          <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#E4E6EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, margin: '0 auto 16px' }}>
+            {filter === 'unread' ? '🎉' : '🔔'}
+          </div>
+          <p style={{ fontWeight: 800, fontSize: 18, color: '#1C1E21', margin: '0 0 8px' }}>
             {filter === 'unread' ? 'Alles gelezen!' : 'Geen meldingen'}
           </p>
           {filter === 'unread' && (
-            <button onClick={() => setFilter('all')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
+            <button onClick={() => setFilter('all')} style={{ background: 'none', border: 'none', color: FB, cursor: 'pointer', fontSize: 15, fontWeight: 700 }}>
               Alle meldingen bekijken →
             </button>
           )}
         </div>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {displayed.map((n) => {
+      {/* Notifications — FB style rows */}
+      <div className="fb-card" style={{ overflow: 'hidden', padding: '4px 0' }}>
+        {displayed.map(n => {
           const read  = readIds.has(n.id)
-          const style = TYPE_STYLE[n.type] ?? { border: '#9ca3af', bg: '#fff' }
+          const color = TYPE_COLOR[n.type] ?? '#65676B'
           return (
-            <div key={n.id}
-              onClick={() => markRead(n.id)}
+            <div key={n.id} onClick={() => markRead(n.id)}
               style={{
-                borderLeft: `4px solid ${style.border}`,
-                background: read ? '#fafafa' : style.bg,
-                borderRadius: '0 10px 10px 0',
-                padding: '14px 16px',
-                cursor: read ? 'default' : 'pointer',
-                opacity: read ? 0.75 : 1,
-                transition: 'opacity 0.2s',
-              }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flex: 1 }}>
-                  <span style={{ fontSize: 18, flexShrink: 0 }}>{TYPE_ICON[n.type] ?? '🔔'}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 3 }}>
-                      <p style={{ fontWeight: 600, color: '#242424', fontSize: 14, margin: 0 }}>{n.title}</p>
-                      {!read && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#2563eb', flexShrink: 0, display: 'inline-block' }} />}
-                    </div>
-                    <p style={{ fontSize: 13, color: '#374151', margin: '0 0 6px', whiteSpace: 'pre-wrap' }}>{n.content}</p>
-                    <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{timeAgo(n.created_at)}</p>
-                  </div>
-                </div>
-                {isAdmin && (
-                  <button onClick={(e) => { e.stopPropagation(); setDelConfirm(n.id) }}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d1d5db', fontSize: 16, flexShrink: 0, padding: 0 }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#d1d5db')}
-                  >🗑</button>
-                )}
+                display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 16px',
+                background: read ? 'transparent' : '#E7F3FF', cursor: read ? 'default' : 'pointer',
+                transition: 'background .12s', borderRadius: 0,
+              }}
+              onMouseEnter={e => { if (!read) e.currentTarget.style.background = '#D0E8FF'; else e.currentTarget.style.background = '#F0F2F5' }}
+              onMouseLeave={e => { e.currentTarget.style.background = read ? 'transparent' : '#E7F3FF' }}>
+
+              {/* Icon circle */}
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: color + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0, position: 'relative' }}>
+                {TYPE_ICON[n.type] ?? '🔔'}
+                {!read && <div style={{ position: 'absolute', bottom: 2, right: 2, width: 12, height: 12, borderRadius: '50%', background: FB, border: '2px solid #fff' }} />}
               </div>
+
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ margin: '0 0 2px', fontSize: 15, color: '#1C1E21', lineHeight: 1.4 }}>
+                  <strong>{n.title}</strong> — {n.content}
+                </p>
+                <p style={{ margin: 0, fontSize: 13, color: read ? '#65676B' : FB, fontWeight: read ? 400 : 700 }}>
+                  {timeAgo(n.created_at)}
+                </p>
+              </div>
+
+              {isAdmin && (
+                <button onClick={e => { e.stopPropagation(); setDelConfirm(n.id) }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#CED0D4', fontSize: 20, padding: '0 4px', flexShrink: 0, borderRadius: 6, transition: 'color .12s, background .12s' }}
+                  onMouseEnter={e => { e.currentTarget.style.color = '#E41E3F'; e.currentTarget.style.background = '#FFF0F0' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = '#CED0D4'; e.currentTarget.style.background = 'transparent' }}>
+                  ×
+                </button>
+              )}
             </div>
           )
         })}
       </div>
 
-      {/* Delete confirm modal */}
+      {/* Delete confirm */}
       {delConfirm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 360, width: '100%', textAlign: 'center' }}>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#242424', marginBottom: 8 }}>Melding verwijderen?</p>
-            <p style={{ fontSize: 13, color: '#5b5b5b', marginBottom: 20 }}>Dit kan niet ongedaan worden gemaakt.</p>
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-              <button onClick={() => setDelConfirm(null)}
-                style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, cursor: 'pointer', fontWeight: 500, color: '#5b5b5b' }}>
-                Annuleren
-              </button>
-              <button onClick={() => deleteNotif(delConfirm)}
-                style={{ background: '#ef4444', border: 'none', borderRadius: 8, padding: '8px 20px', fontSize: 13, cursor: 'pointer', fontWeight: 600, color: '#fff' }}>
-                Verwijderen
-              </button>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 380, width: '100%', boxShadow: '0 8px 32px rgba(0,0,0,.2)' }}>
+            <p style={{ fontSize: 18, fontWeight: 800, color: '#1C1E21', margin: '0 0 8px' }}>Melding verwijderen?</p>
+            <p style={{ fontSize: 15, color: '#65676B', margin: '0 0 20px' }}>Dit kan niet ongedaan worden gemaakt.</p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setDelConfirm(null)} style={{ flex: 1, background: '#E4E6EB', border: 'none', borderRadius: 8, padding: '10px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>Annuleren</button>
+              <button onClick={() => deleteNotif(delConfirm)} style={{ flex: 1, background: '#E41E3F', border: 'none', borderRadius: 8, padding: '10px', fontSize: 15, fontWeight: 700, color: '#fff', cursor: 'pointer' }}>Verwijderen</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Create notification modal */}
+      {/* Create modal */}
       {showCreate && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 440, width: '100%' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: 24, maxWidth: 460, width: '100%', boxShadow: '0 8px 32px rgba(0,0,0,.2)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#242424', margin: 0 }}>Nieuwe melding</p>
-              <button onClick={() => setShowCreate(false)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#9ca3af' }}>×</button>
+              <p style={{ fontSize: 18, fontWeight: 800, color: '#1C1E21', margin: 0 }}>Nieuwe melding</p>
+              <button onClick={() => setShowCreate(false)} style={{ background: '#E4E6EB', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <select style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
-                value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+              <select className="fb-input-box" style={{ borderRadius: 8 }} value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
                 <option value="info">💡 Info</option>
                 <option value="update">✅ Update</option>
                 <option value="warning">⚠️ Waarschuwing</option>
                 <option value="event">📅 Evenement</option>
               </select>
-              <input style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13 }}
-                placeholder="Titel*" value={form.title}
-                onChange={e => setForm({ ...form, title: e.target.value })} />
-              <textarea style={{ border: '1px solid #e8e8e8', borderRadius: 8, padding: '8px 12px', fontSize: 13, resize: 'none', height: 96 }}
-                placeholder="Inhoud*" value={form.content}
-                onChange={e => setForm({ ...form, content: e.target.value })} />
+              <input className="fb-input-box" style={{ borderRadius: 8 }} placeholder="Titel*" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+              <textarea className="fb-input-box" style={{ borderRadius: 8, resize: 'none', height: 96 }} placeholder="Inhoud*" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
             </div>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
-              <button onClick={() => setShowCreate(false)}
-                style={{ background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 500, color: '#5b5b5b' }}>
-                Annuleren
-              </button>
+            <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+              <button onClick={() => setShowCreate(false)} style={{ flex: 1, background: '#E4E6EB', border: 'none', borderRadius: 8, padding: '10px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>Annuleren</button>
               <button onClick={createNotif} disabled={posting || !form.title || !form.content}
-                style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (posting || !form.title || !form.content) ? 0.5 : 1 }}>
-                {posting ? 'Versturen...' : 'Versturen'}
+                style={{ flex: 1, background: FB, color: '#fff', border: 'none', borderRadius: 8, padding: '10px', fontSize: 15, fontWeight: 700, cursor: 'pointer', opacity: (posting || !form.title || !form.content) ? 0.5 : 1 }}>
+                {posting ? 'Versturen…' : 'Versturen'}
               </button>
             </div>
           </div>
@@ -256,7 +228,7 @@ export default function MeldingenPage() {
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: 24, right: 24, background: '#242424', color: '#fff', borderRadius: 8, padding: '10px 18px', fontSize: 13, fontWeight: 500, zIndex: 100, boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}>
+        <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', background: '#1C1E21', color: '#fff', borderRadius: 8, padding: '12px 20px', fontSize: 14, fontWeight: 600, zIndex: 100, boxShadow: '0 4px 16px rgba(0,0,0,.3)', whiteSpace: 'nowrap' }}>
           ✓ {toast}
         </div>
       )}
