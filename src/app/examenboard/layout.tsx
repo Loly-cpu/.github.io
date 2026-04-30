@@ -1,11 +1,8 @@
 import { ReactNode } from 'react'
-import PlatformNav from '@/components/PlatformNav'
+import AppLayout from '@/components/AppLayout'
+
+export const metadata = { title: 'Examenboard' }
 
 export default function ExamenboardLayout({ children }: { children: ReactNode }) {
-  return (
-    <div style={{ minHeight: '100vh', background: '#f4f4f4' }}>
-      <PlatformNav />
-      <div>{children}</div>
-    </div>
-  )
+  return <AppLayout>{children}</AppLayout>
 }

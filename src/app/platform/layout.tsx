@@ -1,15 +1,8 @@
 import { ReactNode } from 'react'
-import PlatformNav from '@/components/PlatformNav'
+import AppLayout from '@/components/AppLayout'
 
-export const metadata = { title: 'Leerplatform' }
+export const metadata = { title: 'Schoolplatform' }
 
 export default function PlatformLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="smsc-layout">
-      <PlatformNav />
-      <div className="smsc-content">
-        {children}
-      </div>
-    </div>
-  )
+  return <AppLayout>{children}</AppLayout>
 }

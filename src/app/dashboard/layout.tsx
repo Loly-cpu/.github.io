@@ -1,11 +1,8 @@
 import { ReactNode } from 'react'
-import PlatformNav from '@/components/PlatformNav'
+import AppLayout from '@/components/AppLayout'
+
+export const metadata = { title: 'Taalplatform' }
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
-      <PlatformNav />
-      <div>{children}</div>
-    </div>
-  )
+  return <AppLayout>{children}</AppLayout>
 }
