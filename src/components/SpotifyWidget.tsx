@@ -44,6 +44,7 @@ export default function SpotifyWidget() {
   const [inputUser, setInputUser]   = useState('')
   const [saving, setSaving]         = useState(false)
   const [userId, setUserId]         = useState<string | null>(null)
+  const [spotifyConnected, setSpotifyConnected] = useState(false)
   const apiKey = process.env.NEXT_PUBLIC_LASTFM_API_KEY ?? ''
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -52,7 +53,8 @@ export default function SpotifyWidget() {
       if (!data.session) return
       const uid = data.session.user.id
       setUserId(uid)
-      const { data: token } = await supabase.from('spotify_tokens').select('display_name').eq('user_id', uid).maybeSingle()
+      const { data: token } = await supabase.from('spotify_tokens').select('display_name, refresh_token').eq('user_id', uid).maybeSingle()
+      if (token?.refresh_token && token.refresh_token !== '') setSpotifyConnected(true)
       const stored = token?.display_name ?? localStorage.getItem('lastfm_username')
       if (stored) {
         setLastfmUser(stored)
@@ -67,6 +69,22 @@ export default function SpotifyWidget() {
     intervalRef.current = setInterval(() => fetchLastfm(lastfmUser, apiKey).then(setNp), 15000)
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [lastfmUser, apiKey])
+
+  async function control(action: 'play' | 'pause' | 'next' | 'previous') {
+    if (!userId) return
+    if (!spotifyConnected) {
+      // Fallback: open Spotify in new tab
+      window.open('https://open.spotify.com', '_blank')
+      return
+    }
+    await fetch('/api/spotify/control', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, action }),
+    })
+    // Ververs na korte pauze
+    setTimeout(() => { if (lastfmUser) fetchLastfm(lastfmUser, apiKey).then(setNp) }, 800)
+  }
 
   async function saveUsername() {
     if (!inputUser.trim()) return
@@ -214,12 +232,12 @@ export default function SpotifyWidget() {
                 }} />
               </div>
 
-              {/* Controls — open in Spotify */}
+              {/* Controls */}
               <div style={{ display: 'flex', justifyContent: 'center', gap: 16, alignItems: 'center' }}>
                 {[
-                  { icon: <SkipBackIcon size={20} />, label: 'Vorige', onClick: () => {} },
-                  { icon: isPlaying ? <PauseIcon size={28} /> : <PlayIcon size={28} />, label: 'Spelen', onClick: () => np?.track_url && window.open(np.track_url, '_blank'), primary: true },
-                  { icon: <SkipForwardIcon size={20} />, label: 'Volgende', onClick: () => {} },
+                  { icon: <SkipBackIcon size={20} />, label: 'Vorige', onClick: () => control('previous') },
+                  { icon: isPlaying ? <PauseIcon size={28} /> : <PlayIcon size={28} />, label: 'Spelen', onClick: () => isPlaying ? control('pause') : control('play'), primary: true },
+                  { icon: <SkipForwardIcon size={20} />, label: 'Volgende', onClick: () => control('next') },
                 ].map(({ icon, label, onClick, primary }) => (
                   <button key={label} onClick={onClick} title={label}
                     style={{
@@ -241,10 +259,18 @@ export default function SpotifyWidget() {
                 ))}
               </div>
 
-              <button onClick={() => { setLastfmUser(null); localStorage.removeItem('lastfm_username') }}
-                style={{ display: 'block', margin: '16px auto 0', background: 'none', border: 'none', color: '#9ca3af', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
-                Ander account
-              </button>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 16, flexWrap: 'wrap' }}>
+                {!spotifyConnected && (
+                  <button onClick={() => userId && (window.location.href = `/api/auth/spotify?user_id=${userId}`)}
+                    style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
+                    Spotify koppelen voor bediening
+                  </button>
+                )}
+                <button onClick={() => { setLastfmUser(null); localStorage.removeItem('lastfm_username') }}
+                  style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
+                  Ander account
+                </button>
+              </div>
             </div>
           )}
         </div>
