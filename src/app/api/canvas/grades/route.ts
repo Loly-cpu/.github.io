@@ -11,11 +11,17 @@ function getSupabaseAdmin() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function cf(path: string, base: string, token: string): Promise<any> {
   const res = await fetch(`${base}${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}`, 'Accept': 'application/json' },
     next: { revalidate: 300 },
+    signal: AbortSignal.timeout(15000),
   })
-  if (!res.ok) throw new Error(`Canvas ${res.status}`)
-  return res.json()
+  if (!res.ok) {
+    const body = await res.text().catch(() => '')
+    throw new Error(`Canvas ${res.status}${body ? ': ' + body.slice(0, 120) : ''}`)
+  }
+  const text = await res.text()
+  if (!text.trim()) throw new Error('Lege Canvas-respons')
+  return JSON.parse(text)
 }
 
 export async function GET(req: Request) {

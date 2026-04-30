@@ -136,7 +136,12 @@ export default function CijfersPage() {
     supabase.auth.getSession().then(async ({ data }) => {
       const uid = data.session?.user?.id ?? ''
       fetch(`/api/canvas/grades?user_id=${uid}`)
-        .then(r => r.json())
+        .then(async r => {
+          const text = await r.text()
+          if (!text.trim()) throw new Error('Lege reactie van server — probeer de pagina te herladen.')
+          try { return JSON.parse(text) }
+          catch { throw new Error(`Server gaf ongeldige data (status ${r.status}). Controleer je Canvas-token in Profiel.`) }
+        })
         .then(d => {
           if (d.error) { setError(d.error); return }
           setCourses(d.courses ?? [])
@@ -144,7 +149,7 @@ export default function CijfersPage() {
           for (const c of d.courses ?? []) firstOpen[c.id] = true
           setOpenCourses(firstOpen)
         })
-        .catch(e => setError(e.message))
+        .catch(e => setError(e instanceof Error ? e.message : String(e)))
         .finally(() => setLoading(false))
     })
   }, [])
