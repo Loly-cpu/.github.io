@@ -92,7 +92,7 @@ export default function SpotifyWidget() {
         onClick={() => { setOpen(o => !o); if (lastfmUser) fetchLastfm(lastfmUser).then(setNp) }}
         title="Muziek"
         style={{
-          position: 'fixed', bottom: 80, right: 20, zIndex: 80,
+          position: 'fixed', bottom: 72, right: 20, zIndex: 80,
           width: 42, height: 42, borderRadius: '50%',
           background: isPlaying ? '#1DB954' : '#1a1a1a',
           border: 'none', cursor: 'pointer',
@@ -108,7 +108,7 @@ export default function SpotifyWidget() {
 
       {open && (
         <div style={{
-          position: 'fixed', bottom: 132, right: 20, zIndex: 81,
+          position: 'fixed', bottom: 124, right: 20, zIndex: 81,
           background: '#121212', borderRadius: 16, padding: 16, width: 280,
           boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)',
           color: '#fff',

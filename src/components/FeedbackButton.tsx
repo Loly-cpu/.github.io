@@ -38,7 +38,7 @@ export default function FeedbackButton() {
         onClick={() => setOpen(true)}
         title="Geef feedback"
         style={{
-          position: 'fixed', bottom: 72, right: 16, zIndex: 90,
+          position: 'fixed', bottom: 20, right: 72, zIndex: 90,
           width: 42, height: 42, borderRadius: '50%',
           background: '#fff', border: '1px solid #e8e8e8',
           boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
