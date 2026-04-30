@@ -103,11 +103,15 @@ export default function AppSidebar() {
 
   return (
     <aside className="app-sidebar">
-      {/* Logo header */}
-      <div style={{
+      {/* Logo — always links back to /platform */}
+      <Link href="/platform" style={{
         height: 48, display: 'flex', alignItems: 'center', padding: '0 16px',
-        borderBottom: '1px solid #f4f4f4', flexShrink: 0,
-      }}>
+        borderBottom: '1px solid #f4f4f4', flexShrink: 0, textDecoration: 'none',
+        transition: 'background 0.1s',
+      }}
+        onMouseEnter={e => (e.currentTarget.style.background = '#fff3ef')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+      >
         <div style={{
           width: 28, height: 28, borderRadius: 8, background: '#ff520e',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -116,7 +120,7 @@ export default function AppSidebar() {
         <span style={{ marginLeft: 10, fontWeight: 700, fontSize: 14, color: '#242424' }}>
           Schoolplatform
         </span>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav style={{ padding: '8px 0', overflowY: 'auto', flex: 1 }}>

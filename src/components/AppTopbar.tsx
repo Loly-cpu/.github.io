@@ -10,6 +10,36 @@ interface SearchResult {
   id: string; title: string; sub?: string; href: string
 }
 
+function ModuleBreadcrumb() {
+  const path = usePathname()
+  let module: { icon: string; label: string } | null = null
+  if (path.startsWith('/examenboard'))                              module = { icon: '🎓', label: 'Examenboard' }
+  else if (path.startsWith('/dashboard') || path.startsWith('/learn') || path.startsWith('/placement')) module = { icon: '🌐', label: 'Taalplatform' }
+
+  if (!module) return null
+  return (
+    <div className="hidden md:flex" style={{ alignItems: 'center', gap: 6, padding: '0 8px', flexShrink: 0 }}>
+      <Link href="/platform" style={{
+        display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none',
+        color: '#5b5b5b', fontSize: 12, fontWeight: 500, padding: '4px 8px', borderRadius: 6,
+        transition: 'background 0.1s',
+      }}
+        onMouseEnter={e => (e.currentTarget.style.background = '#f4f4f4')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        Platform
+      </Link>
+      <span style={{ color: '#d1d5db', fontSize: 12 }}>/</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: '#242424' }}>
+        {module.icon} {module.label}
+      </span>
+    </div>
+  )
+}
+
 export default function AppTopbar() {
   const router = useRouter()
   const [name, setName]       = useState('')
@@ -97,11 +127,14 @@ export default function AppTopbar() {
         </svg>
       </button>
 
-      {/* Mobile logo (visible only on mobile since sidebar has it on desktop) */}
+      {/* Mobile logo */}
       <Link href="/platform" className="md:hidden" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
         <div style={{ width: 24, height: 24, borderRadius: 6, background: '#ff520e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
-        <span style={{ fontWeight: 700, fontSize: 13, color: '#242424' }}>Schoolplatform</span>
+        <span style={{ fontWeight: 700, fontSize: 13, color: '#242424' }}>Platform</span>
       </Link>
+
+      {/* Desktop: module breadcrumb — shows when NOT on /platform */}
+      <ModuleBreadcrumb />
 
       <div style={{ flex: 1 }} />
 
