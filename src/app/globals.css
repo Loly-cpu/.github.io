@@ -30,19 +30,26 @@
   top: 48px; left: 0; bottom: 0;
   width: 220px;
   background: #fff;
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid #e5e7eb;
   z-index: 40;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.2s ease;
 }
+
+/* Collapsed state — set by AppSidebar on document.body */
+body.sidebar-collapsed .app-sidebar  { width: 60px; min-width: 60px; }
+body.sidebar-collapsed .app-content  { margin-left: 60px; }
 
 .app-content {
   margin-top: 48px;
   margin-left: 220px;
   min-height: calc(100vh - 48px);
-  background: #f4f4f4;
+  background: #f3f4f6;
   padding: 24px;
+  transition: margin-left 0.2s ease;
 }
 
 .app-bottom-nav {
