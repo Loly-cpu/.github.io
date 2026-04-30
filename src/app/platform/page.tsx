@@ -56,7 +56,7 @@ export default function PlatformHome() {
         supabase.from('events').select('*').eq('user_id', uid).eq('type', 'exam').gte('start_at', now).order('start_at').limit(1),
         supabase.from('events').select('*').eq('user_id', uid).gte('start_at', todayStart.toISOString()).lte('start_at', tomorrowEnd.toISOString()).order('start_at').limit(5),
         supabase.from('documents').select('id,title,subject,file_name,created_at').order('created_at', { ascending: false }).limit(4),
-        supabase.from('group_posts').select('id,content,created_at,group_id,profiles(display_name),groups(name,icon)').order('created_at', { ascending: false }).limit(4),
+        supabase.from('group_posts').select('id,content,created_at,group_id,profiles!group_posts_user_id_profiles_fkey(display_name),groups(name,icon)').order('created_at', { ascending: false }).limit(4),
         supabase.from('notifications').select('*', { count: 'exact', head: true }),
         supabase.from('notification_reads').select('*', { count: 'exact', head: true }).eq('user_id', uid),
       ])

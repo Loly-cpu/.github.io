@@ -129,7 +129,7 @@ export default function FormulierenPage() {
   async function loadAnswers(qId: string) {
     const { data } = await supabase
       .from('form_answers')
-      .select('*, profiles(display_name)')
+      .select('*, profiles!form_answers_user_id_profiles_fkey(display_name)')
       .eq('question_id', qId)
       .order('is_accepted', { ascending: false })
       .order('created_at', { ascending: true })

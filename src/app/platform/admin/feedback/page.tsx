@@ -31,7 +31,7 @@ export default function FeedbackAdminPage() {
       if (!data.session) { router.replace('/auth/login'); return }
       const { data: p } = await supabase.from('profiles').select('is_admin, is_superadmin').eq('id', data.session.user.id).single()
       if (!p?.is_admin && !p?.is_superadmin) { router.replace('/platform'); return }
-      const { data: fb } = await supabase.from('feedback').select('*, profiles(display_name)').order('created_at', { ascending: false })
+      const { data: fb } = await supabase.from('feedback').select('*, profiles!feedback_user_id_profiles_fkey(display_name)').order('created_at', { ascending: false })
       if (fb) setRows(fb as FeedbackRow[])
       setLoading(false)
     })
