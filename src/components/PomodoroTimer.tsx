@@ -41,6 +41,7 @@ export default function PomodoroTimer() {
   const [flash,    setFlash]    = useState(false)
   const [userId,   setUserId]   = useState<string | null>(null)
   const [synced,   setSynced]   = useState(false)
+  const [visible,  setVisible]  = useState(false)
 
   const audioCtx  = useRef<AudioContext | null>(null)
   const timerRef  = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -68,7 +69,8 @@ export default function PomodoroTimer() {
     supabase.auth.getSession().then(async ({ data }) => {
       const uid = data.session?.user?.id ?? null
       setUserId(uid)
-      if (!uid) { setSynced(true); return }
+      if (!uid) { setSynced(true); setVisible(false); return }
+      setVisible(true)
 
       const { data: session } = await supabase
         .from('pomodoro_sessions')
@@ -171,6 +173,8 @@ export default function PomodoroTimer() {
   const ss       = String(seconds % 60).padStart(2, '0')
   const { label, hex, bg } = MODES[mode]
   const cyclePos = workDone % SESSIONS_BEFORE_LONG
+
+  if (!visible) return null
 
   return (
     <>
