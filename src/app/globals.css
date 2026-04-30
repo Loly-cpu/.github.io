@@ -3,34 +3,34 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── App Shell (sidebar layout) ──────────────────────────────────────────── */
+/* ── App Shell — Facebook-stijl ──────────────────────────────────────────── */
 .app-shell {
-  font-family: 'Roboto', system-ui, sans-serif;
-  font-size: 14px;
-  color: #242424;
-  background: #f4f4f4;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  color: #1c1e21;
+  background: #f0f2f5;
   min-height: 100vh;
 }
 
 .app-topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 48px;
+  height: 56px;
   background: #fff;
-  border-bottom: 1px solid #e8e8e8;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.06);
   z-index: 50;
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  gap: 10px;
+  padding: 0 12px;
+  gap: 8px;
 }
 
 .app-sidebar {
   position: fixed;
-  top: 48px; left: 0; bottom: 0;
-  width: 220px;
+  top: 56px; left: 0; bottom: 0;
+  width: 280px;
   background: #fff;
-  border-right: 1px solid #e5e7eb;
+  box-shadow: 2px 0 4px rgba(0,0,0,.06);
   z-index: 40;
   display: flex;
   flex-direction: column;
@@ -39,15 +39,15 @@
   transition: width 0.2s ease;
 }
 
-/* Collapsed state — set by AppSidebar on document.body */
-body.sidebar-collapsed .app-sidebar  { width: 60px; min-width: 60px; }
-body.sidebar-collapsed .app-content  { margin-left: 60px; }
+/* Collapsed state */
+body.sidebar-collapsed .app-sidebar  { width: 68px; min-width: 68px; }
+body.sidebar-collapsed .app-content  { margin-left: 68px; }
 
 .app-content {
-  margin-top: 48px;
-  margin-left: 220px;
-  min-height: calc(100vh - 48px);
-  background: #f3f4f6;
+  margin-top: 56px;
+  margin-left: 280px;
+  min-height: calc(100vh - 56px);
+  background: #f0f2f5;
   padding: 24px;
   transition: margin-left 0.2s ease;
 }
@@ -58,14 +58,14 @@ body.sidebar-collapsed .app-content  { margin-left: 60px; }
   bottom: 0; left: 0; right: 0;
   height: 58px;
   background: #fff;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid #e4e6eb;
   z-index: 40;
   align-items: stretch;
 }
 
 @media (max-width: 767px) {
   .app-sidebar { display: none; }
-  .app-content { margin-left: 0; padding: 16px; }
+  .app-content { margin-left: 0; padding: 12px; }
 }
 
 /* Full-bleed pagina's (examenboard, dashboard, chat) */
@@ -234,8 +234,8 @@ body.sidebar-collapsed .app-content:has(.page-fullbleed) {
 
 .smsc-card {
   background: #fff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   padding: 20px;
   margin-bottom: 16px;
 }

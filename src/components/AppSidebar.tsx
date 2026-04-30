@@ -7,31 +7,49 @@ import { supabase } from '@/lib/supabase'
 import {
   HomeIcon, CalendarIcon, MessageCircleIcon, FolderIcon,
   ClipboardListIcon, LinkIcon, BellIcon, GraduationCapIcon,
-  GlobeIcon, UsersIcon, MessageSquareIcon, ChevronsRightIcon, BarChart2Icon,
+  GlobeIcon, UsersIcon, MessageSquareIcon, BarChart2Icon,
+  ChevronLeftIcon, ChevronRightIcon,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { href: '/platform',             Icon: HomeIcon,           label: 'Start',        exact: true },
-  { href: '/platform/agenda',      Icon: CalendarIcon,       label: 'Agenda' },
-  { href: '/platform/berichten',   Icon: MessageCircleIcon,  label: 'Berichten' },
-  { href: '/platform/cijfers',     Icon: BarChart2Icon,      label: 'Cijfers' },
-  { href: '/platform/documenten',  Icon: FolderIcon,         label: 'Documenten' },
-  { href: '/platform/formulieren', Icon: ClipboardListIcon,  label: 'Formulieren' },
-  { href: '/platform/links',       Icon: LinkIcon,           label: 'Links' },
-  { href: '/platform/meldingen',   Icon: BellIcon,           label: 'Meldingen', badge: true },
+  { href: '/platform',             Icon: HomeIcon,           label: 'Start',        exact: true, color: '#1877F2' },
+  { href: '/platform/agenda',      Icon: CalendarIcon,       label: 'Agenda',                    color: '#E4409E' },
+  { href: '/platform/berichten',   Icon: MessageCircleIcon,  label: 'Berichten',                 color: '#00B2FF' },
+  { href: '/platform/cijfers',     Icon: BarChart2Icon,      label: 'Cijfers',                   color: '#02B875' },
+  { href: '/platform/documenten',  Icon: FolderIcon,         label: 'Documenten',                color: '#F5C400' },
+  { href: '/platform/formulieren', Icon: ClipboardListIcon,  label: 'Formulieren',               color: '#FF7043' },
+  { href: '/platform/links',       Icon: LinkIcon,           label: 'Links',                     color: '#8B5CF6' },
+  { href: '/platform/meldingen',   Icon: BellIcon,           label: 'Meldingen', badge: true,    color: '#EF4444' },
 ]
 
 const MODULE_ITEMS = [
-  { href: '/examenboard', Icon: GraduationCapIcon, label: 'Examenboard' },
-  { href: '/dashboard',   Icon: GlobeIcon,         label: 'Taalplatform' },
+  { href: '/examenboard', Icon: GraduationCapIcon, label: 'Examenboard', color: '#1877F2' },
+  { href: '/dashboard',   Icon: GlobeIcon,         label: 'Taalplatform', color: '#02B875' },
 ]
+
+function NavIcon({ Icon, color, active, open }: { Icon: React.ElementType; color: string; active: boolean; open: boolean }) {
+  return (
+    <div style={{
+      width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+      background: active ? color : '#E4E6EB',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      transition: 'background 0.15s',
+      ...(open ? {} : { margin: '0 auto' }),
+    }}>
+      <Icon size={18} color={active ? '#fff' : '#65676B'} />
+    </div>
+  )
+}
 
 export default function AppSidebar() {
   const path    = usePathname()
-  const [open,        setOpen]        = useState(true)
-  const [unread,      setUnread]      = useState(0)
-  const [isAdmin,     setIsAdmin]     = useState(false)
-  const [isSuperAdmin,setIsSuperAdmin]= useState(false)
+  const [open,         setOpen]         = useState(true)
+  const [unread,       setUnread]       = useState(0)
+  const [isAdmin,      setIsAdmin]      = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [displayName,  setDisplayName]  = useState('')
+  const [initials,     setInitials]     = useState('?')
+  const [role,         setRole]         = useState('')
 
   useEffect(() => {
     const stored = localStorage.getItem('sidebar-collapsed')
@@ -47,9 +65,13 @@ export default function AppSidebar() {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) return
       const uid = data.session.user.id
-      const { data: p } = await supabase.from('profiles').select('is_admin, is_superadmin').eq('id', uid).single()
+      const { data: p } = await supabase.from('profiles').select('display_name, is_admin, is_superadmin').eq('id', uid).single()
       setIsAdmin(p?.is_admin ?? false)
       setIsSuperAdmin(p?.is_superadmin ?? false)
+      const n = p?.display_name ?? data.session.user.email?.split('@')[0] ?? '?'
+      setDisplayName(n)
+      setInitials(n[0]?.toUpperCase() ?? '?')
+      setRole(p?.is_superadmin ? 'Superadmin' : p?.is_admin ? 'Admin' : 'Leerling')
       const [{ count: total }, { count: read }] = await Promise.all([
         supabase.from('notifications').select('*', { count: 'exact', head: true }),
         supabase.from('notification_reads').select('*', { count: 'exact', head: true }).eq('user_id', uid),
@@ -62,150 +84,149 @@ export default function AppSidebar() {
     return exact ? path === href : path === href || path.startsWith(href + '/')
   }
 
-  return (
-    <aside className="app-sidebar" style={{ width: open ? 220 : 60, minWidth: open ? 220 : 60, transition: 'width 0.25s ease' }}>
+  const FB = '#1877F2'
 
-      {/* Logo */}
-      <div style={{ height: 48, display: 'flex', alignItems: 'center', borderBottom: '1px solid #f3f4f6', flexShrink: 0, overflow: 'hidden', paddingLeft: open ? 12 : 0, justifyContent: open ? 'flex-start' : 'center' }}>
-        <Link href="/platform" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flex: 1, height: '100%' }}
-          title={open ? undefined : 'Schoolplatform — Home'}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #1d4ed8, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0, boxShadow: '0 2px 8px rgba(37,99,235,0.3)' }}>S</div>
-          {open && <span style={{ fontWeight: 700, fontSize: 14, color: '#111827', whiteSpace: 'nowrap' }}>Schoolplatform</span>}
-        </Link>
-      </div>
+  return (
+    <aside className="app-sidebar" style={{ width: open ? 280 : 68, minWidth: open ? 280 : 68, transition: 'width 0.2s ease' }}>
+
+      {/* Profile header */}
+      {open ? (
+        <div style={{ padding: '12px 8px 8px', borderBottom: '1px solid #E4E6EB', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 8px', borderRadius: 8 }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: FB, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 16, flexShrink: 0 }}>
+              {initials}
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#1C1E21', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</p>
+              <p style={{ margin: 0, fontSize: 12, color: '#65676B' }}>{role}</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ padding: '12px 0 8px', borderBottom: '1px solid #E4E6EB', flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', background: FB, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 16 }}>
+            {initials}
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
-      <nav style={{ padding: '8px 6px', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+      <nav style={{ padding: '8px', flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
 
-        {/* Main nav */}
-        <div style={{ marginBottom: 4 }}>
-          {NAV_ITEMS.map(({ href, Icon, label, exact, badge }) => {
-            const active = isActive(href, exact)
-            const count  = badge ? unread : 0
-            return (
-              <Link key={href} href={href} title={open ? undefined : label}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: open ? 10 : 0,
-                  height: 40, padding: open ? '0 10px' : '0',
-                  justifyContent: open ? 'flex-start' : 'center',
-                  margin: '1px 0', borderRadius: 8, textDecoration: 'none',
-                  fontSize: 13, fontWeight: active ? 600 : 400,
-                  color: active ? '#2563eb' : '#4b5563',
-                  background: active ? '#eff6ff' : 'transparent',
-                  borderLeft: active ? '2px solid #2563eb' : '2px solid transparent',
-                  transition: 'all 0.15s',
-                  position: 'relative',
-                }}
-                onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#f9fafb' }}
-                onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent' }}>
-                <div style={{ width: open ? 18 : 40, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Icon size={16} />
-                </div>
-                {open && <span style={{ flex: 1 }}>{label}</span>}
-                {count > 0 && open && (
-                  <span style={{ background: '#ef4444', color: '#fff', borderRadius: 10, fontSize: 10, fontWeight: 700, padding: '1px 6px', minWidth: 18, textAlign: 'center' }}>
-                    {count > 9 ? '9+' : count}
-                  </span>
-                )}
-                {count > 0 && !open && (
-                  <span style={{ position: 'absolute', top: 6, right: 6, width: 7, height: 7, background: '#ef4444', borderRadius: '50%' }} />
-                )}
-              </Link>
-            )
-          })}
-        </div>
-
-        {/* Divider + modules */}
-        <div style={{ height: 1, background: '#f3f4f6', margin: '6px 4px 8px' }} />
-        {open && <div style={{ padding: '2px 10px 6px', fontSize: 10, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Modules</div>}
-        {MODULE_ITEMS.map(({ href, Icon, label }) => {
-          const active = isActive(href)
+        {NAV_ITEMS.map(({ href, Icon, label, exact, badge, color }) => {
+          const active = isActive(href, exact)
+          const count  = badge ? unread : 0
           return (
             <Link key={href} href={href} title={open ? undefined : label}
               style={{
-                display: 'flex', alignItems: 'center', gap: open ? 10 : 0,
-                height: 40, padding: open ? '0 10px' : '0',
+                display: 'flex', alignItems: 'center', gap: 12,
+                height: 52, padding: open ? '0 8px' : '0 4px',
                 justifyContent: open ? 'flex-start' : 'center',
-                margin: '1px 0', borderRadius: 8, textDecoration: 'none',
-                fontSize: 13, fontWeight: active ? 600 : 400,
-                color: active ? '#2563eb' : '#4b5563',
-                background: active ? '#eff6ff' : 'transparent',
-                borderLeft: active ? '2px solid #2563eb' : '2px solid transparent',
-                transition: 'all 0.15s',
+                margin: '2px 0', borderRadius: 8, textDecoration: 'none',
+                background: active ? '#E7F3FF' : 'transparent',
+                transition: 'background 0.12s',
+                position: 'relative',
               }}
-              onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#f9fafb' }}
+              onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#F0F2F5' }}
               onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent' }}>
-              <div style={{ width: open ? 18 : 40, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon size={16} />
-              </div>
-              {open && <span>{label}</span>}
+              <NavIcon Icon={Icon} color={color} active={active} open={open} />
+              {open && (
+                <span style={{ flex: 1, fontSize: 15, fontWeight: active ? 700 : 400, color: active ? FB : '#1C1E21', whiteSpace: 'nowrap' }}>
+                  {label}
+                </span>
+              )}
+              {count > 0 && open && (
+                <span style={{ background: '#E41E3F', color: '#fff', borderRadius: 12, fontSize: 11, fontWeight: 700, padding: '2px 7px', minWidth: 20, textAlign: 'center' }}>
+                  {count > 9 ? '9+' : count}
+                </span>
+              )}
+              {count > 0 && !open && (
+                <span style={{ position: 'absolute', top: 8, right: 8, width: 8, height: 8, background: '#E41E3F', borderRadius: '50%', border: '2px solid #fff' }} />
+              )}
             </Link>
           )
         })}
 
-        {/* Beheer (admin) */}
+        {/* Divider + Modules */}
+        <div style={{ height: 1, background: '#E4E6EB', margin: '8px 4px' }} />
+        {open && <p style={{ margin: '4px 8px 6px', fontSize: 12, fontWeight: 700, color: '#65676B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Modules</p>}
+
+        {MODULE_ITEMS.map(({ href, Icon, label, color }) => {
+          const active = isActive(href)
+          return (
+            <Link key={href} href={href} title={open ? undefined : label}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                height: 52, padding: open ? '0 8px' : '0 4px',
+                justifyContent: open ? 'flex-start' : 'center',
+                margin: '2px 0', borderRadius: 8, textDecoration: 'none',
+                background: active ? '#E7F3FF' : 'transparent',
+                transition: 'background 0.12s',
+              }}
+              onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#F0F2F5' }}
+              onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent' }}>
+              <NavIcon Icon={Icon} color={color} active={active} open={open} />
+              {open && <span style={{ fontSize: 15, fontWeight: active ? 700 : 400, color: active ? FB : '#1C1E21' }}>{label}</span>}
+            </Link>
+          )
+        })}
+
+        {/* Beheer */}
         {(isAdmin || isSuperAdmin) && (
           <>
-            <div style={{ height: 1, background: '#f3f4f6', margin: '6px 4px 8px' }} />
-            {open && <div style={{ padding: '2px 10px 6px', fontSize: 10, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Beheer</div>}
+            <div style={{ height: 1, background: '#E4E6EB', margin: '8px 4px' }} />
+            {open && <p style={{ margin: '4px 8px 6px', fontSize: 12, fontWeight: 700, color: '#65676B', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Beheer</p>}
             {isSuperAdmin && (
               <Link href="/platform/admin/gebruikers" title={open ? undefined : 'Gebruikers'}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: open ? 10 : 0,
-                  height: 40, padding: open ? '0 10px' : '0',
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  height: 52, padding: open ? '0 8px' : '0 4px',
                   justifyContent: open ? 'flex-start' : 'center',
-                  margin: '1px 0', borderRadius: 8, textDecoration: 'none',
-                  fontSize: 13, color: isActive('/platform/admin/gebruikers') ? '#2563eb' : '#4b5563',
-                  background: isActive('/platform/admin/gebruikers') ? '#eff6ff' : 'transparent',
-                  borderLeft: isActive('/platform/admin/gebruikers') ? '2px solid #2563eb' : '2px solid transparent',
-                  transition: 'all 0.15s',
+                  margin: '2px 0', borderRadius: 8, textDecoration: 'none',
+                  background: isActive('/platform/admin/gebruikers') ? '#E7F3FF' : 'transparent',
+                  transition: 'background 0.12s',
                 }}
-                onMouseEnter={e => { if (!isActive('/platform/admin/gebruikers')) e.currentTarget.style.background = '#f9fafb' }}
+                onMouseEnter={e => { if (!isActive('/platform/admin/gebruikers')) e.currentTarget.style.background = '#F0F2F5' }}
                 onMouseLeave={e => { if (!isActive('/platform/admin/gebruikers')) e.currentTarget.style.background = 'transparent' }}>
-                <div style={{ width: open ? 18 : 40, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <UsersIcon size={16} />
-                </div>
-                {open && <span>Gebruikers</span>}
+                <NavIcon Icon={UsersIcon} color="#8B5CF6" active={isActive('/platform/admin/gebruikers')} open={open} />
+                {open && <span style={{ fontSize: 15, fontWeight: isActive('/platform/admin/gebruikers') ? 700 : 400, color: isActive('/platform/admin/gebruikers') ? FB : '#1C1E21' }}>Gebruikers</span>}
               </Link>
             )}
             <Link href="/platform/admin/feedback" title={open ? undefined : 'Feedback'}
               style={{
-                display: 'flex', alignItems: 'center', gap: open ? 10 : 0,
-                height: 40, padding: open ? '0 10px' : '0',
+                display: 'flex', alignItems: 'center', gap: 12,
+                height: 52, padding: open ? '0 8px' : '0 4px',
                 justifyContent: open ? 'flex-start' : 'center',
-                margin: '1px 0', borderRadius: 8, textDecoration: 'none',
-                fontSize: 13, color: isActive('/platform/admin/feedback') ? '#2563eb' : '#4b5563',
-                background: isActive('/platform/admin/feedback') ? '#eff6ff' : 'transparent',
-                borderLeft: isActive('/platform/admin/feedback') ? '2px solid #2563eb' : '2px solid transparent',
-                transition: 'all 0.15s',
+                margin: '2px 0', borderRadius: 8, textDecoration: 'none',
+                background: isActive('/platform/admin/feedback') ? '#E7F3FF' : 'transparent',
+                transition: 'background 0.12s',
               }}
-              onMouseEnter={e => { if (!isActive('/platform/admin/feedback')) e.currentTarget.style.background = '#f9fafb' }}
+              onMouseEnter={e => { if (!isActive('/platform/admin/feedback')) e.currentTarget.style.background = '#F0F2F5' }}
               onMouseLeave={e => { if (!isActive('/platform/admin/feedback')) e.currentTarget.style.background = 'transparent' }}>
-              <div style={{ width: open ? 18 : 40, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <MessageSquareIcon size={16} />
-              </div>
-              {open && <span>Feedback</span>}
+              <NavIcon Icon={MessageSquareIcon} color="#E4409E" active={isActive('/platform/admin/feedback')} open={open} />
+              {open && <span style={{ fontSize: 15, fontWeight: isActive('/platform/admin/feedback') ? 700 : 400, color: isActive('/platform/admin/feedback') ? FB : '#1C1E21' }}>Feedback</span>}
             </Link>
           </>
         )}
       </nav>
 
-      {/* Toggle collapse */}
-      <button onClick={() => setOpen(o => !o)}
-        style={{
-          display: 'flex', alignItems: 'center', padding: '12px 8px',
-          borderTop: '1px solid #f3f4f6', width: '100%', background: 'none',
-          border: 'none', cursor: 'pointer', color: '#6b7280',
-          justifyContent: open ? 'flex-start' : 'center',
-          transition: 'background 0.15s',
-        }}
-        onMouseEnter={e => (e.currentTarget.style.background = '#f9fafb')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-        <div style={{ width: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <ChevronsRightIcon size={16} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.25s' }} />
-        </div>
-        {open && <span style={{ fontSize: 13, fontWeight: 500 }}>Inklappen</span>}
-      </button>
+      {/* Collapse toggle */}
+      <div style={{ borderTop: '1px solid #E4E6EB', padding: 8, flexShrink: 0 }}>
+        <button onClick={() => setOpen(o => !o)}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: open ? 'flex-start' : 'center',
+            gap: 12, width: '100%', padding: open ? '0 8px' : '0 4px',
+            height: 44, background: 'none', border: 'none', cursor: 'pointer',
+            borderRadius: 8, transition: 'background 0.12s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = '#F0F2F5')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#E4E6EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {open ? <ChevronLeftIcon size={18} color="#65676B" /> : <ChevronRightIcon size={18} color="#65676B" />}
+          </div>
+          {open && <span style={{ fontSize: 15, fontWeight: 400, color: '#1C1E21' }}>Inklappen</span>}
+        </button>
+      </div>
     </aside>
   )
 }

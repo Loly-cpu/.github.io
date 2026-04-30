@@ -4,52 +4,25 @@ import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { SearchIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
 
 interface SearchResult {
   type: 'bericht' | 'document' | 'event'
   id: string; title: string; sub?: string; href: string
 }
 
-function ModuleBreadcrumb() {
-  const path = usePathname()
-  let module: { icon: string; label: string } | null = null
-  if (path.startsWith('/examenboard'))                              module = { icon: '🎓', label: 'Examenboard' }
-  else if (path.startsWith('/dashboard') || path.startsWith('/learn') || path.startsWith('/placement')) module = { icon: '🌐', label: 'Taalplatform' }
-
-  if (!module) return null
-  return (
-    <div className="hidden md:flex" style={{ alignItems: 'center', gap: 6, padding: '0 8px', flexShrink: 0 }}>
-      <Link href="/platform" style={{
-        display: 'flex', alignItems: 'center', gap: 5, textDecoration: 'none',
-        color: '#5b5b5b', fontSize: 12, fontWeight: 500, padding: '4px 8px', borderRadius: 6,
-        transition: 'background 0.1s',
-      }}
-        onMouseEnter={e => (e.currentTarget.style.background = '#f4f4f4')}
-        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-      >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
-        Platform
-      </Link>
-      <span style={{ color: '#d1d5db', fontSize: 12 }}>/</span>
-      <span style={{ fontSize: 13, fontWeight: 600, color: '#242424' }}>
-        {module.icon} {module.label}
-      </span>
-    </div>
-  )
-}
+const FB = '#1877F2'
 
 export default function AppTopbar() {
   const router = useRouter()
-  const [name, setName]       = useState('')
-  const [initials, setInitials] = useState('?')
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [name, setName]           = useState('')
+  const [initials, setInitials]   = useState('?')
+  const [isAdmin, setIsAdmin]     = useState(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen]   = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [searchQ, setSearchQ]   = useState('')
+  const [searchQ, setSearchQ]     = useState('')
   const [searchRes, setSearchRes] = useState<SearchResult[]>([])
   const [searching, setSearching] = useState(false)
   const menuRef     = useRef<HTMLDivElement>(null)
@@ -70,6 +43,7 @@ export default function AppTopbar() {
       setIsAdmin(p?.is_admin ?? false)
       setIsSuperAdmin(p?.is_superadmin ?? false)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -98,7 +72,7 @@ export default function AppTopbar() {
     setSearchRes([
       ...(posts.data ?? []).map(p => ({ type: 'bericht' as const, id: p.id, title: String(p.content).slice(0,60)+'…', sub: 'Bericht', href: `/platform/berichten/${p.group_id}` })),
       ...(docs.data  ?? []).map(d => ({ type: 'document' as const, id: d.id, title: d.title, sub: d.subject ?? 'Document', href: '/platform/documenten' })),
-      ...(evts.data  ?? []).map(e => ({ type: 'event' as const,   id: String(e.id), title: e.title, sub: new Date(e.start_at).toLocaleDateString('nl-BE',{day:'numeric',month:'short'}), href: '/platform/agenda' })),
+      ...(evts.data  ?? []).map(e => ({ type: 'event' as const, id: String(e.id), title: e.title, sub: new Date(e.start_at).toLocaleDateString('nl-BE',{day:'numeric',month:'short'}), href: '/platform/agenda' })),
     ])
     setSearching(false)
   }, [])
@@ -113,175 +87,198 @@ export default function AppTopbar() {
     router.replace('/auth/login')
   }
 
-  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : '#2563eb'
+  const avatarBg = isSuperAdmin ? '#9333ea' : isAdmin ? '#16a34a' : FB
 
   return (
     <header className="app-topbar">
-      {/* Mobile: hamburger */}
-      <button
-        className="md:hidden"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', color: '#5b5b5b', flexShrink: 0 }}
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M3 12h18M3 6h18M3 18h18"/>
-        </svg>
-      </button>
 
-      {/* Mobile logo */}
-      <Link href="/platform" className="md:hidden" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
-        <div style={{ width: 24, height: 24, borderRadius: 6, background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
-        <span style={{ fontWeight: 700, fontSize: 13, color: '#242424' }}>Platform</span>
+      {/* Logo — Facebook-stijl blauwe cirkel met "S" */}
+      <Link href="/platform" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
+        <div style={{ width: 40, height: 40, borderRadius: '50%', background: FB, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <svg width="22" height="22" viewBox="0 0 50 39" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" />
+            <path d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z" />
+          </svg>
+        </div>
+        <span className="hidden md:block" style={{ fontWeight: 800, fontSize: 20, color: FB, letterSpacing: '-0.5px' }}>school</span>
       </Link>
 
-      {/* Desktop: module breadcrumb — shows when NOT on /platform */}
-      <ModuleBreadcrumb />
-
-      <div style={{ flex: 1 }} />
-
-      {/* Search */}
-      <div ref={searchRef} style={{ position: 'relative' }}>
+      {/* Zoekbalk — Facebook-stijl grijs afgerond */}
+      <div ref={searchRef} style={{ position: 'relative', flexShrink: 0 }}>
         <button onClick={() => setSearchOpen(!searchOpen)}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f4f4f4', border: 'none', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', color: '#5b5b5b', fontSize: 13 }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <span className="hidden md:inline">Zoeken…</span>
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: '#F0F2F5', border: 'none', borderRadius: 20,
+            padding: '8px 16px', cursor: 'pointer', color: '#65676B',
+            fontSize: 15, minWidth: 40,
+          }}>
+          <SearchIcon size={16} color="#65676B" />
+          <span className="hidden md:inline">Zoeken</span>
         </button>
 
         {searchOpen && (
-          <div style={{ position: 'absolute', top: '100%', right: 0, width: 340, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.14)', zIndex: 200, overflow: 'hidden', marginTop: 4 }}>
-            <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid #f4f4f4' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <div style={{ position: 'absolute', top: '100%', left: 0, width: 360, background: '#fff', borderRadius: 8, boxShadow: '0 8px 24px rgba(0,0,0,0.18)', zIndex: 200, overflow: 'hidden', marginTop: 6 }}>
+            <div style={{ padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #E4E6EB' }}>
+              <SearchIcon size={16} color="#65676B" />
               <input ref={searchInput}
-                style={{ flex: 1, border: 'none', outline: 'none', fontSize: 13, color: '#242424' }}
+                style={{ flex: 1, border: 'none', outline: 'none', fontSize: 15, color: '#1C1E21', background: 'transparent' }}
                 placeholder="Zoek berichten, documenten, agenda…"
                 value={searchQ}
                 onChange={e => setSearchQ(e.target.value)}
                 onKeyDown={e => e.key === 'Escape' && setSearchOpen(false)}
               />
-              {searching && <div style={{ width: 12, height: 12, border: '2px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', flexShrink: 0, animation: 'spin 0.6s linear infinite' }} />}
+              {searching && <div style={{ width: 14, height: 14, border: `2px solid ${FB}`, borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite', flexShrink: 0 }} />}
             </div>
             {searchRes.length > 0 ? (
-              <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+              <div style={{ maxHeight: 320, overflowY: 'auto' }}>
                 {searchRes.map(r => (
                   <Link key={r.id} href={r.href}
                     onClick={() => { setSearchOpen(false); setSearchQ('') }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', textDecoration: 'none', borderBottom: '1px solid #f9fafb' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#eff6ff')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <span style={{ fontSize: 15 }}>{r.type === 'bericht' ? '💬' : r.type === 'document' ? '📄' : '📅'}</span>
+                    style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', textDecoration: 'none' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#F0F2F5')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#E4E6EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
+                      {r.type === 'bericht' ? '💬' : r.type === 'document' ? '📄' : '📅'}
+                    </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 12, color: '#242424', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</p>
-                      <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>{r.sub}</p>
+                      <p style={{ fontSize: 15, color: '#1C1E21', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{r.title}</p>
+                      <p style={{ fontSize: 13, color: '#65676B', margin: 0 }}>{r.sub}</p>
                     </div>
                   </Link>
                 ))}
               </div>
             ) : searchQ.length >= 2 && !searching ? (
-              <div style={{ padding: 20, textAlign: 'center', color: '#9ca3af', fontSize: 13 }}>Geen resultaten voor "{searchQ}"</div>
+              <div style={{ padding: 20, textAlign: 'center', color: '#65676B', fontSize: 14 }}>Geen resultaten voor &quot;{searchQ}&quot;</div>
             ) : (
-              <div style={{ padding: '12px 14px', fontSize: 12, color: '#9ca3af' }}>Type om te zoeken…</div>
+              <div style={{ padding: '14px', fontSize: 14, color: '#65676B' }}>Type om te zoeken…</div>
             )}
           </div>
         )}
       </div>
 
-      {/* User menu */}
+      <div style={{ flex: 1 }} />
+
+      {/* Rechts: profiel avatar + naam */}
       <div ref={menuRef} style={{ position: 'relative', flexShrink: 0 }}>
         <button onClick={() => setMenuOpen(!menuOpen)}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', borderRadius: 8 }}>
-          <div style={{ width: 30, height: 30, borderRadius: '50%', background: avatarBg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13 }}>
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: menuOpen ? '#E7F3FF' : 'none', border: 'none', cursor: 'pointer',
+            padding: '4px 8px 4px 4px', borderRadius: 20, transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => { if (!menuOpen) e.currentTarget.style.background = '#F0F2F5' }}
+          onMouseLeave={e => { if (!menuOpen) e.currentTarget.style.background = 'transparent' }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: avatarBg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15 }}>
             {initials}
           </div>
-          <span className="hidden md:inline" style={{ fontSize: 13, fontWeight: 500, color: '#242424' }}>{name}</span>
-          {isSuperAdmin && (
-            <span className="hidden md:inline" style={{ fontSize: 10, background: '#f3e8ff', color: '#7e22ce', borderRadius: 6, padding: '1px 5px', fontWeight: 700 }}>SA</span>
-          )}
-          {isAdmin && !isSuperAdmin && (
-            <span className="hidden md:inline" style={{ fontSize: 10, background: '#dcfce7', color: '#15803d', borderRadius: 6, padding: '1px 5px', fontWeight: 700 }}>A</span>
-          )}
+          <span className="hidden md:inline" style={{ fontSize: 15, fontWeight: 600, color: '#1C1E21' }}>{name}</span>
+          {isSuperAdmin && <span className="hidden md:inline" style={{ fontSize: 10, background: '#f3e8ff', color: '#7e22ce', borderRadius: 6, padding: '2px 6px', fontWeight: 700 }}>SA</span>}
+          {isAdmin && !isSuperAdmin && <span className="hidden md:inline" style={{ fontSize: 10, background: '#dcfce7', color: '#15803d', borderRadius: 6, padding: '2px 6px', fontWeight: 700 }}>A</span>}
         </button>
 
         {menuOpen && (
-          <div style={{ position: 'absolute', top: '100%', right: 0, width: 200, background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 200, overflow: 'hidden', marginTop: 4 }}>
-            <div style={{ padding: '12px 16px', borderBottom: '1px solid #f4f4f4' }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: '#242424', margin: 0 }}>{name}</p>
-              {isSuperAdmin && <p style={{ fontSize: 11, color: '#7e22ce', margin: '1px 0 0', fontWeight: 600 }}>Superadmin</p>}
-              {isAdmin && !isSuperAdmin && <p style={{ fontSize: 11, color: '#15803d', margin: '1px 0 0', fontWeight: 600 }}>Admin</p>}
+          <div style={{ position: 'absolute', top: 'calc(100% + 6px)', right: 0, width: 240, background: '#fff', borderRadius: 8, boxShadow: '0 8px 24px rgba(0,0,0,0.16)', zIndex: 200, overflow: 'hidden' }}>
+            {/* Profile row */}
+            <Link href="/platform" onClick={() => setMenuOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', textDecoration: 'none', borderBottom: '1px solid #E4E6EB' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#F0F2F5')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+              <div style={{ width: 48, height: 48, borderRadius: '50%', background: avatarBg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 20, flexShrink: 0 }}>{initials}</div>
+              <div>
+                <p style={{ margin: 0, fontSize: 15, fontWeight: 700, color: '#1C1E21' }}>{name}</p>
+                <p style={{ margin: '1px 0 0', fontSize: 13, color: '#65676B' }}>Profiel bekijken</p>
+              </div>
+            </Link>
+
+            <div style={{ padding: '6px' }}>
+              {isSuperAdmin && (
+                <Link href="/platform/admin/gebruikers" onClick={() => setMenuOpen(false)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 10px', borderRadius: 8, textDecoration: 'none', color: '#1C1E21' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = '#F0F2F5')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#E4E6EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <SettingsIcon size={18} color="#1C1E21" />
+                  </div>
+                  <span style={{ fontSize: 15, fontWeight: 500 }}>Beheer</span>
+                </Link>
+              )}
+              <button onClick={logout}
+                style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '8px 10px', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 8, textAlign: 'left' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#F0F2F5')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#E4E6EB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LogOutIcon size={18} color="#1C1E21" />
+                </div>
+                <span style={{ fontSize: 15, fontWeight: 500, color: '#1C1E21' }}>Afmelden</span>
+              </button>
             </div>
-            <button onClick={logout}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '10px 16px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#5b5b5b', textAlign: 'left' }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#f4f4f4')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-              Afmelden
-            </button>
           </div>
         )}
       </div>
 
-      {/* Mobile sidebar overlay */}
+      {/* Mobile hamburger */}
+      <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        style={{ background: '#F0F2F5', border: 'none', cursor: 'pointer', borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1C1E21" strokeWidth="2.5">
+          <path d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
+      </button>
+
+      {/* Mobile menu overlay */}
       {mobileMenuOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex' }}
           onClick={() => setMobileMenuOpen(false)}>
-          <div style={{ width: 260, background: '#fff', height: '100%', borderRight: '1px solid #e8e8e8', overflowY: 'auto' }}
+          <div style={{ width: 280, background: '#fff', height: '100%', overflowY: 'auto', boxShadow: '4px 0 16px rgba(0,0,0,0.15)' }}
             onClick={e => e.stopPropagation()}>
-            <MobileNavItems onClose={() => setMobileMenuOpen(false)} />
+            <MobileNavItems onClose={() => setMobileMenuOpen(false)} onLogout={logout} name={name} initials={initials} avatarBg={avatarBg} />
           </div>
-          <div style={{ flex: 1, background: 'rgba(0,0,0,0.4)' }} />
+          <div style={{ flex: 1, background: 'rgba(0,0,0,0.5)' }} />
         </div>
       )}
     </header>
   )
 }
 
-function MobileNavItems({ onClose }: { onClose: () => void }) {
+function MobileNavItems({ onClose, onLogout, name, initials, avatarBg }: {
+  onClose: () => void; onLogout: () => void; name: string; initials: string; avatarBg: string
+}) {
   const path = usePathname()
-  const router = useRouter()
-
-  async function logout() {
-    await supabase.auth.signOut()
-    router.replace('/auth/login')
-  }
 
   const items = [
-    { href: '/platform',             label: '🏠 Start',       exact: true },
-    { href: '/platform/agenda',      label: '📅 Agenda' },
-    { href: '/platform/berichten',   label: '💬 Berichten' },
-    { href: '/platform/documenten',  label: '📁 Documenten' },
-    { href: '/platform/formulieren', label: '📝 Formulieren' },
-    { href: '/platform/links',       label: '🔗 Links' },
-    { href: '/platform/meldingen',   label: '🔔 Meldingen' },
-    { href: '/examenboard',          label: '🎓 Examenboard' },
-    { href: '/dashboard',            label: '🌐 Taalplatform' },
+    { href: '/platform',             label: 'Start',         icon: '🏠', exact: true },
+    { href: '/platform/agenda',      label: 'Agenda',        icon: '📅' },
+    { href: '/platform/berichten',   label: 'Berichten',     icon: '💬' },
+    { href: '/platform/cijfers',     label: 'Cijfers',       icon: '📊' },
+    { href: '/platform/documenten',  label: 'Documenten',    icon: '📁' },
+    { href: '/platform/formulieren', label: 'Formulieren',   icon: '📝' },
+    { href: '/platform/links',       label: 'Links',         icon: '🔗' },
+    { href: '/platform/meldingen',   label: 'Meldingen',     icon: '🔔' },
+    { href: '/examenboard',          label: 'Examenboard',   icon: '🎓' },
+    { href: '/dashboard',            label: 'Taalplatform',  icon: '🌐' },
   ]
 
   return (
-    <nav style={{ padding: '8px 0' }}>
-      <div style={{ padding: '14px 16px', borderBottom: '1px solid #f4f4f4', marginBottom: 8 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 24, height: 24, borderRadius: 6, background: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12 }}>S</div>
-          <span style={{ fontWeight: 700, fontSize: 14 }}>Schoolplatform</span>
-        </div>
+    <nav style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+      <div style={{ padding: '16px', borderBottom: '1px solid #E4E6EB', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ width: 44, height: 44, borderRadius: '50%', background: avatarBg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18 }}>{initials}</div>
+        <span style={{ fontSize: 16, fontWeight: 700, color: '#1C1E21' }}>{name}</span>
       </div>
       {items.map(item => {
         const active = item.exact ? path === item.href : path.startsWith(item.href)
         return (
           <Link key={item.href} href={item.href} onClick={onClose}
-            style={{ display: 'block', padding: '12px 20px', fontSize: 14, fontWeight: active ? 600 : 400, color: active ? '#2563eb' : '#242424', textDecoration: 'none', background: active ? '#eff6ff' : 'transparent', borderBottom: '1px solid #f4f4f4' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', fontSize: 15, fontWeight: active ? 700 : 400, color: active ? FB : '#1C1E21', textDecoration: 'none', background: active ? '#E7F3FF' : 'transparent' }}>
+            <span style={{ fontSize: 20 }}>{item.icon}</span>
             {item.label}
           </Link>
         )
       })}
-      <button onClick={logout}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#5b5b5b', borderTop: '1px solid #e8e8e8', marginTop: 8 }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      <div style={{ height: 1, background: '#E4E6EB', margin: '8px 0' }} />
+      <button onClick={onLogout}
+        style={{ display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '12px 16px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15, color: '#1C1E21' }}>
+        <span style={{ fontSize: 20 }}>🚪</span>
         Afmelden
       </button>
     </nav>
   )
 }
-
