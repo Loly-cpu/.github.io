@@ -362,7 +362,10 @@ function AgendaInner() {
         <h2 className="font-bold text-gray-900 mb-3">Komende evenementen</h2>
         {events.length === 0 && <p className="text-sm text-gray-500">Nog geen evenementen. Voeg er een toe of genereer een AI-studieplan.</p>}
         <div className="space-y-2">
-          {events.filter((e) => new Date(e.start_at) >= new Date()).slice(0, 20).map((e) => (
+          {events.filter((e) => {
+            const todayStart = new Date(); todayStart.setHours(0,0,0,0)
+            return new Date(e.start_at) >= todayStart
+          }).slice(0, 20).map((e) => (
             <div key={e.id} className="flex items-center gap-3 bg-white border border-warm-gray rounded-xl px-4 py-3">
               <div className="w-1.5 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: e.color }} />
               <div className="flex-1 min-w-0">
