@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseAdmin = createClient(
+const getSupabaseAdmin = () => createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
 async function refreshToken(userId: string, refreshToken: string) {
@@ -22,7 +22,7 @@ async function refreshToken(userId: string, refreshToken: string) {
   if (!res.ok) return null
   const data = await res.json()
   const expiresAt = new Date(Date.now() + data.expires_in * 1000).toISOString()
-  await supabaseAdmin.from('spotify_tokens').update({
+  await getSupabaseAdmin().from('spotify_tokens').update({
     access_token: data.access_token,
     expires_at: expiresAt,
     ...(data.refresh_token ? { refresh_token: data.refresh_token } : {}),
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get('user_id')
   if (!userId) return NextResponse.json({ error: 'missing user_id' }, { status: 400 })
 
-  const { data: token } = await supabaseAdmin
+  const { data: token } = await getSupabaseAdmin()
     .from('spotify_tokens')
     .select('access_token, refresh_token, expires_at')
     .eq('user_id', userId)

@@ -7,11 +7,12 @@ const REDIRECT_URI  = process.env.NEXT_PUBLIC_APP_URL
   ? `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google-calendar/callback`
   : 'http://localhost:3000/api/auth/google-calendar/callback'
 
-// Use service-role key to write tokens server-side
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -47,13 +48,13 @@ export async function GET(req: Request) {
     const profile = await profileRes.json()
 
     // Match Google email to Supabase user
-    const { data: users } = await supabaseAdmin.auth.admin.listUsers()
+    const { data: users } = await getSupabaseAdmin().auth.admin.listUsers()
     const match = users.users.find(u => u.email === profile.email)
     if (!match) throw new Error('Geen Supabase-account gevonden voor dit Google-account')
 
     // Store tokens
     const expiresAt = new Date(Date.now() + (tokens.expires_in ?? 3600) * 1000).toISOString()
-    await supabaseAdmin.from('calendar_tokens').upsert({
+    await getSupabaseAdmin().from('calendar_tokens').upsert({
       user_id:       match.id,
       provider:      'google',
       access_token:  tokens.access_token,

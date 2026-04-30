@@ -34,7 +34,14 @@
       "Bash(sed -n '128,145p' src/app/placement/\\\\[language\\\\]/page.tsx)",
       "Bash(grep -n \"Navigation\\\\|<>\\\\s*$\" src/app/placement/\\\\[language\\\\]/page.tsx)",
       "Bash(ls src/components/ui)",
-      "Bash(cat src/lib/utils.ts)"
+      "Bash(cat src/lib/utils.ts)",
+      "Bash(python3 *)",
+      "Bash(pip install *)",
+      "PowerShell(pip3 list *)",
+      "PowerShell(pip install *)",
+      "PowerShell($env:PATH = $env:PATH + \";$env:APPDATA\\\\Python\\\\Python314\\\\Scripts\"; python3 -m pip install PyMuPDF -q 2>&1; Write-Host \"INSTALL_DONE\")",
+      "PowerShell($py = \"C:\\\\Users\\\\leend\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python313\\\\python.exe\"; & $py -m pip install pdfminer.six -q 2>&1 | Select-Object -Last 2; & $py -c \"from pdfminer.high_level import extract_text; t=extract_text\\(r'C:\\\\Users\\\\leend\\\\Downloads\\\\INZICHT PLUS _ aardrijkskunde 3DO - Jona Leenders - 2026-04-29.pdf'\\); print\\(t[:8000]\\)\")",
+      "mcp__plugin_vercel_vercel__get_deployment_build_logs"
     ]
   }
 }
