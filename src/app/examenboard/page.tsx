@@ -672,11 +672,13 @@ export default function ExamenBoard() {
   const [canvasLoading, setCanvasLoading] = useState(true)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Auth guard + load tasks
+  // Auth guard + superadmin check (persoonlijke data van Jona — niet zichtbaar voor andere gebruikers)
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session?.user) { router.replace('/auth/login'); return }
       const uid = data.session.user.id
+      const { data: profile } = await supabase.from('profiles').select('is_superadmin').eq('id', uid).single()
+      if (!profile?.is_superadmin) { router.replace('/platform'); return }
       setUserId(uid)
       setAuthed(true)
       const { data: rows } = await supabase

@@ -15,12 +15,15 @@ const R    = 38
 const CIRC = 2 * Math.PI * R
 const SYNC_INTERVAL = 10 // save to Supabase every N seconds
 
-function chime(ctx: AudioContext, freq: number, t: number, dur: number) {
-  const osc = ctx.createOscillator(); const gain = ctx.createGain()
+function chime(ctx: AudioContext, freq: number, t: number) {
+  const osc  = ctx.createOscillator()
+  const gain = ctx.createGain()
   osc.connect(gain); gain.connect(ctx.destination)
-  osc.frequency.value = freq; osc.type = 'sine'
-  gain.gain.setValueAtTime(0.2, t); gain.gain.exponentialRampToValueAtTime(0.001, t + dur)
-  osc.start(t); osc.stop(t + dur)
+  osc.frequency.value = freq
+  osc.type = 'sine'
+  gain.gain.setValueAtTime(0.15, t)
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4)
+  osc.start(t); osc.stop(t + 0.4)
 }
 
 function notify(title: string, body: string) {
@@ -95,10 +98,12 @@ export default function PomodoroTimer() {
   const ring = useCallback((isWork: boolean) => {
     if (soundOn) {
       const ctx = getCtx(); const t = ctx.currentTime
+      // Kort, zacht belletje: één toon voor werk-klaar, twee tonen voor pauze-klaar
       if (isWork) {
-        chime(ctx, 880, t, 0.25); chime(ctx, 880, t + 0.35, 0.25); chime(ctx, 1100, t + 0.70, 0.45)
+        chime(ctx, 1047, t)          // C6 — helder, kort
       } else {
-        chime(ctx, 660, t, 0.3); chime(ctx, 880, t + 0.4, 0.4)
+        chime(ctx, 880, t)           // A5
+        chime(ctx, 1047, t + 0.45)  // C6
       }
     }
     setFlash(true); setTimeout(() => setFlash(false), 1200)

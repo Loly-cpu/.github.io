@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import dynamic from 'next/dynamic'
-
-// Dynamisch laden zodat SSR geen problemen geeft met AudioContext etc.
-const PomodoroTimer = dynamic(() => import('@/components/PomodoroTimer'), { ssr: false })
+import { GlobalWidgets } from '@/components/GlobalWidgets'
 
 export const metadata: Metadata = {
   title: 'Schoolplatform',
@@ -15,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="nl">
       <body suppressHydrationWarning>
         {children}
-        <PomodoroTimer />
+        <GlobalWidgets />
       </body>
     </html>
   )
